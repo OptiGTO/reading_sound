@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>읽는소리 - 홈</title>
+
+  <!-- CSS 연결 -->
+  <link rel="stylesheet" href="style.css"/>
+  
+  <!-- (Optional) Font Awesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    integrity="sha512-Fo3rlrQkTyWc+TjIrD8tbV1B2V9xKcy3NvKp69K1d9UarK0tvb+LkzSWPjcV1B5ycVgYpNi3QXw3VrKzZ7XucQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+</head>
+<body>
+  <!-- 왼쪽 사이드바 (기존) -->
+  <aside class="sidebar">
+    <!-- 로고 또는 타이틀 -->
+    <div class="sidebar-header">
+      <h1 class="brand-title">읽는소리</h1>
+    </div>
+    
+    <!-- 내비게이션 메뉴 -->
+    <nav class="nav-menu">
+      <ul>
+        <li><a href="#" class="nav-link active" data-section="home-section">홈</a></li>
+        <li><a href="#" class="nav-link" data-section="group-section">모임</a></li>
+        <li><a href="#" class="nav-link" data-section="recommended-section">추천 도서</a></li>
+        <li><a href="#" class="nav-link" data-section="notice-section">공지사항</a></li>
+        <li><a href="#" class="nav-link" data-section="settings-section">설정</a></li>
+      </ul>
+    </nav>
+    
+    <!-- 무작위 책 추천 섹션 -->
+    <div class="random-book-section">
+      <h2>무작위 책</h2>
+      <div id="random-book-container"></div>
+      <button class="btn hover-effect" id="random-book-btn">놀라게 해줘!</button>
+    </div>
+
+    <!-- 로그인 / 회원가입 버튼 -->
+    <div class="login-container">
+      <a href="login.html" class="btn hover-effect nav-link" id="login-btn">로그인 / 회원가입</a>
+    </div>
+  </aside>
+  
+  <!-- 메인 콘텐츠 영역 (중앙) -->
+  <main class="content">
+    <!-- 상단 바 (유저 정보 등) -->
+    <header class="top-bar">
+      <!-- (Search bar moved to right sidebar) -->
+      <div class="user-info" id="user-info">
+        <span id="user-nickname">손님</span>
+      </div>
+    </header>
+
+    <!-- ===== BUTTONS for Sub-Sections of the Home Bulletin Board ===== -->
+    <div class="home-bulletin-nav">
+      <button class="btn sub-link active" data-subsection="full-board">
+        <i class="fas fa-th-large"></i> 전체
+      </button>
+      <button class="btn sub-link" data-subsection="essay-board">
+        <i class="fas fa-pencil-alt"></i> 에세이
+      </button>
+      <button class="btn sub-link" data-subsection="novel-board">
+        <i class="fas fa-book"></i> 소설
+      </button>
+      <button class="btn sub-link" data-subsection="poetry-board">
+        <i class="fas fa-feather-alt"></i> 시
+      </button>
+      <button class="btn sub-link" data-subsection="nonlit-board">
+        <i class="fas fa-newspaper"></i> 비문학
+      </button>
+    </div>
+
+    <!-- 홈 섹션 (기본 표시) -->
+    <section class="section active" id="home-section">
+      <div id="board-container">
+        <!-- 전체 게시판 -->
+        <section class="sub-section active" id="full-board">
+          <h2>전체 게시판</h2>
+          <section class="post-list">
+            <article class="post-card hover-effect">
+              <h3 class="post-title">[전체] 책 제목 예시</h3>
+              <p class="post-author"><strong>저자:</strong> 홍길동</p>
+              <p class="post-genre"><strong>장르:</strong> 소설</p>
+              <p class="post-stats">
+                <span><strong>조회수:</strong> 100</span> | 
+                <span><strong>추천:</strong> 12</span> | 
+                <span><strong>댓글:</strong> 5</span>
+              </p>
+              <p class="post-excerpt">이 책에 대한 사용자의 의견을 간략히 소개합니다...</p>
+              <button class="btn hover-effect">게시글 보기</button>
+            </article>
+          </section>
+        </section>
+
+        <!-- 에세이 게시판 -->
+        <section class="sub-section" id="essay-board">
+          <h2>에세이 게시판</h2>
+          <section class="post-list">
+            <article class="post-card hover-effect">
+              <h3 class="post-title">[에세이] 나의 하루</h3>
+              <p class="post-author"><strong>저자:</strong> 김에세이</p>
+              <p class="post-genre"><strong>장르:</strong> 에세이</p>
+              <p class="post-excerpt">에세이 게시판 테스트...</p>
+              <button class="btn hover-effect">게시글 보기</button>
+            </article>
+          </section>
+        </section>
+
+        <!-- 소설 게시판 -->
+        <section class="sub-section" id="novel-board">
+          <h2>소설 게시판</h2>
+          <section class="post-list">
+            <article class="post-card hover-effect">
+              <h3 class="post-title">[소설] 밤의 도시</h3>
+              <p class="post-author"><strong>저자:</strong> 이소설</p>
+              <p class="post-genre"><strong>장르:</strong> 소설</p>
+              <p class="post-excerpt">소설 게시판 테스트...</p>
+              <button class="btn hover-effect">게시글 보기</button>
+            </article>
+          </section>
+        </section>
+
+        <!-- 시 게시판 -->
+        <section class="sub-section" id="poetry-board">
+          <h2>시 게시판</h2>
+          <section class="post-list">
+            <article class="post-card hover-effect">
+              <h3 class="post-title">[시] 봄의 노래</h3>
+              <p class="post-author"><strong>저자:</strong> 박시인</p>
+              <p class="post-genre"><strong>장르:</strong> 시</p>
+              <p class="post-excerpt">시 게시판 테스트...</p>
+              <button class="btn hover-effect">게시글 보기</button>
+            </article>
+          </section>
+        </section>
+
+        <!-- 비문학 게시판 -->
+        <section class="sub-section" id="nonlit-board">
+          <h2>비문학 게시판</h2>
+          <section class="post-list">
+            <article class="post-card hover-effect">
+              <h3 class="post-title">[비문학] 흥미로운 과학 이야기</h3>
+              <p class="post-author"><strong>저자:</strong> 최논픽션</p>
+              <p class="post-genre"><strong>장르:</strong> 비문학</p>
+              <p class="post-excerpt">비문학 게시판 테스트...</p>
+              <button class="btn hover-effect">게시글 보기</button>
+            </article>
+          </section>
+        </section>
+      </div>
+    </section>
+
+    <!-- 다른 섹션들 (모임, 추천 도서, 공지사항, 설정) -->
+    <section class="section" id="group-section">
+      <h2>모임</h2>
+      <p>독서 모임 및 관련 활동을 소개하는 공간입니다.</p>
+    </section>
+
+    <section class="section" id="recommended-section">
+      <h2>추천 도서</h2>
+      <p>관리자 혹은 회원들이 추천하는 도서 목록을 여기서 볼 수 있어요.</p>
+    </section>
+
+    <section class="section" id="notice-section">
+      <h2>공지사항</h2>
+      <p>커뮤니티나 모임에 대한 중요한 소식을 전합니다.</p>
+    </section>
+
+    <section class="section" id="settings-section">
+      <h2>설정</h2>
+      <p>계정, 알림, 테마 등 다양한 설정을 변경할 수 있는 페이지입니다.</p>
+    </section>
+  </main>
+
+  <!-- 새로운 오른쪽 사이드바 -->
+  <aside class="sidebar right-sidebar">
+    <!-- 검색 바 (이전 top-bar의 search-container 이동) -->
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="게시글 검색..." />
+      <button class="btn hover-effect" id="search-btn">검색</button>
+    </div>
+
+    <!-- 공지사항 표시 (간단 예시) -->
+    <div class="notice-display">
+      <h2>공지사항</h2>
+      <ul>
+        <li>새로운 이벤트가 시작되었습니다!</li>
+        <li>사이트 점검 안내 (1월 15일)</li>
+        <li>봄맞이 독서 챌린지 안내</li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- 플로팅 글쓰기 버튼 -->
+  <div class="floating-btn-container">
+    <a href="post.html" class="btn fab hover-effect" id="post-btn">+</a>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
