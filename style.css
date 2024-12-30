@@ -9,10 +9,11 @@
   body {
     margin: 0;
     padding: 0;
-    display: flex; /* Place sidebars and main content in a row */
+    display: flex;
     min-height: 100vh;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #f7f5f0; /* or your preferred bg color */
+    background-color: #f7f5f0;
+    justify-content: center;
   }
   
   /* 3. Sidebar */
@@ -86,6 +87,7 @@
     padding: 1rem 2rem;
     display: flex;
     flex-direction: column;
+    max-width: 1200px;
   }
   
   /* 5. Top Bar (User Info + Search) */
@@ -273,7 +275,8 @@
   /* 9. Responsiveness */
   @media (max-width: 768px) {
     body {
-      flex-direction: column; /* Sidebar on top, content below */
+      flex-direction: column;
+      align-items: center;
     }
   
     .sidebar {
@@ -284,9 +287,13 @@
       justify-content: space-between;
       align-items: center;
       position: sticky;
-      top: 0; /* or a custom offset */
-      height: 100%; 
-      overflow-y: auto; 
+      top: 0;
+      height: 100%;
+      overflow-y: auto;
+    }
+  
+    .sidebar.right-sidebar {
+      border-left: none;
     }
   
     .random-book-section, 
@@ -297,6 +304,7 @@
   
     .content {
       padding: 1rem;
+      max-width: 100%;
     }
   }
   /* Floating Action Button Container */
