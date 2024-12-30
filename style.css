@@ -1,154 +1,87 @@
-/* 1. Global Reset & Box-Sizing */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* 2. Body Styles */
-  body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    min-height: 100vh;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #f7f5f0;
-    justify-content: center;
-  }
-  
-  /* 3. Sidebar */
-  .sidebar {
-    width: 250px;                /* Same width for matching ratio */
-    background-color: #f2ebe0;   /* Slightly darker beige tone */
-    padding: 1rem;
-    border-right: 2px solid #d8c9b7;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-/* Right Sidebar (new) */
-.sidebar.right-sidebar {
-  border-right: none;       /* Remove right border from the new sidebar */
-  border-left: 2px solid #d8c9b7; /* Instead, a left border to separate from main */
+/****************************************************
+ * 1. Global Reset & Box-Sizing
+ ****************************************************/
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/****************************************************
+ * 2. Body & Basic Layout
+ ****************************************************/
+body {
+  display: flex;
+  min-height: 100vh;
+  justify-content: center;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #f7f5f0;
+}
+
+/****************************************************
+ * 3. Left Sidebar
+ ****************************************************/
+.sidebar {
+  width: 250px;                
+  background-color: #f2ebe0;  
+  padding: 1rem;
+  border-right: 2px solid #d8c9b7;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;  /* We can align items at the top */
-  width: 250px;                /* Matching width */
+  justify-content: space-between;
 }
 
-  .sidebar-header .brand-title {
-    font-family: Georgia, "Times New Roman", serif; /* Serif accent */
-    font-size: 1.5rem;
-    color: #5f4b32; /* Dark brown color */
-    margin-bottom: 1rem;
-  }
-  
-  .nav-menu ul {
-    list-style-type: none;
-  }
-  
-  .nav-menu .nav-link {
-    display: block;
-    text-decoration: none;
-    font-size: 1rem;
-    color: #5f4b32;
-    padding: 0.5rem 0;
-    transition: color 0.3s ease;
-  }
-  
-  /* Hover effect for nav links */
-  .nav-menu .nav-link:hover {
-    color: #9a8469; /* Slightly lighter shade of brown */
-  }
-  
-  /* Random Book Recommendation Section */
-  .random-book-section {
-    margin: 2rem 0;
-    padding: 1rem;
-    background-color: #fcfaf7; 
-    border: 1px solid #ece7df;
-    border-radius: 5px;
-  }
-  
-  .random-book-section h2 {
-    color: #5f4b32;
-    margin-bottom: 0.5rem;
-  }
-  
-  /* Login Button Container */
-  .login-container {
-    margin-top: auto; /* Push login button to the bottom of the sidebar */
-  }
-  
-  /* 4. Main Content Area */
-  .content {
-    flex: 1;
-    padding: 1rem 2rem;
-    display: flex;
-    flex-direction: column;
-    max-width: 1200px;
-  }
-  
-  /* 5. Top Bar (User Info + Search) */
-  .top-bar {
-    display: flex;
-    justify-content: space-between; /* if you had more items, they'd spread out */
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-
-  .user-info {
-    font-size: 1rem;
-    color: #5f4b32;
-  }
-  
-  .search-container {
-    display: flex; /* Align input and button side by side */
-    gap: 10px; /* Space between input and button */
-    /* Optional: Adjust alignment and spacing */
-    align-items: center; /* Vertically center items */
-    justify-content: center; /* Horizontally center items within the container */
-    margin-bottom: 20px; /* Space below the search bar */
-  }
-  
-
-#search-input {
-  width: 150px; /* Adjust to desired width */
-  height: 40px; /* Adjust to desired height */
-  font-size: 16px; /* Adjust text size for readability */
-  padding: 5px 10px; /* Adjust padding for spacing inside the input */
-  border-radius: 4px; /* Optional: Rounded corners */
-  border: 1px solid #ccc; /* Optional: Border styling */
+.sidebar-header .brand-title {
+  font-family: Georgia, "Times New Roman", serif; /* Serif accent */
+  font-size: 1.5rem;
+  color: #5f4b32;
+  margin-bottom: 1rem;
 }
 
-#search-input:focus {
-  border-color: #9a8469; /* Change border color on focus */
-  outline: none; /* Remove default outline */
-  box-shadow: 0 0 5px rgba(154, 132, 105, 0.5); /* Add subtle shadow */
+.nav-menu ul {
+  list-style-type: none;
 }
 
-#search-input::placeholder {
-  color: #999999; /* Lighter color for placeholder text */
-  font-style: italic; /* Italicize placeholder text */
+.nav-menu .nav-link {
+  display: block;
+  text-decoration: none;
+  font-size: 1rem;
+  color: #5f4b32;
+  padding: 0.5rem 0;
+  transition: color 0.3s ease;
 }
 
-#search-btn {
-  width: 100px; /* Adjust to desired width */
-  height: 40px; /* Adjust to match input height for uniformity */
-  font-size: 16px; /* Ensure the text is proportionate */
-  padding: 5px 10px; /* Adjust padding for better clickability */
-  border-radius: 4px; /* Optional: Rounded corners */
-  border: none; /* Remove default border */
-  background-color: #9a8469; /* Example background color */
-  color: #ffffff; /* Text color */
-  cursor: pointer; /* Change cursor on hover */
-  transition: background-color 0.3s ease; /* Smooth transition for hover effects */
+.nav-menu .nav-link:hover {
+  color: #9a8469;
 }
 
-#search-btn:hover {
-  background-color: #7d6658; /* Darker shade on hover */
+.random-book-section {
+  margin: 2rem 0;
+  padding: 1rem;
+  background-color: #fcfaf7; 
+  border: 1px solid #ece7df;
+  border-radius: 5px;
+}
+
+.random-book-section h2 {
+  color: #5f4b32;
+  margin-bottom: 0.5rem;
+}
+
+.login-container {
+  margin-top: auto; /* Push login button to bottom */
+}
+
+/****************************************************
+ * 4. Right Sidebar
+ ****************************************************/
+.sidebar.right-sidebar {
+  border-right: none;       
+  border-left: 2px solid #d8c9b7; 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; 
+  width: 250px; 
 }
 
 .notice-display {
@@ -169,189 +102,215 @@
   color: #5f4b32;
 }
 
+/****************************************************
+ * 5. Top Bar & Buttons
+ ****************************************************/
+.content {
+  flex: 1;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+}
 
-  
-  /* 6. Buttons + Hover Effects + Spinner */
-  .btn {
-    background-color: #5f4b32;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 0.6rem 1rem;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-    position: relative; /* for spinner positioning */
-  }
-  
-  /* Hover effect: slightly brighter background */
-  .btn:hover {
-    background-color: #9a8469;
-  }
-  
-  /* Additional hover effect class */
-  .hover-effect {
-    transition: transform 0.2s ease;
-  }
-  
-  .hover-effect:hover {
-    transform: translateY(-2px);
-  }
-  
-  /* Spinner effect (hidden by default) */
-  .spinner {
-    width: 1em;
-    height: 1em;
-    border: 2px solid #ccc;
-    border-top: 2px solid #5f4b32;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    display: none; /* Hidden by default */
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  
-  /* 7. Post List & Cards */
-  .post-list {
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 1rem;  
-    margin-bottom: 2rem;
-  }
-  
-  .post-card {
-    background-color: #fcfaf7;
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #ece7df;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .post-card h3 {
-    margin-bottom: 0.5rem;
-    color: #5f4b32;
-  }
-  
-  .post-card p {
-    margin-bottom: 0.5rem;
-  }
-  
-  /* 8. Share Content Form */
-  .share-content {
-    background-color: #fcfaf7;
-    border: 1px solid #ece7df;
-    padding: 1rem;
-    border-radius: 8px;
-  }
-  
-  .share-content h2 {
-    margin-bottom: 1rem;
-    color: #5f4b32;
-    font-family: Georgia, "Times New Roman", serif; /* Serif accent */
-  }
-  
-  .share-content form label {
-    display: block;
-    margin-top: 0.5rem;
-    color: #5f4b32;
-  }
-  
-  .share-content input, 
-  .share-content select,
-  .share-content textarea {
-    width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.25rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  /* 9. Responsiveness */
-  @media (max-width: 768px) {
-    body {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .sidebar {
-      width: 100%;
-      border-right: none;
-      border-bottom: 2px solid #d8c9b7;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      height: 100%;
-      overflow-y: auto;
-    }
-  
-    .sidebar.right-sidebar {
-      border-left: none;
-    }
-  
-    .random-book-section, 
-    .login-container {
-      display: none; 
-      /* Hide some sidebar features on smaller screens or reposition as needed */
-    }
-  
-    .content {
-      padding: 1rem;
-      max-width: 100%;
-    }
-  }
-  /* Floating Action Button Container */
-.floating-btn-container {
-    position: fixed;
-    bottom: 2rem;  /* Adjust for spacing from bottom */
-    right: 2rem;   /* Adjust for spacing from right */
-    z-index: 10;  /* Ensure it floats above other elements */
-  }
-  
-  /* The floating button itself (the plus sign) */
-  .btn.fab {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0; /* Overwrite default .btn padding for a circle shape */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  }
-  
-  .btn.fab:hover {
-    transform: scale(1.05) translateY(-2px);
-  }
-  
-  .nav-link.active {
-    font-weight: bold;
-    text-decoration: underline;
-  }
-  
-  #login-btn.active {
-    text-decoration: none;
-  }
+.top-bar {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 1rem;
+}
 
-  .section {
-    display: none; /* Hide all sections by default */
-  }
-  
-  .section.active {
-    display: block; /* Show the active section only */
-  }
+.user-info {
+  font-size: 1rem;
+  color: #5f4b32;
+}
 
+.btn {
+  background-color: #5f4b32;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  position: relative; /* for spinner positioning */
+}
 
-  /* Hide sub-sections by default */
+.btn:hover {
+  background-color: #9a8469;
+}
+
+.hover-effect {
+  transition: transform 0.2s ease;
+}
+
+.hover-effect:hover {
+  transform: translateY(-2px);
+}
+
+.spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid #ccc;
+  border-top: 2px solid #5f4b32;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: none;
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/****************************************************
+ * 6. Post-list & Cards (REVISED)
+ ****************************************************/
+/* Two cards per row, each half the main content width */
+.post-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+/* Post card container */
+.post-card {
+  width: 48%;  /* ~half of the container width */
+  display: flex;
+  background-color: #fcfaf7;
+  border: 1px solid #ece7df;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Vertical title block on the left side */
+.post-title-vertical {
+  writing-mode: vertical-rl; /* top-to-bottom by default */
+  text-orientation: mixed;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #5f4b32;
+  background-color: #f2ebe0;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #d8c9b7; /* vertical separator */
+  /* If you want bottom->top, add: transform: rotate(180deg); */
+}
+
+/* Slight offset to the left */
+.post-image {
+  flex-basis: 40%; 
+  position: relative;
+  left: -30px;
+  margin-right: -30px; 
+}
+
+/* Actual image styling */
+.post-image .post-thumbnail {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+/* Right side info with vertical line on the left */
+.post-info {
+  flex: 1;
+  padding: 1rem 1rem 1rem 2rem;
+  border-left: 1px solid #d8c9b7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #5f4b32;
+}
+
+.post-info h3 {
+  margin-bottom: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.post-info p {
+  margin-bottom: 0.5rem;
+}
+
+.post-info p:last-child {
+  margin-bottom: 1rem;
+}
+
+/* Elevated hover effect on entire card */
+.post-card.hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+/****************************************************
+ * 7. Search Container & Notices
+ ****************************************************/
+.search-container {
+  display: flex; 
+  gap: 10px; 
+  align-items: center; 
+  justify-content: center; 
+  margin-bottom: 20px; 
+}
+
+#search-input {
+  width: 150px; 
+  height: 40px; 
+  font-size: 16px; 
+  padding: 5px 10px; 
+  border-radius: 4px; 
+  border: 1px solid #ccc; 
+}
+
+#search-input:focus {
+  border-color: #9a8469; 
+  outline: none; 
+  box-shadow: 0 0 5px rgba(154,132,105,0.5); 
+}
+
+#search-input::placeholder {
+  color: #999999; 
+  font-style: italic; 
+}
+
+#search-btn {
+  width: 100px; 
+  height: 40px; 
+  font-size: 16px; 
+  padding: 5px 10px; 
+  border-radius: 4px; 
+  border: none; 
+  background-color: #9a8469; 
+  color: #ffffff; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
+}
+
+#search-btn:hover {
+  background-color: #7d6658; 
+}
+
+/****************************************************
+ * 8. Home Bulletin (Sections, Sub-sections)
+ ****************************************************/
+.section {
+  display: none; 
+}
+
+.section.active {
+  display: block; 
+}
+
 .sub-section {
   display: none;
 }
@@ -360,24 +319,23 @@
   display: block;
 }
 
-/* (Optional) For the sub-nav buttons at the top */
 .home-bulletin-nav {
   display: flex;
-  justify-content: flex-start; /* Aligns buttons to the left */
+  justify-content: flex-start;
   align-items: center;
   gap: 10px;
   margin-bottom: 20px;
 }
 
 .home-bulletin-nav .sub-link.active {
-  background-color: #9a8469; /* Example color */
-  color: #ffffff;            /* Text color */
-  border: none;              /* Removes default border */
+  background-color: #9a8469; 
+  color: #ffffff; 
+  border: none; 
 }
 
 .home-bulletin-nav .sub-link {
-  background-color: #f2ebe0; /* Default button color */
-  color: #5f4b32;            /* Text color */
+  background-color: #f2ebe0; 
+  color: #5f4b32; 
   border: none;
   padding: 10px 20px;
   cursor: pointer;
@@ -386,19 +344,96 @@
 }
 
 .home-bulletin-nav .sub-link:hover {
-  background-color: #d8c9b7; /* Hover effect */
+  background-color: #d8c9b7;
 }
 
-
-.home-bulletin-nav > * {
-  margin-top: 0; /* 상단 여백 제거 */
+/****************************************************
+ * 9. Floating Action Button Container
+ ****************************************************/
+.floating-btn-container {
+  position: fixed;
+  bottom: 2rem;  
+  right: 2rem;   
+  z-index: 10;  
 }
 
-@media (max-width: 600px) {
-  .home-bulletin-nav {
+.btn.fab {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; 
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.btn.fab:hover {
+  transform: scale(1.05) translateY(-2px);
+}
+
+/****************************************************
+ * 10. Responsiveness
+ ****************************************************/
+@media (max-width: 768px) {
+  body {
     flex-direction: column;
     align-items: center;
   }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid #d8c9b7;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .sidebar.right-sidebar {
+    border-left: none;
+  }
+
+  .random-book-section, 
+  .login-container {
+    display: none; 
+  }
+
+  .content {
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  .post-card {
+    width: 100%;   /* single column on mobile */
+    flex-direction: column; 
+  }
+
+  /* Switch the vertical text to normal text in mobile if desired */
+  .post-title-vertical {
+    writing-mode: horizontal-tb;
+    border-right: none;
+    border-bottom: 1px solid #d8c9b7;
+    padding: 0.5rem;
+    text-align: center;
+  }
+
+  .post-image {
+    left: 0;
+    margin-right: 0;
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .post-info {
+    border-left: none;
+    border-top: 1px solid #d8c9b7;
+    padding-left: 1rem;
+  }
 }
-
-

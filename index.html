@@ -53,7 +53,6 @@
   <main class="content">
     <!-- 상단 바 (유저 정보 등) -->
     <header class="top-bar">
-      <!-- (Search bar moved to right sidebar) -->
       <div class="user-info" id="user-info">
         <span id="user-nickname">손님</span>
       </div>
@@ -86,16 +85,29 @@
           <h2>전체 게시판</h2>
           <section class="post-list">
             <article class="post-card hover-effect">
-              <h3 class="post-title">[전체] 책 제목 예시</h3>
-              <p class="post-author"><strong>저자:</strong> 홍길동</p>
-              <p class="post-genre"><strong>장르:</strong> 소설</p>
-              <p class="post-stats">
-                <span><strong>조회수:</strong> 100</span> | 
-                <span><strong>추천:</strong> 12</span> | 
-                <span><strong>댓글:</strong> 5</span>
-              </p>
-              <p class="post-excerpt">이 책에 대한 사용자의 의견을 간략히 소개합니다...</p>
-              <button class="btn hover-effect">게시글 보기</button>
+              <!-- 1) Vertical title on the left -->
+              <div class="post-title-vertical">
+                [전체]<br>책 제목 예시
+              </div>
+
+              <!-- 2) Image shifted slightly left -->
+              <div class="post-image">
+                <img src="./images/달러구트 소설.png" alt="책 표지" class="post-thumbnail" />
+              </div>
+
+              <!-- 3) Post info on the right with vertical line -->
+              <div class="post-info">
+                <h3 class="post-title">달러구트 꿈 백화점</h3>
+                <p class="post-author"><strong>저자:</strong> 홍길동</p>
+                <p class="post-genre"><strong>장르:</strong> 소설</p>
+                <p class="post-stats">
+                  <span><strong>조회수:</strong> 100</span> | 
+                  <span><strong>추천:</strong> 12</span> | 
+                  <span><strong>댓글:</strong> 5</span>
+                </p>
+                <p class="post-excerpt">이 책에 대한 사용자의 의견을 간략히 소개합니다...</p>
+                <button class="btn hover-effect">게시글 보기</button>
+              </div>
             </article>
           </section>
         </section>
@@ -105,11 +117,19 @@
           <h2>에세이 게시판</h2>
           <section class="post-list">
             <article class="post-card hover-effect">
-              <h3 class="post-title">[에세이] 나의 하루</h3>
-              <p class="post-author"><strong>저자:</strong> 김에세이</p>
-              <p class="post-genre"><strong>장르:</strong> 에세이</p>
-              <p class="post-excerpt">에세이 게시판 테스트...</p>
-              <button class="btn hover-effect">게시글 보기</button>
+              <div class="post-title-vertical">
+                [에세이]<br>나의 하루
+              </div>
+              <div class="post-image">
+                <img src="images\오지게 재밌게 에세이.png" alt="에세이 책 표지" class="post-thumbnail"/>
+              </div>
+              <div class="post-info">
+                <h3 class="post-title">나의 하루</h3>
+                <p class="post-author"><strong>저자:</strong> 김에세이</p>
+                <p class="post-genre"><strong>장르:</strong> 에세이</p>
+                <p class="post-excerpt">에세이 게시판 테스트...</p>
+                <button class="btn hover-effect">게시글 보기</button>
+              </div>
             </article>
           </section>
         </section>
@@ -119,11 +139,19 @@
           <h2>소설 게시판</h2>
           <section class="post-list">
             <article class="post-card hover-effect">
-              <h3 class="post-title">[소설] 밤의 도시</h3>
-              <p class="post-author"><strong>저자:</strong> 이소설</p>
-              <p class="post-genre"><strong>장르:</strong> 소설</p>
-              <p class="post-excerpt">소설 게시판 테스트...</p>
-              <button class="btn hover-effect">게시글 보기</button>
+              <div class="post-title-vertical">
+                [소설]<br>밤의 도시
+              </div>
+              <div class="post-image">
+                <img src="images\달러구트 소설.png" alt="소설 표지" class="post-thumbnail"/>
+              </div>
+              <div class="post-info">
+                <h3 class="post-title">밤의 도시</h3>
+                <p class="post-author"><strong>저자:</strong> 이소설</p>
+                <p class="post-genre"><strong>장르:</strong> 소설</p>
+                <p class="post-excerpt">소설 게시판 테스트...</p>
+                <button class="btn hover-effect">게시글 보기</button>
+              </div>
             </article>
           </section>
         </section>
@@ -133,11 +161,19 @@
           <h2>시 게시판</h2>
           <section class="post-list">
             <article class="post-card hover-effect">
-              <h3 class="post-title">[시] 봄의 노래</h3>
-              <p class="post-author"><strong>저자:</strong> 박시인</p>
-              <p class="post-genre"><strong>장르:</strong> 시</p>
-              <p class="post-excerpt">시 게시판 테스트...</p>
-              <button class="btn hover-effect">게시글 보기</button>
+              <div class="post-title-vertical">
+                [시]<br>봄의 노래
+              </div>
+              <div class="post-image">
+                <img src="images\나태주 시집.png" alt="시집 표지" class="post-thumbnail"/>
+              </div>
+              <div class="post-info">
+                <h3 class="post-title">봄의 노래</h3>
+                <p class="post-author"><strong>저자:</strong> 박시인</p>
+                <p class="post-genre"><strong>장르:</strong> 시</p>
+                <p class="post-excerpt">시 게시판 테스트...</p>
+                <button class="btn hover-effect">게시글 보기</button>
+              </div>
             </article>
           </section>
         </section>
@@ -147,11 +183,19 @@
           <h2>비문학 게시판</h2>
           <section class="post-list">
             <article class="post-card hover-effect">
-              <h3 class="post-title">[비문학] 흥미로운 과학 이야기</h3>
-              <p class="post-author"><strong>저자:</strong> 최논픽션</p>
-              <p class="post-genre"><strong>장르:</strong> 비문학</p>
-              <p class="post-excerpt">비문학 게시판 테스트...</p>
-              <button class="btn hover-effect">게시글 보기</button>
+              <div class="post-title-vertical">
+                [비문학]<br>흥미로운 과학 이야기
+              </div>
+              <div class="post-image">
+                <img src="images\공정하다는 착각 비문학.png" alt="비문학 표지" class="post-thumbnail"/>
+              </div>
+              <div class="post-info">
+                <h3 class="post-title">흥미로운 과학 이야기</h3>
+                <p class="post-author"><strong>저자:</strong> 최논픽션</p>
+                <p class="post-genre"><strong>장르:</strong> 비문학</p>
+                <p class="post-excerpt">비문학 게시판 테스트...</p>
+                <button class="btn hover-effect">게시글 보기</button>
+              </div>
             </article>
           </section>
         </section>
@@ -182,7 +226,7 @@
 
   <!-- 새로운 오른쪽 사이드바 -->
   <aside class="sidebar right-sidebar">
-    <!-- 검색 바 (이전 top-bar의 search-container 이동) -->
+    <!-- 검색 바 -->
     <div class="search-container">
       <input type="text" id="search-input" placeholder="게시글 검색..." />
       <button class="btn hover-effect" id="search-btn">검색</button>
