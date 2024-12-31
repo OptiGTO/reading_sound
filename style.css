@@ -1,21 +1,23 @@
 /****************************************************
  * 1. 전역 리셋 & 박스 사이징
  ****************************************************/
-* {
+ * {
   margin: 0;      /* 모든 요소의 마진 제거 */
   padding: 0;     /* 모든 요소의 패딩 제거 */
-  box-sizing: border-box;  /* 패딩과 테두리를 요소의 전체 크기에 포함 */
+  box-sizing: border-box;  /* 박스 사이징을 border-box로 지정하여 폭 계산을 단순화 */
 }
 
 /****************************************************
  * 2. 바디 & 기본 레이아웃
  ****************************************************/
 body {
-  display: flex;  /* 플렉스 컨테이너로 설정 */
-  min-height: 100vh;  /* 최소 높이를 뷰포트 높이로 설정 */
-  justify-content: center;  /* 가로축 중앙 정렬 */
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;  /* 기본 폰트 설정 */
-  background-color: #f7f5f0;  /* 배경색 설정 */
+  display: flex;  /* flex 컨테이너로 설정 */
+  min-height: 100vh;  /* 화면 높이를 최소 100%로 */
+  justify-content: center;  /* 수평 방향 가운데 정렬 */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;  
+  /* 기본 폰트 지정 */
+  background-color: #f7f5f0;  
+  /* 전체 배경색 지정(밝은 베이지 톤) */
 }
 
 /****************************************************
@@ -23,38 +25,73 @@ body {
  ****************************************************/
 .sidebar {
   width: 250px;   /* 사이드바 너비 */
-  background-color: #f2ebe0;  /* 배경색 설정 */
+  background-color: #f2ebe0;  
+  /* 사이드바 배경색(밝은 베이지 톤) */
   padding: 1rem;  /* 내부 여백 */
-  border-right: 2px solid #d8c9b7;  /* 오른쪽 테두리 */
-  display: flex;  /* 플렉스 컨테이너 */
-  flex-direction: column;  /* 세로 방향 정렬 */
-  justify-content: space-between;  /* 요소들 사이 공간 균등 분배 */
-  transition: width 0.3s ease;  /* 너비 변경 시 애니메이션 */
-  overflow-x: hidden;  /* 가로 스크롤 숨김 */
+  border-right: 2px solid #d8c9b7;  
+  /* 오른쪽에 테두리(경계) */
+  display: flex;  
+  /* 사이드바 내부를 flex 컨테이너로 */
+  flex-direction: column; 
+  /* 세로 정렬 */
+  justify-content: space-between; 
+  /* 내부 요소들을 위, 중간, 아래로 배분 */
+  transition: width 0.3s ease;  
+  /* 사이드바 너비가 변할 때 부드럽게 변환 */
+  overflow-x: hidden;  
+  /* 가로 스크롤 숨김 */
 }
 
 .sidebar.collapsed {
-  width: 60px;
+  /* 사이드바 축소 상태일 때 */
+  width: 60px;  /* 너비를 60px로 축소 */
 }
 
 .sidebar.collapsed .brand-title,
 .sidebar.collapsed .random-book-section,
 .sidebar.collapsed .login-container {
-  display: none;
+  /* 사이드바 축소 시 숨기는 요소들 */
+  display: none;  
 }
 
 .sidebar.collapsed .nav-menu .nav-link {
+  /* 축소 모드일 때의 메뉴 링크 스타일 */
   padding: 0.5rem;
   text-align: center;
 }
 
 .sidebar.collapsed .nav-menu .nav-link span {
+  /* 축소 모드에서는 텍스트 숨김 */
   display: none;
 }
 
 .sidebar.collapsed .nav-menu .nav-link i {
+  /* 아이콘만 남게 하므로 아이콘 크기 확대 */
   font-size: 1.5rem;
   margin: 0;
+}
+
+.sidebar-header {
+  text-align: center;                
+  /* 로고 등 중앙 정렬 */
+  padding: 0.5rem 0;                   
+  margin-bottom: 0.5rem;              
+}
+
+.brand-logo {
+  max-width: 100px;     
+  /* 로고 최대 너비 */
+  height: auto;         
+  display: block;       
+  margin: 0 auto;       
+  /* 가운데 정렬을 위해 auto 마진 */
+}
+
+/* 사이드바가 축소되었을 때의 로고 크기 조정 */
+.sidebar.collapsed .brand-logo {
+  max-width: 40px;      
+  /* 축소 상태에서 로고 크기 */
+  padding: 5px;         
 }
 
 .sidebar-header .brand-title {
@@ -65,7 +102,8 @@ body {
 }
 
 .nav-menu ul {
-  list-style-type: none;
+  list-style-type: none;  
+  /* 불릿 제거 */
 }
 
 .nav-menu .nav-link {
@@ -96,6 +134,7 @@ body {
 
 .login-container {
   margin-top: auto;
+  /* 사이드바 아래쪽에 배치 */
 }
 
 /****************************************************
@@ -132,7 +171,8 @@ body {
  * 5. 탑 바 & 버튼
  ****************************************************/
 .content {
-  flex: 1;
+  flex: 1;  
+  /* 남은 공간을 채움 */
   padding: 1rem 2rem;
   display: flex;
   flex-direction: column;
@@ -176,6 +216,7 @@ body {
 }
 
 .spinner {
+  /* 로딩 스피너에 사용될 CSS */
   width: 1em;
   height: 1em;
   border: 2px solid #ccc;
@@ -197,15 +238,18 @@ body {
  * 6. 포스트 리스트 & 카드 (REVISED)
  ****************************************************/
 .post-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;  
+  /* 2열 그리드 */
+  gap: 1.5rem;  
+  /* 카드들 간격 */
   justify-content: space-between;
 }
 
 .post-card {
-  width: 45%;
-  height: 500px;
+  width: 100%;
+  height: auto;
+  min-height: 200px;
   display: flex;
   background-color: #fcfaf7;
   border: 1px solid #ece7df;
@@ -216,6 +260,7 @@ body {
 }
 
 .post-title-vertical {
+  /* 왼쪽 세로 텍스트 영역 */
   writing-mode: vertical-rl;
   text-orientation: mixed;
   font-size: 1.5rem;
@@ -227,20 +272,26 @@ body {
   align-items: center;
   justify-content: center;
   border-right: 1px solid #d8c9b7;
+  position: relative;
+  z-index: 1;
 }
 
 .post-image {
-  flex-basis: 60%;
+  flex: 0 0 auto;
   position: relative;
   left: -30px;
   margin-right: -30px;
-  height: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
 }
 
 .post-image .post-thumbnail {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
   display: block;
 }
 
@@ -324,11 +375,13 @@ body {
  * 8. 홈 버킷 (섹션, 서브섹션)
  ****************************************************/
 .section {
-  display: none;
+  display: none; 
+  /* 기본적으로 섹션은 숨김 */
 }
 
 .section.active {
-  display: block;
+  display: block; 
+  /* 선택된 섹션만 표시 */
 }
 
 .sub-section {
@@ -398,6 +451,7 @@ body {
  * 10. 반응성
  ****************************************************/
 @media (max-width: 768px) {
+  /* 화면 너비가 768px 이하인 경우 */
   body {
     flex-direction: column;
     align-items: center;
@@ -450,6 +504,10 @@ body {
     width: 100%;
   }
 
+  .post-list {
+    grid-template-columns: 1fr;
+  }
+
   .post-info {
     border-left: none;
     border-top: 1px solid #d8c9b7;
@@ -457,6 +515,7 @@ body {
   }
 }
 
+/* 아이콘 옆에 공간 확보 */
 .nav-menu .nav-link i {
   margin-right: 10px;
   width: 20px;

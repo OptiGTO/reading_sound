@@ -1,13 +1,24 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
+<!-- HTML5 문서 타입을 선언합니다. -->
+
 <html lang="ko">
+<!-- 문서의 주 언어를 한국어(ko)로 설정합니다. -->
+
 <head>
+  <!-- head 영역: 메타데이터, CSS, 폰트 등의 정보를 정의합니다. -->
   <meta charset="UTF-8" />
+  <!-- 문서 인코딩을 UTF-8로 설정합니다. (한글, 이모지 등 다양하게 표현 가능) -->
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- 반응형 웹을 위해 viewport 설정. 모바일에서 디스플레이 폭을 기기 너비에 맞춥니다. -->
+
   <title>읽는소리 - 홈</title>
+  <!-- 브라우저 탭에 표시될 문서의 제목. -->
 
   <!-- CSS 연결 -->
   <link rel="stylesheet" href="style.css"/>
-  
+  <!-- 외부 CSS 파일(style.css)을 연결합니다. -->
+
   <!-- (Optional) Font Awesome for icons -->
   <link
     rel="stylesheet"
@@ -16,61 +27,93 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
+  <!-- Font Awesome 아이콘 라이브러리(CDN) 연결. 아이콘 사용 가능. -->
 </head>
+
 <body>
+  <!-- body 영역: 실제 화면에 나타나는 컨텐츠를 포함합니다. -->
+
   <!-- 왼쪽 사이드바 (기존) -->
   <aside class="sidebar">
+    <!-- aside: 사이드바용 태그. -->
+
     <!-- 로고 또는 타이틀 -->
     <div class="sidebar-header">
-      <h1 class="brand-title">읽는소리</h1>
+      <!-- 사이드바 상단 영역 (로고, 브랜드명 등을 표시). -->
+      <img src="images/logo.png" alt="읽는소리" class="brand-logo">
+      <!-- 브랜드 로고 이미지. -->
     </div>
     
     <!-- 내비게이션 메뉴 -->
     <nav class="nav-menu">
+      <!-- 내비게이션 링크 목록. -->
       <ul>
+        <!-- ul: 리스트 태그. -->
+
         <li>
+          <!-- 첫 번째 메뉴 항목 -->
           <a href="#" class="nav-link active" data-section="home-section">
+            <!-- data-section 속성: 자바스크립트에서 어떤 섹션을 열지 식별하는 용도. -->
             <i class="fas fa-home"></i>
+            <!-- Font Awesome 아이콘 (집 모양). -->
             <span>홈</span>
           </a>
         </li>
+
         <li>
+          <!-- 두 번째 메뉴 항목 -->
           <a href="#" class="nav-link" data-section="group-section">
             <i class="fas fa-users"></i>
+            <!-- 사람(모임) 관련 아이콘. -->
             <span>모임</span>
           </a>
         </li>
+
         <li>
+          <!-- 세 번째 메뉴 항목 -->
           <a href="#" class="nav-link" data-section="recommended-section">
             <i class="fas fa-star"></i>
+            <!-- 별 아이콘. -->
             <span>추천 도서</span>
           </a>
         </li>
+
         <li>
+          <!-- 네 번째 메뉴 항목 -->
           <a href="#" class="nav-link" data-section="notice-section">
             <i class="fas fa-bell"></i>
+            <!-- 종 모양(알림) 아이콘. -->
             <span>공지사항</span>
           </a>
         </li>
+
         <li>
+          <!-- 다섯 번째 메뉴 항목 -->
           <a href="#" class="nav-link" data-section="settings-section">
             <i class="fas fa-cog"></i>
+            <!-- 톱니바퀴 아이콘(설정). -->
             <span>설정</span>
           </a>
         </li>
+
       </ul>
     </nav>
     
     <!-- 무작위 책 추천 섹션 -->
     <div class="random-book-section">
       <h2>무작위 책</h2>
+      <!-- 무작위 책 추천 섹션의 제목. -->
       <div id="random-book-container"></div>
+      <!-- 무작위 책 정보를 표시할 컨테이너(div). -->
       <button class="btn hover-effect" id="random-book-btn">놀라게 해줘!</button>
+      <!-- 버튼 클릭 시 무작위 책 추천이 나타납니다. -->
     </div>
 
     <!-- 로그인 / 회원가입 버튼 -->
     <div class="login-container">
+      <!-- 로그인 / 회원가입 전용 래퍼 -->
       <a href="login.html" class="btn hover-effect nav-link" id="login-btn">로그인 / 회원가입</a>
+      <!-- 로그인 페이지로 이동하는 버튼. -->
     </div>
   </aside>
   
@@ -78,17 +121,21 @@
   <main class="content">
     <!-- 상단 바 (유저 정보 등) -->
     <header class="top-bar">
+      <!-- 상단 바: 유저 닉네임 및 기타 정보를 표시. -->
       <div class="user-info" id="user-info">
+        <!-- 현재 로그인 상태에서 닉네임 표시. -->
         <span id="user-nickname">손님</span>
+        <!-- 초기값은 "손님" -->
       </div>
     </header>
 
-    <!-- ===== BUTTONS for Sub-Sections of the Home Bulletin Board ===== -->
-    
-
-    <!-- 홈 섹션 (기본 표시) -->
+    <!-- 홈 섹션 내부 게시판 전환용 버튼들 -->
     <section class="section active" id="home-section">
+      <!-- 홈 섹션(첫 번째 기본 표시). -->
+
+      <!-- 홈 섹션 상단의 게시판 선택 버튼 -->
       <div class="home-bulletin-nav">
+        <!-- 각 버튼은 data-subsection 속성을 활용해 어떤 게시판을 보여줄지 제어. -->
         <button class="btn sub-link active" data-subsection="full-board">
           <i class="fas fa-th-large"></i> 전체
         </button>
@@ -107,24 +154,84 @@
       </div>
       
       <div id="board-container">
+        <!-- 실제 게시판들이 담기는 영역. -->
+
         <!-- 전체 게시판 -->
         <section class="sub-section active" id="full-board">
           <h2>전체 게시판</h2>
           <section class="post-list">
+            <!-- 여러 게시글을 담는 리스트 영역. -->
+            
             <article class="post-card hover-effect">
-              <!-- 1) Vertical title on the left -->
+              <!-- 1) 왼쪽에 세로로 쓰인 제목(책 제목) -->
               <div class="post-title-vertical">
                 <br>달러구트 꿈 백화점
               </div>
-              <!-- 2) Image shifted slightly left -->
+              <!-- 2) 이미지를 왼쪽으로 살짝 이동시킴 -->
               <div class="post-image">
                 <img src="./images/달러구트 소설.png" alt="책 표지" class="post-thumbnail" />
               </div>
-              <!-- 3) Post info on the right with vertical line -->
+              <!-- 3) 책 정보와 게시글 정보를 표시 -->
               <div class="post-info">
                 <h3 class="post-title"><꿈을 도매가로 팝니다></h3>
-                <p class="post-stats">
-                </p>
+                <p class="post-stats"></p>
+                <p class="post-excerpt">이 책에 대한 사용자의 의견을 간략히 소개합니다...</p>
+              </div>
+            </article>
+
+            <!-- 아래와 같이 동일한 구조의 글 카드가 반복됩니다. -->
+            <article class="post-card hover-effect">
+              <div class="post-title-vertical">
+                <br>달러구트 꿈 백화점
+              </div>
+              <div class="post-image">
+                <img src="./images/달러구트 소설.png" alt="책 표지" class="post-thumbnail" />
+              </div>
+              <div class="post-info">
+                <h3 class="post-title"><꿈을 도매가로 팝니다></h3>
+                <p class="post-stats"></p>
+                <p class="post-excerpt">이 책에 대한 사용자의 의견을 간략히 소개합니다...</p>
+              </div>
+            </article>
+
+            <article class="post-card hover-effect">
+              <div class="post-title-vertical">
+                <br>달러구트 꿈 백화점
+              </div>
+              <div class="post-image">
+                <img src="./images/달러구트 소설.png" alt="책 표지" class="post-thumbnail" />
+              </div>
+              <div class="post-info">
+                <h3 class="post-title"><꿈을 도매가로 팝니다></h3>
+                <p class="post-stats"></p>
+                <p class="post-excerpt">이 책에 대한 사용자의 의견을 간략히 소개합니다...</p>
+              </div>
+            </article>
+
+            <article class="post-card hover-effect">
+              <div class="post-title-vertical">
+                <br>달러구트 꿈 백화점
+              </div>
+              <div class="post-image">
+                <img src="./images/달러구트 소설.png" alt="책 표지" class="post-thumbnail" />
+              </div>
+              <div class="post-info">
+                <h3 class="post-title"><꿈을 도매가로 팝니다></h3>
+                <p class="post-stats"></p>
+                <p class="post-excerpt">이 책에 대한 사용자의 의견을 간략히 소개합니다...</p>
+              </div>
+            </article>
+
+            <article class="post-card hover-effect">
+              <div class="post-title-vertical">
+                <br>달러구트 꿈 백화점
+              </div>
+              <div class="post-image">
+                <img src="./images/달러구트 소설.png" alt="책 표지" class="post-thumbnail" />
+              </div>
+              <div class="post-info">
+                <h3 class="post-title"><꿈을 도매가로 팝니다></h3>
+                <p class="post-stats"></p>
                 <p class="post-excerpt">이 책에 대한 사용자의 의견을 간략히 소개합니다...</p>
               </div>
             </article>
@@ -218,26 +325,31 @@
             </article>
           </section>
         </section>
-      </div>
-    </section>
+
+      </div> <!-- #board-container 끝 -->
+    </section> <!-- #home-section 끝 -->
 
     <!-- 다른 섹션들 (모임, 추천 도서, 공지사항, 설정) -->
     <section class="section" id="group-section">
+      <!-- 두 번째 메인 섹션 (모임) -->
       <h2>모임</h2>
       <p>독서 모임 및 관련 활동을 소개하는 공간입니다.</p>
     </section>
 
     <section class="section" id="recommended-section">
+      <!-- 세 번째 메인 섹션 (추천 도서) -->
       <h2>추천 도서</h2>
       <p>관리자 혹은 회원들이 추천하는 도서 목록을 여기서 볼 수 있어요.</p>
     </section>
 
     <section class="section" id="notice-section">
+      <!-- 네 번째 메인 섹션 (공지사항) -->
       <h2>공지사항</h2>
       <p>커뮤니티나 모임에 대한 중요한 소식을 전합니다.</p>
     </section>
 
     <section class="section" id="settings-section">
+      <!-- 다섯 번째 메인 섹션 (설정) -->
       <h2>설정</h2>
       <p>계정, 알림, 테마 등 다양한 설정을 변경할 수 있는 페이지입니다.</p>
     </section>
@@ -245,6 +357,8 @@
 
   <!-- 새로운 오른쪽 사이드바 -->
   <aside class="sidebar right-sidebar">
+    <!-- 오른쪽 사이드바. -->
+
     <!-- 검색 바 -->
     <div class="search-container">
       <input type="text" id="search-input" placeholder="게시글 검색..." />
@@ -265,9 +379,11 @@
   <!-- 플로팅 글쓰기 버튼 -->
   <div class="floating-btn-container">
     <a href="post.html" class="btn fab hover-effect" id="post-btn">+</a>
+    <!-- 글쓰기 페이지로 이동하는 플로팅 액션 버튼. -->
   </div>
 
   <!-- JavaScript -->
   <script src="script.js"></script>
+  <!-- 별도의 JS 파일(script.js)을 연결하여 인터랙션 등을 처리. -->
 </body>
 </html>
