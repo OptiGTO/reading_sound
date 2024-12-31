@@ -1,36 +1,36 @@
 /****************************************************
- * 1. Global Reset & Box-Sizing
+ * 1. 전역 리셋 & 박스 사이징
  ****************************************************/
- * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+* {
+  margin: 0;      /* 모든 요소의 마진 제거 */
+  padding: 0;     /* 모든 요소의 패딩 제거 */
+  box-sizing: border-box;  /* 패딩과 테두리를 요소의 전체 크기에 포함 */
 }
 
 /****************************************************
- * 2. Body & Basic Layout
+ * 2. 바디 & 기본 레이아웃
  ****************************************************/
 body {
-  display: flex;
-  min-height: 100vh;
-  justify-content: center;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #f7f5f0;
+  display: flex;  /* 플렉스 컨테이너로 설정 */
+  min-height: 100vh;  /* 최소 높이를 뷰포트 높이로 설정 */
+  justify-content: center;  /* 가로축 중앙 정렬 */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;  /* 기본 폰트 설정 */
+  background-color: #f7f5f0;  /* 배경색 설정 */
 }
 
 /****************************************************
- * 3. Left Sidebar
+ * 3. 왼쪽 사이드바
  ****************************************************/
 .sidebar {
-  width: 250px;                
-  background-color: #f2ebe0;  
-  padding: 1rem;
-  border-right: 2px solid #d8c9b7;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: width 0.3s ease;
-  overflow-x: hidden;
+  width: 250px;   /* 사이드바 너비 */
+  background-color: #f2ebe0;  /* 배경색 설정 */
+  padding: 1rem;  /* 내부 여백 */
+  border-right: 2px solid #d8c9b7;  /* 오른쪽 테두리 */
+  display: flex;  /* 플렉스 컨테이너 */
+  flex-direction: column;  /* 세로 방향 정렬 */
+  justify-content: space-between;  /* 요소들 사이 공간 균등 분배 */
+  transition: width 0.3s ease;  /* 너비 변경 시 애니메이션 */
+  overflow-x: hidden;  /* 가로 스크롤 숨김 */
 }
 
 .sidebar.collapsed {
@@ -58,7 +58,7 @@ body {
 }
 
 .sidebar-header .brand-title {
-  font-family: Georgia, "Times New Roman", serif; /* Serif accent */
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.5rem;
   color: #5f4b32;
   margin-bottom: 1rem;
@@ -84,7 +84,7 @@ body {
 .random-book-section {
   margin: 2rem 0;
   padding: 1rem;
-  background-color: #fcfaf7; 
+  background-color: #fcfaf7;
   border: 1px solid #ece7df;
   border-radius: 5px;
 }
@@ -95,19 +95,19 @@ body {
 }
 
 .login-container {
-  margin-top: auto; /* Push login button to bottom */
+  margin-top: auto;
 }
 
 /****************************************************
- * 4. Right Sidebar
+ * 4. 오른쪽 사이드바
  ****************************************************/
 .sidebar.right-sidebar {
-  border-right: none;       
-  border-left: 2px solid #d8c9b7; 
+  border-right: none;
+  border-left: 2px solid #d8c9b7;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; 
-  width: 250px; 
+  justify-content: flex-start;
+  width: 250px;
 }
 
 .notice-display {
@@ -129,7 +129,7 @@ body {
 }
 
 /****************************************************
- * 5. Top Bar & Buttons
+ * 5. 탑 바 & 버튼
  ****************************************************/
 .content {
   flex: 1;
@@ -141,7 +141,7 @@ body {
 
 .top-bar {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
@@ -160,7 +160,7 @@ body {
   cursor: pointer;
   font-size: 1rem;
   transition: background-color 0.3s ease;
-  position: relative; /* for spinner positioning */
+  position: relative;
 }
 
 .btn:hover {
@@ -194,9 +194,8 @@ body {
 }
 
 /****************************************************
- * 6. Post-list & Cards (REVISED)
+ * 6. 포스트 리스트 & 카드 (REVISED)
  ****************************************************/
-/* Two cards per row, each half the main content width */
 .post-list {
   display: flex;
   flex-wrap: wrap;
@@ -204,10 +203,9 @@ body {
   justify-content: space-between;
 }
 
-/* Post card container */
 .post-card {
-  width: 45%;  /* ~half of the container width */
-  height: 600px; /* 고정 높이 추가 */
+  width: 45%;
+  height: 500px;
   display: flex;
   background-color: #fcfaf7;
   border: 1px solid #ece7df;
@@ -217,9 +215,8 @@ body {
   position: relative;
 }
 
-/* Vertical title block on the left side */
 .post-title-vertical {
-  writing-mode: vertical-rl; /* top-to-bottom by default */
+  writing-mode: vertical-rl;
   text-orientation: mixed;
   font-size: 1.5rem;
   font-weight: bold;
@@ -229,28 +226,24 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-right: 1px solid #d8c9b7; /* vertical separator */
-  /* If you want bottom->top, add: transform: rotate(180deg); */
+  border-right: 1px solid #d8c9b7;
 }
 
-/* Slight offset to the left */
 .post-image {
-  flex-basis: 60%; 
+  flex-basis: 60%;
   position: relative;
   left: -30px;
-  margin-right: -30px; 
-  height: 100%; /* 이미지 컨테이너 높이 설정 */
+  margin-right: -30px;
+  height: 100%;
 }
 
-/* Actual image styling */
 .post-image .post-thumbnail {
   width: 100%;
-  height: 100%; /* 이미지가 컨테이너를 채우도록 설정 */
+  height: 100%;
   object-fit: cover;
   display: block;
 }
 
-/* Right side info with vertical line on the left */
 .post-info {
   flex: 1;
   padding: 1rem 1rem 1rem 2rem;
@@ -274,69 +267,68 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Elevated hover effect on entire card */
 .post-card.hover-effect:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0,0,0,0.15);
 }
 
 /****************************************************
- * 7. Search Container & Notices
+ * 7. 검색 컨테이너 & 공지
  ****************************************************/
 .search-container {
-  display: flex; 
-  gap: 10px; 
-  align-items: center; 
-  justify-content: center; 
-  margin-bottom: 20px; 
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 #search-input {
-  width: 150px; 
-  height: 40px; 
-  font-size: 16px; 
-  padding: 5px 10px; 
-  border-radius: 4px; 
-  border: 1px solid #ccc; 
+  width: 150px;
+  height: 40px;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
 #search-input:focus {
-  border-color: #9a8469; 
-  outline: none; 
-  box-shadow: 0 0 5px rgba(154,132,105,0.5); 
+  border-color: #9a8469;
+  outline: none;
+  box-shadow: 0 0 5px rgba(154,132,105,0.5);
 }
 
 #search-input::placeholder {
-  color: #999999; 
-  font-style: italic; 
+  color: #999999;
+  font-style: italic;
 }
 
 #search-btn {
-  width: 100px; 
-  height: 40px; 
-  font-size: 16px; 
-  padding: 5px 10px; 
-  border-radius: 4px; 
-  border: none; 
-  background-color: #9a8469; 
-  color: #ffffff; 
-  cursor: pointer; 
-  transition: background-color 0.3s ease; 
+  width: 100px;
+  height: 40px;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  background-color: #9a8469;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 #search-btn:hover {
-  background-color: #7d6658; 
+  background-color: #7d6658;
 }
 
 /****************************************************
- * 8. Home Bulletin (Sections, Sub-sections)
+ * 8. 홈 버킷 (섹션, 서브섹션)
  ****************************************************/
 .section {
-  display: none; 
+  display: none;
 }
 
 .section.active {
-  display: block; 
+  display: block;
 }
 
 .sub-section {
@@ -356,14 +348,14 @@ body {
 }
 
 .home-bulletin-nav .sub-link.active {
-  background-color: #9a8469; 
-  color: #ffffff; 
-  border: none; 
+  background-color: #9a8469;
+  color: #ffffff;
+  border: none;
 }
 
 .home-bulletin-nav .sub-link {
-  background-color: #f2ebe0; 
-  color: #5f4b32; 
+  background-color: #f2ebe0;
+  color: #5f4b32;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
@@ -376,13 +368,13 @@ body {
 }
 
 /****************************************************
- * 9. Floating Action Button Container
+ * 9. 플로팅 액션 버튼 컨테이너
  ****************************************************/
 .floating-btn-container {
   position: fixed;
-  bottom: 2rem;  
-  right: 2rem;   
-  z-index: 10;  
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 10;
 }
 
 .btn.fab {
@@ -394,7 +386,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0; 
+  padding: 0;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
@@ -403,7 +395,7 @@ body {
 }
 
 /****************************************************
- * 10. Responsiveness
+ * 10. 반응성
  ****************************************************/
 @media (max-width: 768px) {
   body {
@@ -428,9 +420,9 @@ body {
     border-left: none;
   }
 
-  .random-book-section, 
+  .random-book-section,
   .login-container {
-    display: none; 
+    display: none;
   }
 
   .content {
@@ -439,11 +431,10 @@ body {
   }
 
   .post-card {
-    width: 100%;   /* single column on mobile */
-    flex-direction: column; 
+    width: 100%;
+    flex-direction: column;
   }
 
-  /* Switch the vertical text to normal text in mobile if desired */
   .post-title-vertical {
     writing-mode: horizontal-tb;
     border-right: none;
@@ -466,7 +457,6 @@ body {
   }
 }
 
-/* 아이콘 스타일 */
 .nav-menu .nav-link i {
   margin-right: 10px;
   width: 20px;
