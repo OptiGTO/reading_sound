@@ -205,3 +205,33 @@ async function loadPosts(boardId) {
     postsContainer.insertAdjacentHTML('beforeend', postCardHTML);
   }
 }
+
+// 사이드바 축소 기능 추가
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.querySelector('.sidebar');
+  let isCollapsed = false;
+
+  // 윈도우 크기 변경 감지
+  window.addEventListener('resize', () => {
+    if (window.innerWidth <= 1200 && !isCollapsed) {
+      sidebar.classList.add('collapsed');
+      isCollapsed = true;
+    } else if (window.innerWidth > 1200 && isCollapsed) {
+      sidebar.classList.remove('collapsed');
+      isCollapsed = false;
+    }
+  });
+
+  // 사이드바 호버 효과
+  sidebar.addEventListener('mouseenter', () => {
+    if (isCollapsed) {
+      sidebar.classList.remove('collapsed');
+    }
+  });
+
+  sidebar.addEventListener('mouseleave', () => {
+    if (isCollapsed) {
+      sidebar.classList.add('collapsed');
+    }
+  });
+});

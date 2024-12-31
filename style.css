@@ -29,6 +29,32 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebar.collapsed .brand-title,
+.sidebar.collapsed .random-book-section,
+.sidebar.collapsed .login-container {
+  display: none;
+}
+
+.sidebar.collapsed .nav-menu .nav-link {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.sidebar.collapsed .nav-menu .nav-link span {
+  display: none;
+}
+
+.sidebar.collapsed .nav-menu .nav-link i {
+  font-size: 1.5rem;
+  margin: 0;
 }
 
 .sidebar-header .brand-title {
@@ -180,7 +206,8 @@ body {
 
 /* Post card container */
 .post-card {
-  width: 48%;  /* ~half of the container width */
+  width: 45%;  /* ~half of the container width */
+  height: 600px; /* 고정 높이 추가 */
   display: flex;
   background-color: #fcfaf7;
   border: 1px solid #ece7df;
@@ -194,7 +221,7 @@ body {
 .post-title-vertical {
   writing-mode: vertical-rl; /* top-to-bottom by default */
   text-orientation: mixed;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #5f4b32;
   background-color: #f2ebe0;
@@ -208,16 +235,17 @@ body {
 
 /* Slight offset to the left */
 .post-image {
-  flex-basis: 40%; 
+  flex-basis: 60%; 
   position: relative;
   left: -30px;
   margin-right: -30px; 
+  height: 100%; /* 이미지 컨테이너 높이 설정 */
 }
 
 /* Actual image styling */
 .post-image .post-thumbnail {
   width: 100%;
-  height: auto;
+  height: 100%; /* 이미지가 컨테이너를 채우도록 설정 */
   object-fit: cover;
   display: block;
 }
@@ -436,4 +464,11 @@ body {
     border-top: 1px solid #d8c9b7;
     padding-left: 1rem;
   }
+}
+
+/* 아이콘 스타일 */
+.nav-menu .nav-link i {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
 }
