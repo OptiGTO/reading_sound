@@ -110,7 +110,71 @@
         For now, here's a simple placeholder.
       -->
       <h2>홈 화면</h2>
-      <p>여기에 홈 화면 콘텐츠를 자유롭게 넣으세요.</p>
+      <div class="post-bulletin-nav">
+        <button class="btn hover-effect sub-link active" data-subsection="full-board">
+          <i class="fas fa-th-large"></i> 전체
+        </button>
+        <button class="btn hover-effect sub-link" data-subsection="essay-board">
+          <i class="fas fa-pencil-alt"></i> 에세이
+        </button>
+        <button class="btn hover-effect sub-link" data-subsection="novel-board">
+          <i class="fas fa-book"></i> 소설
+        </button>
+        <button class="btn hover-effect sub-link" data-subsection="poetry-board">
+          <i class="fas fa-feather-alt"></i> 시
+        </button>
+        <button class="btn hover-effect sub-link" data-subsection="nonlit-board">
+          <i class="fas fa-newspaper"></i> 비문학
+        </button>
+      </div>
+      
+      <div id="post-board-container">
+        <!-- 1) 전체 게시판 -->
+        <section class="sub-section active" id="full-board">
+          <h3>전체 게시판</h3>
+          <section class="post-list">
+            
+          </section>
+        </section>
+
+        <!-- 2) 에세이 게시판 -->
+        <section class="sub-section" id="essay-board">
+          <h3>에세이 게시판</h3>
+          <section class="post-list">
+            
+            <!-- More articles... -->
+          </section>
+        </section>
+
+        <!-- 3) 소설 게시판 -->
+        <section class="sub-section" id="novel-board">
+          <h3>소설 게시판</h3>
+          <section class="post-list">
+            
+            <!-- More articles... -->
+          </section>
+        </section>
+
+        <!-- 4) 시 게시판 -->
+        <section class="sub-section" id="poetry-board">
+          <h3>시 게시판</h3>
+          <section class="post-list">
+            
+            <!-- More articles... -->
+          </section>
+        </section>
+
+        <!-- 5) 비문학 게시판 -->
+        <section class="sub-section" id="nonlit-board">
+          <h3>비문학 게시판</h3>
+          <section class="post-list">
+            
+            <!-- More articles... -->
+          </section>
+        </section>
+      </div> <!-- #post-board-container 끝 -->
+
+
     </section>
 
     <!-- =========================
