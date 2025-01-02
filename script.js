@@ -254,3 +254,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// 메인 네비게이션 링크 클릭 이벤트 처리
+document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    // 모든 섹션에서 active 클래스 제거
+    document.querySelectorAll('.section').forEach(section => {
+      section.classList.remove('active');
+    });
+    
+    // 클릭된 링크에 해당하는 섹션 활성화
+    const targetId = link.dataset.section;
+    const targetSection = document.getElementById(targetId);
+    targetSection.classList.add('active');
+    
+    // 섹션이 변경될 때마다 해당 섹션의 첫 번째 서브섹션을 active로 설정
+    if (targetId === 'home-section') {
+      // 홈 섹션의 모든 서브섹션 비활성화
+      targetSection.querySelectorAll('.sub-section').forEach(sub => {
+        sub.classList.remove('active');
+      });
+      // 홈 섹션의 첫 번째 서브섹션 활성화
+      targetSection.querySelector('#home-full-board').classList.add('active');
+      
+      // 홈 섹션의 모든 버튼에서 active 제거
+      targetSection.querySelectorAll('.sub-link').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      // 첫 번째 버튼 활성화
+      targetSection.querySelector('.sub-link[data-subsection="home-full-board"]').classList.add('active');
+    }
+  });
+});
+
+// 서브섹션 버튼 클릭 이벤트 처리
+document.querySelectorAll('.sub-link').forEach(button => {
+  button.addEventListener('click', () => {
+    const section = button.closest('.section'); // 현재 섹션 찾기
+    
+    // 현재 섹션 내의 모든 서브섹션 버튼에서 active 제거
+    section.querySelectorAll('.sub-link').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    // 클릭된 버튼 활성화
+    button.classList.add('active');
+    
+    // 모든 서브섹션 숨기기
+    section.querySelectorAll('.sub-section').forEach(sub => {
+      sub.classList.remove('active');
+    });
+    
+    // 선택된 서브섹션 표시
+    const targetId = button.dataset.subsection;
+    section.querySelector(`#${targetId}`).classList.add('active');
+  });
+});
