@@ -272,22 +272,34 @@ document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
     
     // 섹션이 변경될 때마다 해당 섹션의 첫 번째 서브섹션을 active로 설정
     if (targetId === 'home-section') {
-      // 홈 섹션의 모든 서브섹션 비활성화
-      targetSection.querySelectorAll('.sub-section').forEach(sub => {
-        sub.classList.remove('active');
-      });
-      // 홈 섹션의 첫 번째 서브섹션 활성화
-      targetSection.querySelector('#home-full-board').classList.add('active');
-      
-      // 홈 섹션의 모든 버튼에서 active 제거
-      targetSection.querySelectorAll('.sub-link').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      // 첫 번째 버튼 활성화
-      targetSection.querySelector('.sub-link[data-subsection="home-full-board"]').classList.add('active');
+      // 홈 섹션 초기화
+      initializeSection(targetSection, 'home-full-board');
+    } 
+    else if (targetId === 'post-section') {
+      // 게시글 섹션 초기화
+      initializeSection(targetSection, 'post-full-board');
     }
   });
 });
+
+// 섹션 초기화를 위한 헬퍼 함수
+function initializeSection(section, defaultSubsectionId) {
+  // 모든 서브섹션 비활성화
+  section.querySelectorAll('.sub-section').forEach(sub => {
+    sub.classList.remove('active');
+  });
+  
+  // 기본 서브섹션 활성화
+  section.querySelector(`#${defaultSubsectionId}`).classList.add('active');
+  
+  // 모든 버튼에서 active 제거
+  section.querySelectorAll('.sub-link').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // 첫 번째 버튼 활성화
+  section.querySelector(`.sub-link[data-subsection="${defaultSubsectionId}"]`).classList.add('active');
+}
 
 // 서브섹션 버튼 클릭 이벤트 처리
 document.querySelectorAll('.sub-link').forEach(button => {
