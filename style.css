@@ -446,7 +446,7 @@
   }
   
   /* Navigation container for the home bulletin boards (tabs). */
-  .home-bulletin-nav {
+  .post-bulletin-nav {
     display: flex;
     justify-content: flex-start;  /* Aligns buttons to the left */
     align-items: center;
@@ -455,14 +455,14 @@
   }
   
   /* Active sub-link styling (e.g., highlight the selected tab). */
-  .home-bulletin-nav .sub-link.active {
+  .post-bulletin-nav .sub-link.active {
     background-color: #9a8469;    /* Brown background for the active tab */
     color: #ffffff;               /* White text for contrast */
     border: none;                 /* Removes any default border */
   }
   
   /* Default style for sub-link tabs. */
-  .home-bulletin-nav .sub-link {
+  .post-bulletin-nav .sub-link {
     background-color: #f2ebe0;    /* Light beige background */
     color: #5f4b32;               /* Brown text */
     border: none;                 /* No border */
@@ -474,7 +474,7 @@
   }
   
   /* Hover effect for sub-link tabs. */
-  .home-bulletin-nav .sub-link:hover {
+  .post-bulletin-nav .sub-link:hover {
     background-color: #d8c9b7;    /* Slightly darker beige on hover */
   }
   
