@@ -145,6 +145,13 @@
   .login-container {
     margin-top: auto;             /* Pushes it to the bottom of the sidebar */
   }
+
+
+  .nav-menu .nav-link i {
+    margin-right: 10px;           /* Gap between the icon and the text */
+    width: 20px;                  /* Consistent icon width to align text */
+    text-align: center;           /* Center the icon in its space */
+  }
   
   
   /****************************************************
@@ -562,11 +569,77 @@
     /* Grows a bit and shifts up slightly */
   }
   
-  
   /****************************************************
-   * 10. 반응성
+   * 10. 홈 그리드 컨테이너
+   ****************************************************/
+ /* 홈 섹션 그리드 레이아웃 */
+ .home-grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);  /* 4열 그리드 */
+  gap: 20px;                              /* 그리드 아이템 간격 */
+  padding: 20px;                          /* 컨테이너 패딩 */
+}
+
+/* 그리드 아이템 스타일 */
+.home-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+/* 그리드 아이템 호버 효과 */
+.home-grid-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* 이미지 스타일 */
+.grid-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* 그리드 정보 스타일 */
+.grid-info {
+  width: 100%;
+}
+
+.grid-info h4 {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: #5f4b32;
+}
+
+.grid-info p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+
+
+  /****************************************************
+   * 11. 반응성
    ****************************************************/
   /* Responsive adjustments for screens up to 768px wide. */
+
+  @media (max-width: 1200px) {
+    .home-grid-container {
+      grid-template-columns: repeat(3, 1fr);  /* 3열로 변경 */
+    }
+  }
+
+
+
+
   @media (max-width: 768px) {
     /* Mobile/Tablet layout changes. */
   
@@ -642,12 +715,22 @@
       /* Horizontal divider between image/title and info */
       padding-left: 1rem;         /* Less left padding needed */
     }
+
+    .home-grid-container {
+      grid-template-columns: repeat(2, 1fr);  /* 2열로 변경 */
+    }
+
   }
   
   /* Extra space for icons in the nav links. */
-  .nav-menu .nav-link i {
-    margin-right: 10px;           /* Gap between the icon and the text */
-    width: 20px;                  /* Consistent icon width to align text */
-    text-align: center;           /* Center the icon in its space */
+
+  
+  
+
+  
+  @media (max-width: 480px) {
+    .home-grid-container {
+      grid-template-columns: 1fr;             /* 1열로 변경 */
+    }
   }
   
