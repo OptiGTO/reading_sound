@@ -75,14 +75,12 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',        # PostgreSQL 엔진 사용
-        'NAME': 'myproject',                             # 데이터베이스 이름
-        'USER': 'postgres',                              # 데이터베이스 사용자
-        'PASSWORD': 'password',                          # 데이터베이스 비밀번호  
-        'HOST': 'localhost',                             # 데이터베이스 호스트
-        'PORT': '5432',                                  # PostgreSQL 기본 포트
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
 
 
 # Password validation
@@ -119,7 +117,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
