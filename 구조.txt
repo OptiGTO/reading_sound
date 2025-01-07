@@ -1,0 +1,28 @@
+server/
+├─ myproject/
+│  ├─ settings.py
+│  ├─ urls.py
+│  ├─ wsgi.py
+│  └─ ...
+├─ community/
+│  ├─ migrations/
+│  ├─ templates/
+│  │  └─ community/
+│  │     ├─ index.html
+│  │     ├─ base.html        <-- optional base template for inheritance
+│  │     └─ ...other templates...
+│  ├─ static/
+│  │  └─ community/
+│  │     ├─ css/
+│  │     │  └─ style.css
+│  │     ├─ js/
+│  │     │  └─ script.js
+│  │     └─ images/
+│  │        ├─ logo.png
+│  │        └─ ...other images...
+│  ├─ models.py
+│  ├─ views.py
+│  ├─ urls.py                <-- for app-specific URLs
+│  ├─ admin.py
+│  └─ ...
+└─ manage.py

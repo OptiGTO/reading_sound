@@ -42,11 +42,29 @@ if (randomBookBtn) {
 const searchBtn = document.getElementById("search-btn");
 const searchInput = document.getElementById("search-input");
 
-function searchPosts() {
-  // 검색 로직(기본 예시)
-  const query = searchInput.value.toLowerCase();
-  console.log("Searching for posts with query:", query);
-  // 실제로 게시글 필터링 로직을 넣을 수 있음
+// CSRF 토큰 설정 추가                                                    // Django CSRF 보호를 위한 설정
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+// fetch 요청에 사용할 기본 헤더 설정
+const fetchHeaders = {
+    'X-CSRFToken': csrftoken,
+    'Content-Type': 'application/json',
+};
+
+// API 요청 함수 수정
+async function searchPosts() {
+    const query = searchInput.value.toLowerCase();
+    try {
+        const response = await fetch('/api/search/', {                    // Django URL 패턴에 맞는 엔드포인트
+            method: 'POST',
+            headers: fetchHeaders,
+            body: JSON.stringify({ query: query })
+        });
+        const data = await response.json();
+        // 결과 처리
+    } catch (error) {
+        console.error('검색 중 오류 발생:', error);
+    }
 }
 
 if (searchBtn) {
@@ -122,26 +140,93 @@ document.addEventListener("DOMContentLoaded", () => {
       subLink.classList.add("active");
     });
   });
+
+  // 섹션 전환 이벤트
+  document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      // 모든 섹션에서 active 클래스 제거
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // 클릭된 링크에 해당하는 섹션 활성화
+      const targetId = link.dataset.section;
+      const targetSection = document.getElementById(targetId);
+      targetSection.classList.add('active');
+      
+      // 섹션이 변경될 때마다 무조건 전체 서브섹션으로 초기화
+      if (targetId === 'home-section') {
+        resetToDefaultSubsection(targetSection, 'home-full-board');
+      } 
+      else if (targetId === 'post-section') {
+        resetToDefaultSubsection(targetSection, 'post-full-board');
+      }
+    });
+  });
+
+  // 새로운 초기화 함수
+  function resetToDefaultSubsection(section, defaultSubsectionId) {
+    // 모든 서브섹션 비활성화
+    section.querySelectorAll('.sub-section').forEach(sub => {
+      sub.classList.remove('active');
+    });
+    
+    // 모든 서브링크 버튼 비활성화
+    section.querySelectorAll('.sub-link').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    // 전체 서브섹션 활성화
+    const defaultSubsection = section.querySelector(`#${defaultSubsectionId}`);
+    if (defaultSubsection) {
+      defaultSubsection.classList.add('active');
+    }
+    
+    // 전체 버튼 활성화
+    const defaultButton = section.querySelector(`.sub-link[data-subsection="${defaultSubsectionId}"]`);
+    if (defaultButton) {
+      defaultButton.classList.add('active');
+    }
+  }
 });
 
 // 6. 게시글 작성 시 로딩 효과
 const newPostForm = document.getElementById("new-post-form");
 const submitSpinner = document.getElementById("submit-spinner");
 
-function handleNewPostSubmit(event) {
-  // 새 게시글 작성 예시: 로딩 스피너 보이기
-  event.preventDefault();
-  if (submitSpinner) {
-    submitSpinner.style.display = "inline-block";
-  }
-  // 2초 후에 게시 완료 알림
-  setTimeout(() => {
+// 새 게시글 제출 함수 수정
+async function handleNewPostSubmit(event) {
+    event.preventDefault();
     if (submitSpinner) {
-      submitSpinner.style.display = "none";
+        submitSpinner.style.display = "inline-block";
     }
-    alert("Your post has been published!");
-    newPostForm.reset();
-  }, 2000);
+
+    try {
+        const formData = new FormData(newPostForm);                     // 폼 데이터 수집
+        const response = await fetch('/api/posts/create/', {            // Django URL 패턴에 맞는 엔드포인트
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        });
+
+        if (response.ok) {
+            alert("게시글이 등록되었습니다!");
+            newPostForm.reset();
+        } else {
+            alert("게시글 등록에 실패했습니다.");
+        }
+    } catch (error) {
+        console.error('게시글 등록 중 오류:', error);
+        alert("오류가 발생했습니다.");
+    } finally {
+        if (submitSpinner) {
+            submitSpinner.style.display = "none";
+        }
+    }
 }
 
 if (newPostForm) {
@@ -202,27 +287,25 @@ async function createPostCard(postData) {
 
 // 9. 게시글 로드
 async function loadPosts(boardId) {
-  // 게시글을 불러오는 예시
-  const samplePosts = [
-    {
-      title: "1984",
-      author: "George Orwell",
-      genre: "소설",
-      excerpt: "디스토피아 세계를 그린 조지 오웰의 대표작..."
-    },
-    // 더 많은 게시글 데이터...
-  ];
+    try {
+        const response = await fetch(`/api/posts/${boardId}/`, {         // Django URL 패턴에 맞는 엔드포인트
+            method: 'GET',
+            headers: fetchHeaders
+        });
+        const posts = await response.json();
+        
+        const postsContainer = document.querySelector(`#${boardId} .post-list`);
+        if (!postsContainer) return;
 
-  const postsContainer = document.querySelector(`#${boardId} .post-list`);
-  if (!postsContainer) return;
-
-  postsContainer.innerHTML = ''; // 기존 게시글 비우기
-  
-  // 각 게시글에 대해 카드 생성
-  for (const post of samplePosts) {
-    const postCardHTML = await createPostCard(post);
-    postsContainer.insertAdjacentHTML('beforeend', postCardHTML);
-  }
+        postsContainer.innerHTML = '';
+        
+        for (const post of posts) {
+            const postCardHTML = await createPostCard(post);
+            postsContainer.insertAdjacentHTML('beforeend', postCardHTML);
+        }
+    } catch (error) {
+        console.error('게시글 로드 중 오류:', error);
+    }
 }
 
 // 사이드바 축소 기능 추가
@@ -254,52 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-
-// 메인 네비게이션 링크 클릭 이벤트 처리
-document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    
-    // 모든 섹션에서 active 클래스 제거
-    document.querySelectorAll('.section').forEach(section => {
-      section.classList.remove('active');
-    });
-    
-    // 클릭된 링크에 해당하는 섹션 활성화
-    const targetId = link.dataset.section;
-    const targetSection = document.getElementById(targetId);
-    targetSection.classList.add('active');
-    
-    // 섹션이 변경될 때마다 해당 섹션의 첫 번째 서브섹션을 active로 설정
-    if (targetId === 'home-section') {
-      // 홈 섹션 초기화
-      initializeSection(targetSection, 'home-full-board');
-    } 
-    else if (targetId === 'post-section') {
-      // 게시글 섹션 초기화
-      initializeSection(targetSection, 'post-full-board');
-    }
-  });
-});
-
-// 섹션 초기화를 위한 헬퍼 함수
-function initializeSection(section, defaultSubsectionId) {
-  // 모든 서브섹션 비활성화
-  section.querySelectorAll('.sub-section').forEach(sub => {
-    sub.classList.remove('active');
-  });
-  
-  // 기본 서브섹션 활성화
-  section.querySelector(`#${defaultSubsectionId}`).classList.add('active');
-  
-  // 모든 버튼에서 active 제거
-  section.querySelectorAll('.sub-link').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  
-  // 첫 번째 버튼 활성화
-  section.querySelector(`.sub-link[data-subsection="${defaultSubsectionId}"]`).classList.add('active');
-}
 
 // 서브섹션 버튼 클릭 이벤트 처리
 document.querySelectorAll('.sub-link').forEach(button => {
