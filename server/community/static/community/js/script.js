@@ -42,7 +42,7 @@ if (randomBookBtn) {
 const searchBtn = document.getElementById("search-btn");
 const searchInput = document.getElementById("search-input");
 
-// CSRF 토큰 설정 �정
+// CSRF 토큰 설정 정
 let csrftoken;                                                // CSRF 토큰 변수 선언
 const tokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
 if (tokenElement) {                                          // 토큰 요소가 존재하는지 확인
@@ -335,6 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.querySelectorAll('.sub-link').forEach(button => {
   button.addEventListener('click', () => {
     const section = button.closest('.section'); // 현재 섹션 찾기
+    if (!section) return;  // 섹션이 없으면 실행 중단
     
     // 현재 섹션 내의 모든 서브섹션 버튼에서 active 제거
     section.querySelectorAll('.sub-link').forEach(btn => {
@@ -351,6 +352,9 @@ document.querySelectorAll('.sub-link').forEach(button => {
     
     // 선택된 서브섹션 표시
     const targetId = button.dataset.subsection;
-    section.querySelector(`#${targetId}`).classList.add('active');
+    const targetSection = section.querySelector(`#${targetId}`);
+    if (targetSection) {  // 대상 섹션이 존재하는 경우에만 실행
+      targetSection.classList.add('active');
+    }
   });
 });
