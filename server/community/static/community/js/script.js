@@ -93,25 +93,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.querySelectorAll(".nav-link");
   const allSections = document.querySelectorAll(".section");
 
+  // 초기 상태 설정 - 첫 번째 섹션을 기본으로 표시                          // 페이지 로드 시 첫 섹션 표시
+  if (allSections.length > 0) {
+    allSections[0].classList.add("active");
+    if (navLinks.length > 0) {
+      navLinks[0].classList.add("active");
+    }
+  }
+
   navLinks.forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
       const targetSectionId = link.getAttribute("data-section");
 
-      // 모든 메인 섹션을 숨김
-      allSections.forEach((section) => {
-        section.classList.remove("active");
-      });
+      // 모든 섹션과 링크의 active 클래스 제거
+      allSections.forEach((section) => section.classList.remove("active"));
+      navLinks.forEach((navLink) => navLink.classList.remove("active"));
 
-      // 클릭한 링크에 해당하는 섹션만 보이도록
+      // 선택된 섹션과 링크만 active 클래스 추가
       const targetSection = document.getElementById(targetSectionId);
       if (targetSection) {
         targetSection.classList.add("active");
+        link.classList.add("active");
       }
-
-      // 활성화된 링크 스타일 업데이트
-      navLinks.forEach((otherLink) => otherLink.classList.remove("active"));
-      link.classList.add("active");
     });
   });
 
@@ -285,28 +289,7 @@ async function createPostCard(postData) {
   // 생성된 HTML 문자열을 반환
 }
 
-// 9. 게시글 로드
-async function loadPosts(boardId) {
-    try {
-        const response = await fetch(`/api/posts/${boardId}/`, {         // Django URL 패턴에 맞는 엔드포인트
-            method: 'GET',
-            headers: fetchHeaders
-        });
-        const posts = await response.json();
-        
-        const postsContainer = document.querySelector(`#${boardId} .post-list`);
-        if (!postsContainer) return;
 
-        postsContainer.innerHTML = '';
-        
-        for (const post of posts) {
-            const postCardHTML = await createPostCard(post);
-            postsContainer.insertAdjacentHTML('beforeend', postCardHTML);
-        }
-    } catch (error) {
-        console.error('게시글 로드 중 오류:', error);
-    }
-}
 
 // 사이드바 축소 기능 추가
 document.addEventListener('DOMContentLoaded', () => {
