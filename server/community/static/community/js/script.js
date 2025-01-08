@@ -42,14 +42,21 @@ if (randomBookBtn) {
 const searchBtn = document.getElementById("search-btn");
 const searchInput = document.getElementById("search-input");
 
-// CSRF 토큰 설정 추가                                                    // Django CSRF 보호를 위한 설정
-const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+// CSRF 토큰 설정 �정
+let csrftoken;                                                // CSRF 토큰 변수 선언
+const tokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
+if (tokenElement) {                                          // 토큰 요소가 존재하는지 확인
+    csrftoken = tokenElement.value;
+}
 
 // fetch 요청에 사용할 기본 헤더 설정
 const fetchHeaders = {
-    'X-CSRFToken': csrftoken,
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json'
 };
+
+if (csrftoken) {                                            // CSRF 토큰이 있을 때만 헤더에 추가
+    fetchHeaders['X-CSRFToken'] = csrftoken;
+}
 
 // API 요청 함수 수정
 async function searchPosts() {
@@ -66,6 +73,9 @@ async function searchPosts() {
         console.error('검색 중 오류 발생:', error);
     }
 }
+
+
+
 
 if (searchBtn) {
   searchBtn.addEventListener("click", searchPosts);
@@ -200,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
 const newPostForm = document.getElementById("new-post-form");
 const submitSpinner = document.getElementById("submit-spinner");
 
-// 새 게시글 제출 함수 수정
+// 새 게시글 제출 함수 수수정
 async function handleNewPostSubmit(event) {
     event.preventDefault();
     if (submitSpinner) {
