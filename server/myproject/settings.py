@@ -141,5 +141,5 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 
-NAVER_CLIENT_ID = os.environ.get('_kgSLfQCwC9lIdFQGHaX')
-NAVER_CLIENT_SECRET = os.environ.get('w8K5A7qPw9')
+NAVER_CLIENT_ID = '_kgSLfQCwC9lIdFQGHaX'
+NAVER_CLIENT_SECRET = 'w8K5A7qPw9'
