@@ -5,6 +5,7 @@ from .models import Book
 import requests
 from django.http import JsonResponse
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -90,6 +91,35 @@ def naver_book_template(request):      #홈페이지에서 템플릿을 맞춰 �
 
     search_results = data['items']
     return render(request, 'community/naver_book_template.html', {'search_results': search_results})
+
+
+
+@csrf_exempt
+def naver_books(request):
+    if request.method == 'GET':
+        query = request.GET.get('query', '에세이')
+        
+        NAVER_API_URL = "https://openapi.naver.com/v1/search/book.json"
+        headers = {
+            "X-Naver-Client-Id": settings.NAVER_CLIENT_ID,
+            "X-Naver-Client-Secret": settings.NAVER_CLIENT_SECRET,
+        }
+        
+        params = {
+            "query": query,
+            "display": 8,
+            "start": 1,
+        }
+        
+        try:
+            response = requests.get(NAVER_API_URL, headers=headers, params=params)
+            if response.status_code == 200:
+                return JsonResponse(response.json())
+            else:
+                return JsonResponse({"error": "API 요청 실패"}, status=500)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 

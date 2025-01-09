@@ -1,3 +1,5 @@
+//File: community/static/community/js/script.js
+
 /*****************************************************
  * script.js 
  * 1) Single-page navigation for sidebar sections
@@ -357,4 +359,62 @@ document.querySelectorAll('.sub-link').forEach(button => {
       targetSection.classList.add('active');
     }
   });
+});
+
+// 에세이 버튼 클릭 이벤트 핸들러 수정
+document.querySelector('[data-subsection="home-essay-board"]').addEventListener('click', async function(e) {
+  e.preventDefault();
+  
+  const container = document.querySelector('#home-essay-board .home-grid-container');
+  
+  try {
+      // 로딩 상태 표시
+      container.innerHTML = '<p>데이터를 불러오는 중...</p>';
+      
+      const response = await fetch('/naver-books/', {                    // URL을 기존 패턴에 맞게 수정
+          method: 'GET',
+          headers: {
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': csrftoken
+          },
+          credentials: 'same-origin'
+      });
+      
+      if (!response.ok) {
+          throw new Error(`서버 응답 오류: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.error) {
+          throw new Error(data.error);
+      }
+      
+      // 데이터 표시
+      container.innerHTML = data.items && data.items.length > 0 ?
+          data.items.map(book => `
+              <div class="home-grid-item">
+                  <img 
+                      src="${book.image}" 
+                      alt="${book.title.replace(/<[^>]*>/g, '')}" 
+                      class="grid-image"
+                      onerror="this.src='/static/community/images/no-image.png'"
+                  />
+                  <div class="grid-info">
+                      <h4>${book.title.replace(/<[^>]*>/g, '')}</h4>
+                      <p>${book.author}</p>
+                      <p class="publisher">${book.publisher || ''}</p>
+                  </div>
+              </div>
+          `).join('') :
+          '<p>검색된 에세이가 없습니다.</p>';
+          
+  } catch (error) {
+      console.error('API 요청 오류:', error);
+      container.innerHTML = `
+          <p>데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</p>
+          <p>오류 상세: ${error.message}</p>
+      `;
+  }
 });

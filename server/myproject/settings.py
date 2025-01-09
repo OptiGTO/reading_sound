@@ -1,3 +1,5 @@
+#File: myproject/settings.py
+
 """
 Django settings for myproject project.
 
@@ -38,11 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'community',
+    'corsheaders',
+    
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # CommonMiddleware 앞으로 이동
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -143,3 +148,4 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 NAVER_CLIENT_ID = '_kgSLfQCwC9lIdFQGHaX'
 NAVER_CLIENT_SECRET = 'w8K5A7qPw9'
+
