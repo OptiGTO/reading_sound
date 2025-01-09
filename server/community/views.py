@@ -8,6 +8,16 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 
 
+def home(request):
+    return render(request, 'community/index.html')
+
+def post(request):
+    return render(request, 'community/post.html')  # 작성할 템플릿 경로
+
+def login(request):
+    return render(request, 'community/login.html')
+
+
 
 def naver_book_json(request):
     """
@@ -47,10 +57,7 @@ def naver_book_json(request):
 
 
 
-def home_view(request):
-    # Simple example: fetch all books from DB
-    books = Book.objects.all()
-    return render(request, 'community/index.html', {'books': books})
+
 
 
 
@@ -120,6 +127,9 @@ def naver_books(request):
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+
 
 
 

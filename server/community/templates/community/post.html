@@ -1,0 +1,131 @@
+<!--File: community/templates/post.html-->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>읽는소리 - 글쓰기</title>
+  
+  <!-- 기존 스타일 상속 -->
+  <link rel="stylesheet" href="{% static 'community/css/style.css' %}" />
+
+  <!-- Font Awesome (옵션) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+</head>
+
+<body>
+  <!-- 왼쪽 사이드바 (index.html과 동일) -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="{% static 'community/images/logo.png' %}" alt="읽는소리" class="brand-logo" />
+    </div>
+    
+    <nav class="nav-menu">
+      <ul>
+        <li>
+          <a href="#" class="nav-link" data-section="home-section">
+            <i class="fas fa-home"></i>
+            <span>홈</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-section="post-section">
+            <i class="fas fa-users"></i>
+            <span>게시글</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-section="group-section">
+            <i class="fas fa-users"></i>
+            <span>모임</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-section="recommended-section">
+            <i class="fas fa-star"></i>
+            <span>추천 도서</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-section="notice-section">
+            <i class="fas fa-bell"></i>
+            <span>공지사항</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-section="settings-section">
+            <i class="fas fa-cog"></i>
+            <span>설정</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="random-book-section">
+      <h2>무작위 책</h2>
+      <div id="random-book-container"></div>
+      <button class="btn hover-effect" id="random-book-btn">놀라게 해줘!</button>
+    </div>
+
+    <div class="login-container">
+      <a href="login.html" class="btn hover-effect nav-link" id="login-btn">로그인 / 회원가입</a>
+    </div>
+  </aside>
+  
+  <!-- 메인 콘텐츠 영역 -->
+  <main class="content">
+    <!-- 상단 바 -->
+    <header class="top-bar">
+      <div class="user-info" id="user-info">
+        <span id="user-nickname">손님</span>
+      </div>
+    </header>
+
+    <!-- 글쓰기 섹션 -->
+    <section class="section active" id="write-section">
+      <h2>글쓰기</h2>
+      <form action="#" method="post" class="write-form">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="title">제목</label>
+          <input type="text" id="title" name="title" required placeholder="글 제목을 입력하세요" />
+        </div>
+        <div class="form-group">
+          <label for="content">내용</label>
+          <textarea id="content" name="content" rows="10" required placeholder="글 내용을 입력하세요"></textarea>
+        </div>
+        <button type="submit" class="btn">작성 완료</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- 오른쪽 사이드바 (index.html과 동일) -->
+  <aside class="sidebar right-sidebar">
+    <div class="search-container">
+      <input type="text" id="search-input" placeholder="게시글 검색..." />
+      <button class="btn hover-effect" id="search-btn">검색</button>
+    </div>
+    <div class="notice-display">
+      <h2>공지사항</h2>
+      <ul>
+        <li>새로운 이벤트가 시작되었습니다!</li>
+        <li>사이트 점검 안내 (1월 15일)</li>
+        <li>봄맞이 독서 챌린지 안내</li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- 플로팅 글쓰기 버튼 (글쓰기 페이지에서는 숨김) -->
+
+
+  <!-- JavaScript 경로 -->
+  <script src="{% static 'community/js/script.js' %}"></script>
+</body>
+</html>
