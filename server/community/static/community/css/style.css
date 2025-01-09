@@ -506,34 +506,33 @@
   /* Navigation container for the home bulletin boards (tabs). */
   .home-bulletin-nav {
     display: flex;
-    justify-content: flex-start;  /* Aligns buttons to the left */
-    align-items: center;
-    gap: 10px;                    /* Spacing between tab buttons */
-    margin-bottom: 20px;          /* Space below the nav bar */
+    justify-content: flex-start;    /* 버튼들을 왼쪽으로 정렬 */
+    align-items: center;            /* 세로 중앙 정렬 */
+    gap: 10px;                      /* 탭 버튼 사이 간격 */
+    margin-bottom: 20px;            /* 네비게이션 바 아래 여백 */
   }
   
   /* Active sub-link styling (e.g., highlight the selected tab). */
   .home-bulletin-nav .sub-link.active {
-    background-color: #9a8469;    /* Brown background for the active tab */
-    color: #ffffff;               /* White text for contrast */
-    border: none;                 /* Removes any default border */
+    background-color: #9a8469;      /* 활성 탭의 갈색 배경 */
+    color: #ffffff;                 /* 대비를 위한 흰색 텍스트 */
+    border: none;                   /* 기본 테두리 제거 */
   }
   
   /* Default style for sub-link tabs. */
   .home-bulletin-nav .sub-link {
-    background-color: #f2ebe0;    /* Light beige background */
-    color: #5f4b32;               /* Brown text */
-    border: none;                 /* No border */
-    padding: 10px 20px;           /* Comfortable click/touch area */
-    cursor: pointer;              /* Pointer on hover */
-    border-radius: 4px;           /* Slightly rounded corners */
-    transition: background-color 0.3s ease; 
-    /* Smooth change on hover/focus */
-  }/* 게시글 섹션 버킷 네비게이션 스타일 */
+    background-color: #f2ebe0;      /* 연한 베이지색 배경 */
+    color: #5f4b32;                 /* 갈색 텍스트 */
+    border: none;                   /* 테두리 없음 */
+    padding: 10px 20px;            /* 클릭/터치 영역 여유 공간 */
+    cursor: pointer;               /* 마우스 오버시 포인터 커서 */
+    border-radius: 4px;            /* 모서리 둥글게 */
+    transition: background-color 0.3s ease;  /* 부드러운 배경색 전환 효과 */
+  }
   
-  /* Hover effect for sub-link tabs. */
+  /* 서브링크 탭 호버 효과 */
   .home-bulletin-nav .sub-link:hover {
-    background-color: #d8c9b7;    /* Slightly darker beige on hover */
+    background-color: #d8c9b7;      /* 호버시 약간 더 진한 베이지색 */
   }
   
   

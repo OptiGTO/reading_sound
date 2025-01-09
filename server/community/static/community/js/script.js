@@ -404,7 +404,6 @@ document.querySelector('[data-subsection="home-essay-board"]').addEventListener(
                   <div class="grid-info">
                       <h4>${book.title.replace(/<[^>]*>/g, '')}</h4>
                       <p>${book.author}</p>
-                      <p class="publisher">${book.publisher || ''}</p>
                   </div>
               </div>
           `).join('') :
