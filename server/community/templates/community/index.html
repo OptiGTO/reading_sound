@@ -164,10 +164,32 @@
         </section>
 
         <!-- 2) 에세이 게시판 -->
+
         <section class="sub-section" id="home-essay-board">
           <h3>에세이 게시판</h3>
-          <section class="post-list">
-            <!-- More articles... -->
+          <section class="post-list"> 
+            <div class="home-grid-container">
+              {% if search_results %}
+                {% for book in search_results %}
+                  <div class="home-grid-item">
+                    <!-- Naver often returns an 'image' field with the cover URL -->
+                    <img 
+                      src="{{ book.image }}" 
+                      alt="{{ book.title|striptags }}" 
+                      class="grid-image"
+                    />
+                    <div class="grid-info">
+                      <!-- Title often has <b> or <tag> from the API, so using safe or striptags helps -->
+                      <h4>{{ book.title|safe }}</h4>
+                      <p>{{ book.author }}</p>
+                    </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <p>에세이 검색 결과가 없습니다.</p>
+              {% endif %}
+            </div>
+
           </section>
         </section>
 

@@ -1,3 +1,5 @@
+
+#File: myproject/urls.py
 """
 URL configuration for myproject project.
 
@@ -20,5 +22,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('community.urls')),  # route to the community app
-    path('naver-book-search/', include('community.urls')),  # route to the community app
+    
 ]
