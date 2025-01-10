@@ -90,7 +90,7 @@
 
     <!-- 로그인 / 회원가입 버튼 -->
     <div class="login-container">
-      <a href="{% url 'community:login' %}" class="btn hover-effect nav-link" id="login-btn">로그인 / 회원가입</a>
+      <a href="{% url 'community:login' %}" class="btn hover-effect" id="login-btn">로그인 / 회원가입</a>
     </div>
   </aside>
   
@@ -103,6 +103,7 @@
       </div>
     </header>
 
+    {% block content %}
     <!-- =========================
          1) HOME SECTION 
          ========================= -->
@@ -272,6 +273,7 @@
       <h2>설정</h2>
       <p>계정, 알림, 테마 등 다양한 설정을 변경할 수 있는 페이지입니다.</p>
     </section>
+    {% endblock %}
   </main>
 
   <!-- 오른쪽 사이드바 -->
