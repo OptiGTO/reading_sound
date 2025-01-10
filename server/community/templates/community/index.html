@@ -90,7 +90,7 @@
 
     <!-- 로그인 / 회원가입 버튼 -->
     <div class="login-container">
-      <a href="login.html" class="btn hover-effect nav-link" id="login-btn">로그인 / 회원가입</a>
+      <a href="{% url 'community:login' %}" class="btn hover-effect nav-link" id="login-btn">로그인 / 회원가입</a>
     </div>
   </aside>
   
@@ -292,7 +292,7 @@
 
   <!-- 플로팅 글쓰기 버튼 -->
   <div class="floating-btn-container">
-    <a href="post" class="btn fab hover-effect" id="post-btn">+</a>
+    <a href="{% url 'community:post' %}" class="btn fab hover-effect" id="post-btn">+</a>
   </div>
 
   <!-- Updated path to JavaScript -->

@@ -8,13 +8,13 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 
 
-def home(request):
+def home_view(request):
     return render(request, 'community/index.html')
 
-def post(request):
+def post_view(request):
     return render(request, 'community/post.html')  # 작성할 템플릿 경로
 
-def login(request):
+def login_view(request):
     return render(request, 'community/login.html')
 
 
