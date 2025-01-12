@@ -1,18 +1,31 @@
 #File: community/views.py
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Book
 import requests
 from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from .forms import PostForm
 
 
 def home_view(request):
     return render(request, 'community/index.html')
 
 def post_view(request):
-    return render(request, 'community/post.html')  # 작성할 템플릿 경로
+    """
+    글쓰기 페이지 (GET) & 글 저장 (POST)
+    """
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            form.save()  # DB에 저장
+            # 저장 후, 예: 홈으로 이동하거나, 방금 작성한 post 상세 페이지로 이동
+            return redirect('community:home')
+    else:
+        form = PostForm()
+
+    return render(request, 'community/post.html', {'form': form})  # 작성할 템플릿 경로
 
 def login_view(request):
     return render(request, 'community/login.html')
