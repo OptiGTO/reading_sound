@@ -149,3 +149,4 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 NAVER_CLIENT_ID = '_kgSLfQCwC9lIdFQGHaX'
 NAVER_CLIENT_SECRET = 'w8K5A7qPw9'
 
+ALLOWED_HOSTS = ['*']  # 모든 호스트 허용
