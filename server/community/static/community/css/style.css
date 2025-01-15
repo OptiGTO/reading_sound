@@ -23,7 +23,7 @@
     justify-content: center;      /* Centers content horizontally */
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
     /* Sets a clean, modern font stack */
-    background-color: #f7f5f0;    /* Applies a light beige background color */
+    background-color: #fff5d9;    /* Applies a light beige background color */
   }
   
   
@@ -35,7 +35,7 @@
   
   .sidebar {
     width: 250px;                 /* Fixed width for the sidebar */
-    background-color: #f2ebe0;    /* Light beige background */
+    background-color: #ffe6a6;    /* Light beige background */
     padding: 1rem;                /* Internal spacing on all sides */
     border-right: 2px solid #d8c9b7; 
     /* Thin border on the right side for separation */
@@ -144,7 +144,25 @@
   /* Container for login button, placed at bottom of sidebar. */
   .login-container {
     margin-top: auto;             /* Pushes it to the bottom of the sidebar */
+
   }
+
+  #login-btn {
+    background-color: #5f4b32;    /* 어두운 갈색 배경 */
+    color: #fff;                  /* 흰색 텍스트 */
+    border: none;                 /* 테두리 없음 */
+    border-radius: 4px;           /* 모서리 둥글게 */
+    cursor: pointer;              /* 호버시 포인터 커서 */
+    transition: background-color 0.3s ease;  /* 부드러운 호버 효과 */
+    position: relative;
+    width: 100%;                  /* 부모 요소의 너비로 변경 */
+    max-width: 220px;            /* 최대 너비 설정 */
+    height: auto;                 /* 높이 자동 조정 */
+    font-size: 1.2rem;           /* 글자 크기 증가 */
+    padding: 15px 20px;          /* 패딩 증가 */
+    margin: 15px auto;           /* 상하 여백 증가 및 중앙 정렬 */
+  }
+
 
 
   .nav-menu .nav-link i {
@@ -160,7 +178,7 @@
   /* Styles specifically for the right-hand sidebar. */
   .sidebar.right-sidebar {
     border-right: none;           /* No right border needed on the right sidebar */
-    border-left: 2px solid #d8c9b7; 
+    background-color: #fff5d9;
     /* Left border for visual separation */
     display: flex;
     flex-direction: column;

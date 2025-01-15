@@ -39,19 +39,19 @@
           </a>
         </li>
 
-        <!-- 2) 게시글: Hidden until clicked -->
+        <!-- 2) 책소리 - 책 관련 글: Hidden until clicked -->
         <li>
           <a href="#" class="nav-link" data-section="post-section">
-            <i class="fas fa-users"></i>
-            <span>게시글</span>
+            <i class="fas fa-book"></i>
+            <span>책소리 - 책 관련 글</span>
           </a>
         </li>
 
-        <!-- 3) 모임 -->
+        <!-- 3) 사람소리 - 독서 콘텐츠 -->
         <li>
           <a href="#" class="nav-link" data-section="group-section">
             <i class="fas fa-users"></i>
-            <span>모임</span>
+            <span>사람소리 - 독서 콘텐츠</span>
           </a>
         </li>
 
@@ -59,7 +59,7 @@
         <li>
           <a href="#" class="nav-link" data-section="recommended-section">
             <i class="fas fa-star"></i>
-            <span>추천 도서</span>
+            <span>북소리 - 추천 도서</span>
           </a>
         </li>
 
@@ -71,13 +71,7 @@
           </a>
         </li>
 
-        <!-- 6) 설정 -->
-        <li>
-          <a href="#" class="nav-link" data-section="settings-section">
-            <i class="fas fa-cog"></i>
-            <span>설정</span>
-          </a>
-        </li>
+        
       </ul>
     </nav>
     
@@ -90,7 +84,7 @@
 
     <!-- 로그인 / 회원가입 버튼 -->
     <div class="login-container">
-      <a href="{% url 'community:login' %}" class="btn hover-effect" id="login-btn">로그인 / 회원가입</a>
+      <a href="{% url 'community:login' %}" class="hover-effect btn" id="login-btn">로그인 / 회원가입</a>
     </div>
   </aside>
   
@@ -163,6 +157,17 @@
               </div>
             </div>
             <!-- 추가 행들도 같은 형식으로 계속... -->
+            {% for book in books %}
+            <div class="home-grid-item">
+              <img src="{{ book.thumbnail_url|default_if_none:'path/to/default_image.png' }}" 
+                   alt="{{ book.title }}" 
+                   class="grid-image">
+              <div class="grid-info">
+                <h4>{{ book.title }}</h4>
+                <p>{{ book.author }}</p>
+              </div>
+            </div>
+            {% endfor %}
           </div>
         </section>
 

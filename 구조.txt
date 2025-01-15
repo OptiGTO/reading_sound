@@ -1,28 +1,55 @@
 server/
-├─ myproject/
-│  ├─ settings.py
-│  ├─ urls.py
-│  ├─ wsgi.py
-│  └─ ...
-├─ community/
-│  ├─ migrations/
-│  ├─ templates/
-│  │  └─ community/
-│  │     ├─ index.html
-│  │     ├─ base.html        <-- optional base template for inheritance
-│  │     └─ ...other templates...
-│  ├─ static/
-│  │  └─ community/
-│  │     ├─ css/
-│  │     │  └─ style.css
-│  │     ├─ js/
-│  │     │  └─ script.js
-│  │     └─ images/
-│  │        ├─ logo.png
-│  │        └─ ...other images...
-│  ├─ models.py
-│  ├─ views.py
-│  ├─ urls.py                <-- for app-specific URLs
-│  ├─ admin.py
-│  └─ ...
-└─ manage.py
+│  db.sqlite3
+│  manage.py
+│
+├─community
+│  │  admin.py
+│  │  apps.py
+│  │  forms.py
+│  │  models.py
+│  │  tests.py
+│  │  urls.py
+│  │  views.py
+│  │  __init__.py
+│  │
+│  ├─migrations
+│  │  ├─0001_initial.py
+│  │  └─__init__.py
+│  │
+│  ├─static
+│  │  └─community
+│  │      ├─css
+│  │      │      style.css
+│  │      ├─images
+│  │      │      logo.png
+│  │      │      공정하다는 착각 비문학.png
+│  │      │      나태주 시집.png
+│  │      │      달러구트 소설.png
+│  │      │      오지게 재밌게 에세이.png
+│  │      └─js
+│  │              script.js
+│  │
+│  ├─templates
+│  │  └─community
+│  │          index.html
+│  │          login.html
+│  │          post.html
+│  │
+│  └─__pycache__  (요약)
+│
+├─config
+│  └─ (내용 생략)
+│
+├─myproject
+│  │  asgi.py
+│  │  settings.py
+│  │  urls.py
+│  │  wsgi.py
+│  │  __init__.py
+│  │
+│  └─__pycache__  (요약)
+│
+└─static
+    ├─css
+    ├─images
+    └─js

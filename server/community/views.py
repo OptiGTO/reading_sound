@@ -7,10 +7,15 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from .forms import PostForm
+from community.admin_views import book_search_view, book_add_view
+
 
 
 def home_view(request):
-    return render(request, 'community/index.html')
+    books = Book.objects.all()
+    context = {"books": books}
+    return render(request, "community/index.html", context)
+
 
 def post_view(request):
     """

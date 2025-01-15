@@ -1,0 +1,40 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Book Search{% endblock %}
+
+{% block content %}
+<h1>네이버 도서 검색</h1>
+<form method="POST" action="">
+  {% csrf_token %}
+  <input type="text" name="keyword" placeholder="검색어" value="{{ keyword|default_if_none:'' }}" />
+  <button type="submit">검색</button>
+</form>
+
+{% if results %}
+  <h2>검색 결과</h2>
+  <ul>
+    {% for item in results %}
+      <li>
+        <!-- naver book API로부터 받은 item 구조 예시 -->
+        <form action="{% url 'admin_books_add' %}" method="POST" style="display:inline-block;">
+          {% csrf_token %}
+          <input type="hidden" name="title" value="{{ item.title|safe }}">
+          <input type="hidden" name="author" value="{{ item.author|safe }}">
+          <input type="hidden" name="publisher" value="{{ item.publisher|safe }}">
+          <input type="hidden" name="pubdate" value="{{ item.pubdate|safe }}">
+          <input type="hidden" name="thumbnail_url" value="{{ item.image|safe }}">
+          <input type="hidden" name="link" value="{{ item.link|safe }}">
+
+          <!-- item.title, item.author 등에는 HTML 태그가 포함될 수 있어 <b> ... </b>, 따라서 .replace 등의 처리가 필요 -->
+          <strong>제목:</strong> {{ item.title|safe|striptags }} /
+          <strong>저자:</strong> {{ item.author|safe|striptags }} /
+          <strong>출판사:</strong> {{ item.publisher|safe|striptags }}
+
+          <button type="submit">이 책 추가</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endblock %}

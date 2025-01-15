@@ -1,0 +1,9 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block branding %}
+    {{ block.super }}
+    <div style="float:right; margin-right: 20px;">
+        <a href="{% url 'admin_books_search' %}" class="button">네이버 검색으로 책 추가</a>
+    </div>
+{% endblock %}
