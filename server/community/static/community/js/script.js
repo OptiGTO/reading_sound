@@ -40,9 +40,7 @@ if (randomBookBtn) {
 }
 // 버튼이 실제로 존재한다면, 클릭 시 getRandomBook 함수를 실행
 
-// 2. 검색 기능
-const searchBtn = document.getElementById("search-btn");
-const searchInput = document.getElementById("search-input");
+
 
 // CSRF 토큰 설정 정
 let csrftoken;                                                // CSRF 토큰 변수 선언
@@ -60,48 +58,18 @@ if (csrftoken) {                                            // CSRF 토큰이 �
     fetchHeaders['X-CSRFToken'] = csrftoken;
 }
 
-// API 요청 함수 수정
-async function searchPosts() {
-    const query = searchInput.value.toLowerCase();
-    try {
-        const response = await fetch('/api/search/', {                    // Django URL 패턴에 맞는 엔드포인트
-            method: 'POST',
-            headers: fetchHeaders,
-            body: JSON.stringify({ query: query })
-        });
-        const data = await response.json();
-        // 결과 처리
-    } catch (error) {
-        console.error('검색 중 오류 발생:', error);
-    }
-}
 
-
-
-
-if (searchBtn) {
-  searchBtn.addEventListener("click", searchPosts);
-}
-// 검색 버튼이 존재한다면, 클릭 시 searchPosts 실행
-
-// 3. 로그인 시뮬레이션
-const loginBtn = document.getElementById("login-btn");
-const userNicknameEl = document.getElementById("user-nickname");
-
-function loginUser() {
-  // 로그인 시 유저 닉네임을 변경하는 예시 함수
-  userNicknameEl.textContent = "BookLover99";
-  console.log("User logged in as BookLover99.");
-}
-
-// 아래 주석을 해제하면, 실제로 해당 버튼을 클릭할 때 로그인 동작이 수행됨.
-// if (loginBtn && userNicknameEl) {
-//   loginBtn.addEventListener("click", loginUser);
-// }
 
 // 4. 메인 사이드바 네비게이션
 document.addEventListener("DOMContentLoaded", () => {
+
   // DOM이 로드된 후에 실행
+  const homeSection = document.getElementById("home-section");
+  if (!homeSection) {
+    // If there's no home-section, we assume we're on a separate page (login, etc.)
+    // => Skip all single-page navigation code so normal <a href="..."> links work.
+    return;
+  }
   const navLinks = document.querySelectorAll(".nav-link");
   const allSections = document.querySelectorAll(".section");
 
@@ -208,11 +176,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// 6. 게시글 작성 시 로딩 효과
-const newPostForm = document.getElementById("new-post-form");
-const submitSpinner = document.getElementById("submit-spinner");
 
-// 새 게시글 제출 함수 수수정
+
+// 새 게시글 제출 함수 수정
 async function handleNewPostSubmit(event) {
     event.preventDefault();
     if (submitSpinner) {
@@ -245,93 +211,8 @@ async function handleNewPostSubmit(event) {
     }
 }
 
-if (newPostForm) {
-  newPostForm.addEventListener("submit", handleNewPostSubmit);
-}
-
-// 7. Google Books API 연동 (책 이미지 검색 예시)
-async function searchBookImage(title, author) {
-  try {
-    const query = `${title} ${author}`.replace(/ /g, '+');
-    // 책 제목과 저자를 합쳐 검색 쿼리 만듦. 공백은 '+'로 대체
-    const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=1`
-    );
-    // 구글 북스 API에 요청
-    const data = await response.json();
-    
-    if (data.items && data.items[0].volumeInfo.imageLinks) {
-      return data.items[0].volumeInfo.imageLinks.thumbnail;
-    }
-    // 썸네일 이미지 링크가 있으면 반환
-    return null;
-  } catch (error) {
-    console.error('책 이미지 검색 중 오류:', error);
-    return null;
-  }
-}
-
-// 8. 게시글 카드 생성
-async function createPostCard(postData) {
-  // 비동기로 구글 북스 API 썸네일 요청
-  const bookImage = await searchBookImage(postData.title, postData.author);
-  
-  return `
-    <article class="post-card hover-effect">
-      <div class="post-card-content">
-        ${bookImage ? 
-          `<div class="book-image">
-            <img src="${bookImage}" alt="${postData.title} 표지" />
-           </div>` 
-          : ''
-        }
-        <h3 class="post-title">${postData.title}</h3>
-        <p class="post-author"><strong>저자:</strong> ${postData.author}</p>
-        <p class="post-genre"><strong>장르:</strong> ${postData.genre}</p>
-        <p class="post-stats">
-          <span><strong>조회수:</strong> ${postData.views || 0}</span> | 
-          <span><strong>추천:</strong> ${postData.likes || 0}</span> | 
-          <span><strong>댓글:</strong> ${postData.comments || 0}</span>
-        </p>
-        <p class="post-excerpt">${postData.excerpt || '내용이 없습니다...'}</p>
-        <button class="btn hover-effect">게시글 보기</button>
-      </div>
-    </article>
-  `;
-  // 생성된 HTML 문자열을 반환
-}
 
 
-
-// 사이드바 축소 기능 추가
-document.addEventListener('DOMContentLoaded', () => {
-  const sidebar = document.querySelector('.sidebar');
-  let isCollapsed = false;
-
-  // 윈도우 크기 변경에 따라 사이드바 자동 축소
-  window.addEventListener('resize', () => {
-    if (window.innerWidth <= 1200 && !isCollapsed) {
-      sidebar.classList.add('collapsed');
-      isCollapsed = true;
-    } else if (window.innerWidth > 1200 && isCollapsed) {
-      sidebar.classList.remove('collapsed');
-      isCollapsed = false;
-    }
-  });
-
-  // 사이드바에 마우스를 올리면 다시 펴지고, 떠나면 접힘
-  sidebar.addEventListener('mouseenter', () => {
-    if (isCollapsed) {
-      sidebar.classList.remove('collapsed');
-    }
-  });
-
-  sidebar.addEventListener('mouseleave', () => {
-    if (isCollapsed) {
-      sidebar.classList.add('collapsed');
-    }
-  });
-});
 
 // 서브섹션 버튼 클릭 이벤트 처리
 document.querySelectorAll('.sub-link').forEach(button => {
@@ -436,4 +317,36 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+});
+
+
+
+// 사이드바 축소 기능 추가
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.querySelector('.sidebar');
+  let isCollapsed = false;
+
+  // 윈도우 크기 변경에 따라 사이드바 자동 축소
+  window.addEventListener('resize', () => {
+    if (window.innerWidth <= 1200 && !isCollapsed) {
+      sidebar.classList.add('collapsed');
+      isCollapsed = true;
+    } else if (window.innerWidth > 1200 && isCollapsed) {
+      sidebar.classList.remove('collapsed');
+      isCollapsed = false;
+    }
+  });
+
+  // 사이드바에 마우스를 올리면 다시 펴지고, 떠나면 접힘
+  sidebar.addEventListener('mouseenter', () => {
+    if (isCollapsed) {
+      sidebar.classList.remove('collapsed');
+    }
+  });
+
+  sidebar.addEventListener('mouseleave', () => {
+    if (isCollapsed) {
+      sidebar.classList.add('collapsed');
+    }
+  });
 });
