@@ -350,3 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+
+//쓸데없는 js파일들 정리
