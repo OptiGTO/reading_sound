@@ -33,7 +33,7 @@
       <ul>
         <!-- 1) 홈: Default Active Link -->
         <li>
-          <a href="#" class="nav-link active" data-section="home-section">
+          <a href="{% url 'community:home' %}" class="nav-link active" data-section="home-section">
             <i class="fas fa-home"></i>
             <span>홈</span>
           </a>
@@ -59,11 +59,31 @@
           <ul class="submenu">
             <!-- Each of these links points to a separate page -->
             <!-- Update the URL names to match your actual Django URL patterns. -->
-            <li><a href="{% url 'community:reading_meeting' %}">독서 모임</a></li>
-            <li><a href="{% url 'community:review_event' %}">서평 이벤트</a></li>
-            <li><a href="{% url 'community:booktalk' %}">북토크</a></li>
-            <li><a href="{% url 'community:your_content' %}">당신의 콘텐츠</a></li>
-            <li><a href="{% url 'community:parrhesia' %}">파르헤시아</a></li>
+            <li><a href="{% url 'community:reading_meeting' %}">
+              <i class="fas fa-users"></i>
+              <span>독서 모임</span>
+              </a>
+            </li>
+            <li><a href="{% url 'community:review_event' %}">
+              <i class="fas fa-pencil-alt"></i>
+              <span>서평 이벤트</span>
+              </a>
+            </li>
+            <li><a href="{% url 'community:booktalk' %}">
+              <i class="fas fa-comments"></i>
+              <span>북토크</span>
+              </a>
+            </li>
+            <li><a href="{% url 'community:your_content' %}">
+              <i class="fas fa-pencil-alt"></i>
+              <span>당신의 콘텐츠</span>
+              </a>
+            </li>
+            <li><a href="{% url 'community:parrhesia' %}">
+              <i class="fas fa-comments"></i>
+              <span>파르헤시아</span>
+              </a>
+            </li>
           </ul>
         </li>
 
