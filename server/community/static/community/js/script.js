@@ -417,3 +417,23 @@ document.querySelector('[data-subsection="home-essay-board"]').addEventListener(
       `;
   }
 });
+
+
+// 사람소리 섹션 밑 서브섹션 추가를 위한 코드
+
+document.addEventListener('DOMContentLoaded', () => {
+  const submenuParent = document.querySelector('.has-submenu');
+  if (submenuParent) {
+    submenuParent.addEventListener('click', function(e) {
+      // On mobile, toggle the submenu on click
+      if (window.innerWidth <= 768) {
+        e.preventDefault(); // prevent default anchor click if needed
+        const submenu = submenuParent.querySelector('.submenu');
+        if (submenu) {
+          submenu.classList.toggle('active'); 
+          // 'active' could be set to display:block in CSS
+        }
+      }
+    });
+  }
+});

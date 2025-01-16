@@ -7,7 +7,6 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from .forms import PostForm
-from community.admin_views import book_search_view, book_add_view
 
 
 
@@ -35,7 +34,20 @@ def post_view(request):
 def login_view(request):
     return render(request, 'community/login.html')
 
+def reading_meeting(request):
+    return render(request, 'community/reading_meeting.html')
 
+def review_event(request):
+    return render(request, 'community/review_event.html')
+
+def booktalk(request):
+    return render(request, 'community/booktalk.html')
+
+def your_content(request):
+    return render(request, 'community/your_content.html')
+
+def parrhesia(request):
+    return render(request, 'community/parrhesia.html')
 
 def naver_book_json(request):
     """

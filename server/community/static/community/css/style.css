@@ -171,7 +171,58 @@
     text-align: center;           /* Center the icon in its space */
   }
   
-  
+
+
+    /*사람 섹션 밑 서브 섹션 추가를 위한 css스타일링 Assuming .nav-menu ul li has position relative or absolute styling */
+  .nav-menu ul li.has-submenu {
+    position: relative;
+  }
+
+  /* Hide submenu by default */
+  .nav-menu ul li.has-submenu .submenu {
+    display: none;
+    position: absolute;
+    top: 100%;  /* Places submenu below the parent item */
+    left: 0;    /* Aligns the submenu’s left edge with the parent item’s left edge */
+    background-color: #fafafa;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: 180px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+  }
+
+  /* Show on hover */
+  .nav-menu ul li.has-submenu:hover > .submenu {
+    display: block;
+  }
+
+  /* Submenu links styling */
+  .nav-menu ul li.has-submenu .submenu li a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+  }
+
+  .nav-menu ul li.has-submenu .submenu li a:hover {
+    background-color: #ddd; 
+  }
+
+
+    .submenu {
+        top: 100%;
+        left: 0;
+    }
+
+  .nav-menu ul li.has-submenu .submenu.active {
+     display: block;
+  }
+    
+
+
+
   /****************************************************
    * 4. 오른쪽 사이드바
    ****************************************************/
@@ -743,6 +794,11 @@
 
     .home-grid-container {
       grid-template-columns: repeat(2, 1fr);  /* 2열로 변경 */
+    }
+
+    .nav-menu ul li.has-submenu:hover > .submenu {
+      /* On mobile, disable the hover approach */
+      display: none !important;
     }
 
   }
