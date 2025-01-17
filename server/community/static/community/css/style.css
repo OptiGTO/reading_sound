@@ -143,8 +143,6 @@
   
   /* Container for login button, placed at bottom of sidebar. */
   .login-container {
-    margin-top: auto;             /* Pushes it to the bottom of the sidebar */
-
   }
 
   #login-btn {

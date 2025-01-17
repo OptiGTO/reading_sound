@@ -28,6 +28,11 @@
       <img src="{% static 'community/images/logo.png' %}" alt="읽는소리" class="brand-logo" />
     </div>
     
+    <!-- 로그인 / 회원가입 버튼 -->
+    <div class="login-container">
+      <a href="{% url 'community:login' %}" class="hover-effect btn" id="login-btn">로그인 / 회원가입</a>
+    </div>
+
     <!-- 내비게이션 메뉴 -->
     <nav class="nav-menu">
       <ul>
@@ -50,7 +55,8 @@
         <!-- 3) 사람소리 - 독서 콘텐츠 -->
         <li class="has-submenu">
           <!-- Primary link (main menu item) -->
-          <a href="#" class="nav-link">
+          <a href="#" class="nav-link"
+            data-section = "group-section">
             <i class="fas fa-users"></i>
             <span>사람소리 - 독서 콘텐츠</span>
           </a>
@@ -112,11 +118,6 @@
       <h2>무작위 책</h2>
       <div id="random-book-container"></div>
       <button class="btn hover-effect" id="random-book-btn">놀라게 해줘!</button>
-    </div>
-
-    <!-- 로그인 / 회원가입 버튼 -->
-    <div class="login-container">
-      <a href="{% url 'community:login' %}" class="hover-effect btn" id="login-btn">로그인 / 회원가입</a>
     </div>
   </aside>
   
