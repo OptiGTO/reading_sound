@@ -9,7 +9,7 @@
   
   
 
-  <form method="POST" action="">
+  <form method="POST" action="" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     
@@ -31,6 +31,18 @@
   </div>
 
 </section>
+
+
+
+
+
+
+
+<!----------------------------------------------------------------------------------------->
+
+<!-- JavaScript 코드 -->
+
+
 
 <script>
   // 1) 책 검색 함수 (Fetch API 사용)
@@ -82,6 +94,7 @@
         <strong>${book.title}</strong><br>
         저자: ${book.author}<br>
         출판사: ${book.publisher}<br>
+        <img src="${book.image}" style="max-width:100px;"><br>
         <button type="button" onclick='chooseBook(${JSON.stringify(book)})'>이 책 선택</button>
       `;
       resultsDiv.appendChild(bookDiv);

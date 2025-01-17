@@ -55,6 +55,8 @@ def post_view(request):
         form = PostForm()
 
     return render(request, 'community/post.html', {'form': form})
+
+
 def login_view(request):
     return render(request, 'community/login.html')
 

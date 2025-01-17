@@ -150,3 +150,7 @@ NAVER_CLIENT_ID = '_kgSLfQCwC9lIdFQGHaX'
 NAVER_CLIENT_SECRET = 'w8K5A7qPw9'
 
 ALLOWED_HOSTS = ['*']  # 모든 호스트 허용
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

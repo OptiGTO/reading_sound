@@ -38,6 +38,9 @@ class Post(models.Model):
     # 어떤 책 관련 글인지 연결
     book        = models.ForeignKey('Book', on_delete=models.CASCADE, null=True, blank=True)
     
+    # 이미지 첨부
+    image       = models.ImageField(upload_to='post_images/', blank=True, null=True)
+
     # 작성일 (자동 기록)
     created_at  = models.DateTimeField(auto_now_add=True)
     

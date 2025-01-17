@@ -253,6 +253,13 @@
             </article>
 
             <!-- Additional articles... -->
+            {% for post in posts %}
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.content }}</p>
+            {% if post.image %}
+              <img src="{{ post.image.url }}" alt="이미지" />
+            {% endif %}
+          {% endfor %}
           </section>
         </section>
 
