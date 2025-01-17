@@ -3,6 +3,7 @@
 
 from django.db import models
 from django.utils import timezone
+from ckeditor_uploader.fields import RichTextUploadingField  # 파일 업로드 지원
 
 class Book(models.Model):
     # NAVER Book API에서 받아올 수 있는 주요 필드 예시
@@ -22,9 +23,10 @@ class PostCategory(models.TextChoices):
     NOVEL   = 'novel',   '소설'
     NONLIT  = 'nonlit',  '비문학'
 
+
 class Post(models.Model):
     title       = models.CharField(max_length=200) 
-    content     = models.TextField()
+    content = RichTextUploadingField()  # 파일 업로드가 가능한 CKEditor 필드
     
     # 작성자 (인증기능 추가 전까지는 CharField로 간단히)
     writer      = models.CharField(max_length=50, default='익명')

@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'community',
     'corsheaders',
+    'ckeditor',
+    'ckeditor_uploader',
     
 ]
 
@@ -154,3 +156,19 @@ ALLOWED_HOSTS = ['*']  # 모든 호스트 허용
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CKEDITOR_UPLOAD_PATH = 'uploads/ckeditor/'  # 업로드 경로 설정
+
+
+# CKEditor 설정
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+        'extraPlugins': ','.join([
+            'uploadimage',  # 이미지 업로드 플러그인
+            'image2',       # 고급 이미지 플러그인
+        ]),
+    },
+}
