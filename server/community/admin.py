@@ -6,7 +6,7 @@ admin.site.register(Post)
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "publisher", "pubdate")
+    list_display = ("title", "author", "publisher", "pubdate",)
 
     def changelist_view(self, request, extra_context=None):
         if not extra_context:
