@@ -13,12 +13,15 @@ from django.views.decorators.csrf import csrf_exempt
 def home_view(request):
     books = Book.objects.all()
     context = {"books": books}
+    posts = Post.objects.all().order_by('-created_at')
+    context.update({'posts': posts})
     return render(request, "community/index.html", context)
 
 
 def post_view(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)  # 이미지 업로드 고려 시 request.FILES 필요
+        
         if form.is_valid():
             # 1) 먼저 새 글(Post) 객체를 생성 (commit=False)
             post = form.save(commit=False)
