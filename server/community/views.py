@@ -1,12 +1,12 @@
 #File: community/views.py
-
+import json
 from django.shortcuts import render, redirect
-from .models import Book
+from .models import Book, Post
+from .forms import PostForm
+from django.conf import settings
 import requests
 from django.http import JsonResponse
-from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .forms import PostForm
 
 
 
@@ -17,20 +17,44 @@ def home_view(request):
 
 
 def post_view(request):
-    """
-    글쓰기 페이지 (GET) & 글 저장 (POST)
-    """
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)  # 이미지 업로드 고려 시 request.FILES 필요
         if form.is_valid():
-            form.save()  # DB에 저장
-            # 저장 후, 예: 홈으로 이동하거나, 방금 작성한 post 상세 페이지로 이동
-            return redirect('community:home')
+            # 1) 먼저 새 글(Post) 객체를 생성 (commit=False)
+            post = form.save(commit=False)
+
+            # 2) 사용자가 선택한 책 데이터 처리
+            selected_book_data = request.POST.get('selected_book_data', None)
+            if selected_book_data:
+                book_info = json.loads(selected_book_data)
+                
+                # 책이 DB에 있는지 확인 (unique 조건은 적절히 조정)
+                # 예: title과 author로 찾는다거나, link로 찾는다거나
+                # 아래는 가장 단순하게 title + author로 검색한 예시
+                title = book_info.get('title', '')
+                author = book_info.get('author', '')
+                
+                book_obj, created = Book.objects.get_or_create(
+                    title=title,
+                    author=author,
+                    defaults={
+                        'publisher': book_info.get('publisher', ''),
+                        'pubdate': book_info.get('pubdate', ''),
+                        'thumbnail_url': book_info.get('thumbnail_url', ''),
+                        'link': book_info.get('link', ''),
+                    }
+                )
+                # 새로 생성된 Book 객체를 Post에 연결
+                post.book = book_obj
+
+            # 3) Post 객체 최종 저장
+            post.save()
+
+            return redirect('community:home')  # 게시 후 홈으로 이동
     else:
         form = PostForm()
 
-    return render(request, 'community/post.html', {'form': form})  # 작성할 템플릿 경로
-
+    return render(request, 'community/post.html', {'form': form})
 def login_view(request):
     return render(request, 'community/login.html')
 
