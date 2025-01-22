@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
 from .models import Book
-from .services import search_naver_books  # 아까 만든 함수
-# 또는 from .utils import search_naver_books
+from .services import search_naver_books  
 
 def book_search_view(request):
     """

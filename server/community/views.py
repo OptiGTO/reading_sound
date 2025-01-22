@@ -10,18 +10,25 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 
+def get_common_context():
+    return {
+        'events': EventPost.objects.filter(is_active=True),
+        'reading_groups': ReadingGroupPost.objects.filter(is_active=True),
+        'tips': ReadingTipPost.objects.filter(is_active=True),
+    }
+
 def home_view(request):
     books = Book.objects.all()
     posts = Post.objects.all().order_by('-created_at')
     context = {"books": books,
                "posts": posts, 
-               'events': EventPost.objects.filter(is_active=True),
-               'reading_groups': ReadingGroupPost.objects.filter(is_active=True),
-               'tips': ReadingTipPost.objects.filter(is_active=True),} 
+               } 
+    context.update(get_common_context())
     return render(request, "community/index.html", context)
 
 
 def post_view(request):
+    context = get_common_context()
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)  # 이미지 업로드 고려 시 request.FILES 필요
         
@@ -60,26 +67,53 @@ def post_view(request):
     else:
         form = PostForm()
 
-    return render(request, 'community/post.html', {'form': form})
+    return render(request, 'community/post.html', {'form': form},context)
 
 
 def login_view(request):
-    return render(request, 'community/login.html')
+    context = get_common_context()
+    # Add login-specific context if needed
+    return render(request, 'community/login.html', context)
 
 def reading_meeting(request):
-    return render(request, 'community/reading_meeting.html')
+    context = get_common_context()
+    # Add reading meeting-specific context
+    return render(request, 'community/reading_meeting.html', context)
 
 def review_event(request):
-    return render(request, 'community/review_event.html')
+    context = get_common_context()
+    # Add review event-specific context
+    return render(request, 'community/review_event.html', context)
 
 def booktalk(request):
-    return render(request, 'community/booktalk.html')
+    context = get_common_context()
+    # Add booktalk-specific context
+    return render(request, 'community/booktalk.html', context)
 
 def your_content(request):
-    return render(request, 'community/your_content.html')
+    context = get_common_context()
+    # Add your_content-specific context
+    return render(request, 'community/your_content.html', context)
 
 def parrhesia(request):
-    return render(request, 'community/parrhesia.html')
+    context = get_common_context()
+    # Add parrhesia-specific context
+    return render(request, 'community/parrhesia.html', context)
+
+def book_sound(request):
+    context = get_common_context()
+    # Add book_sound-specific context
+    return render(request, 'community/book_sound.html', context)
+
+def recommend_book(request):
+    context = get_common_context()
+    # Add recommend_book-specific context
+    return render(request, 'community/recommend_book.html', context)
+
+def notice(request):
+    context = get_common_context()
+    # Add notice-specific context
+    return render(request, 'community/notice.html', context)
 
 def naver_book_json(request):
     """

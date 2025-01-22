@@ -170,5 +170,7 @@ CKEDITOR_CONFIGS = {
             'uploadimage',  # 이미지 업로드 플러그인
             'image2',       # 고급 이미지 플러그인
         ]),
+        'filebrowserUploadUrl': "/ckeditor/upload/",
+        'filebrowserBrowseUrl': "/ckeditor/browse/",
     },
 }

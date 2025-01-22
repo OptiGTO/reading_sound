@@ -1,13 +1,13 @@
-//File: community/static/community/js/script.js
+// File: community/static/community/js/script.js
 
 /*****************************************************
  * script.js 
- * 1) Single-page navigation for sidebar sections
- * 2) Sub-section navigation for home bulletin boards
- * 3) Other existing functionalities (random book, search, etc.)
+ * 1. Random Book Recommendation
+ * 2. Sub-section Navigation (Home & Post sections only)
+ * 3. Form Handling
  *****************************************************/
 
-// 1. 무작위 책 추천 기능
+// 1. Random Book Recommendation Functionality
 const adminGeneratedBooks = [
   { title: "1984", author: "George Orwell", genre: "Dystopian" },
   { title: "To Kill A Mockingbird", author: "Harper Lee", genre: "Classic" },
@@ -15,341 +15,77 @@ const adminGeneratedBooks = [
   { title: "Pride and Prejudice", author: "Jane Austen", genre: "Romance" },
   { title: "Fahrenheit 451", author: "Ray Bradbury", genre: "Sci-Fi" },
 ];
-// adminGeneratedBooks 배열: 관리자 측에서 미리 선정한 책 목록
 
 const randomBookBtn = document.getElementById("random-book-btn");
 const randomBookContainer = document.getElementById("random-book-container");
 
 function getRandomBook() {
-  // 무작위 책을 선택해 화면에 표시하는 함수
   const randomIndex = Math.floor(Math.random() * adminGeneratedBooks.length);
-  // 0부터 배열 길이-1 범위 내 무작위 정수 생성
   const book = adminGeneratedBooks[randomIndex];
-  // 무작위 인덱스로 책 객체를 가져옴
-
   randomBookContainer.innerHTML = `
     <p><strong>Title:</strong> ${book.title}</p>
     <p><strong>Author:</strong> ${book.author}</p>
     <p><strong>Genre:</strong> ${book.genre}</p>
   `;
-  // 무작위로 선택된 책의 정보(제목, 저자, 장르)를 HTML로 삽입
 }
 
 if (randomBookBtn) {
   randomBookBtn.addEventListener("click", getRandomBook);
 }
-// 버튼이 실제로 존재한다면, 클릭 시 getRandomBook 함수를 실행
+
+// 2. Sub-section Navigation (Only for Home & Post sections)
 
 
-
-// CSRF 토큰 설정 정
-let csrftoken;                                                // CSRF 토큰 변수 선언
+// 3. CSRF Token Handling & Form Submission
+let csrftoken;
 const tokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
-if (tokenElement) {                                          // 토큰 요소가 존재하는지 확인
-    csrftoken = tokenElement.value;
+if (tokenElement) {
+  csrftoken = tokenElement.value;
 }
 
-// fetch 요청에 사용할 기본 헤더 설정
-const fetchHeaders = {
-    'Content-Type': 'application/json'
-};
-
-if (csrftoken) {                                            // CSRF 토큰이 있을 때만 헤더에 추가
-    fetchHeaders['X-CSRFToken'] = csrftoken;
-}
-
-
-
-// 4. 메인 사이드바 네비게이션
-document.addEventListener("DOMContentLoaded", () => {
-
-  // DOM이 로드된 후에 실행
-  const homeSection = document.getElementById("home-section");
-  if (!homeSection) {
-    // If there's no home-section, we assume we're on a separate page (login, etc.)
-    // => Skip all single-page navigation code so normal <a href="..."> links work.
-    return;
-  }
-  const navLinks = document.querySelectorAll(".nav-link");
-  const allSections = document.querySelectorAll(".section");
-
-  // 초기 상태 설정 - 첫 번째 섹션을 기본으로 표시                          // 페이지 로드 시 첫 섹션 표시
-  if (allSections.length > 0) {
-    allSections[0].classList.add("active");
-    if (navLinks.length > 0) {
-      navLinks[0].classList.add("active");
-    }
-  }
-
-  navLinks.forEach((link) => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      const targetSectionId = link.getAttribute("data-section");
-
-      // 모든 섹션과 링크의 active 클래스 제거
-      allSections.forEach((section) => section.classList.remove("active"));
-      navLinks.forEach((navLink) => navLink.classList.remove("active"));
-
-      // 선택된 섹션과 링크만 active 클래스 추가
-      const targetSection = document.getElementById(targetSectionId);
-      if (targetSection) {
-        targetSection.classList.add("active");
-        link.classList.add("active");
-      }
-    });
-  });
-
-  // 5. 홈 게시판의 서브섹션 네비게이션
-  const subLinks = document.querySelectorAll(".sub-link");
-  const subSections = document.querySelectorAll(".sub-section");
-
-  subLinks.forEach((subLink) => {
-    subLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      const targetSubId = subLink.getAttribute("data-subsection");
-
-      // 모든 서브섹션 숨김
-      subSections.forEach((subSec) => {
-        subSec.classList.remove("active");
-      });
-
-      // 클릭된 서브링크에 해당하는 서브섹션만 표시
-      const targetSubSection = document.getElementById(targetSubId);
-      if (targetSubSection) {
-        targetSubSection.classList.add("active");
-      }
-
-      // 활성 서브링크 스타일 업데이트
-      subLinks.forEach((btn) => btn.classList.remove("active"));
-      subLink.classList.add("active");
-    });
-  });
-
-  // 섹션 전환 이벤트
-  document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      
-      // 모든 섹션에서 active 클래스 제거
-      document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
-      });
-      
-      // 클릭된 링크에 해당하는 섹션 활성화
-      const targetId = link.dataset.section;
-      const targetSection = document.getElementById(targetId);
-      targetSection.classList.add('active');
-      
-      // 섹션이 변경될 때마다 무조건 전체 서브섹션으로 초기화
-      if (targetId === 'home-section') {
-        resetToDefaultSubsection(targetSection, 'home-full-board');
-      } 
-      else if (targetId === 'post-section') {
-        resetToDefaultSubsection(targetSection, 'post-full-board');
-      }
-    });
-  });
-
-  // 새로운 초기화 함수
-  function resetToDefaultSubsection(section, defaultSubsectionId) {
-    // 모든 서브섹션 비활성화
-    section.querySelectorAll('.sub-section').forEach(sub => {
-      sub.classList.remove('active');
-    });
-    
-    // 모든 서브링크 버튼 비활성화
-    section.querySelectorAll('.sub-link').forEach(btn => {
-      btn.classList.remove('active');
-    });
-    
-    // 전체 서브섹션 활성화
-    const defaultSubsection = section.querySelector(`#${defaultSubsectionId}`);
-    if (defaultSubsection) {
-      defaultSubsection.classList.add('active');
-    }
-    
-    // 전체 버튼 활성화
-    const defaultButton = section.querySelector(`.sub-link[data-subsection="${defaultSubsectionId}"]`);
-    if (defaultButton) {
-      defaultButton.classList.add('active');
-    }
-  }
-});
-
-
-
-// 새 게시글 제출 함수 수정
-async function handleNewPostSubmit(event) {
+// Generic form handler
+document.querySelectorAll('form').forEach(form => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (submitSpinner) {
-        submitSpinner.style.display = "inline-block";
-    }
-
+    
     try {
-        const formData = new FormData(newPostForm);                     // 폼 데이터 수집
-        const response = await fetch('/api/posts/create/', {            // Django URL 패턴에 맞는 엔드포인트
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrftoken
-            },
-            body: formData
-        });
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrftoken
+        },
+        body: formData
+      });
 
-        if (response.ok) {
-            alert("게시글이 등록되었습니다!");
-            newPostForm.reset();
-        } else {
-            alert("게시글 등록에 실패했습니다.");
-        }
+      if (response.ok) {
+        window.location.reload(); // Refresh after successful submission
+      } else {
+        alert('Form submission failed');
+      }
     } catch (error) {
-        console.error('게시글 등록 중 오류:', error);
-        alert("오류가 발생했습니다.");
-    } finally {
-        if (submitSpinner) {
-            submitSpinner.style.display = "none";
-        }
-    }
-}
-
-
-
-
-// 서브섹션 버튼 클릭 이벤트 처리
-document.querySelectorAll('.sub-link').forEach(button => {
-  button.addEventListener('click', () => {
-    const section = button.closest('.section'); // 현재 섹션 찾기
-    if (!section) return;  // 섹션이 없으면 실행 중단
-    
-    // 현재 섹션 내의 모든 서브섹션 버튼에서 active 제거
-    section.querySelectorAll('.sub-link').forEach(btn => {
-      btn.classList.remove('active');
-    });
-    
-    // 클릭된 버튼 활성화
-    button.classList.add('active');
-    
-    // 모든 서브섹션 숨기기
-    section.querySelectorAll('.sub-section').forEach(sub => {
-      sub.classList.remove('active');
-    });
-    
-    // 선택된 서브섹션 표시
-    const targetId = button.dataset.subsection;
-    const targetSection = section.querySelector(`#${targetId}`);
-    if (targetSection) {  // 대상 섹션이 존재하는 경우에만 실행
-      targetSection.classList.add('active');
+      console.error('Submission error:', error);
+      alert('An error occurred');
     }
   });
 });
 
-// 에세이 버튼 클릭 이벤트 핸들러 수정
-document.querySelector('[data-subsection="home-essay-board"]').addEventListener('click', async function(e) {
-  e.preventDefault();
-  
-  const container = document.querySelector('#home-essay-board .home-grid-container');
-  
-  try {
-      // 로딩 상태 표시
-      container.innerHTML = '<p>데이터를 불러오는 중...</p>';
-      
-      const response = await fetch('/naver-books/', {                    // URL을 기존 패턴에 맞게 수정
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRFToken': csrftoken
-          },
-          credentials: 'same-origin'
-      });
-      
-      if (!response.ok) {
-          throw new Error(`서버 응답 오류: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data.error) {
-          throw new Error(data.error);
-      }
-      
-      // 데이터 표시
-      container.innerHTML = data.items && data.items.length > 0 ?
-          data.items.map(book => `
-              <div class="home-grid-item">
-                  <img 
-                      src="${book.image}" 
-                      alt="${book.title.replace(/<[^>]*>/g, '')}" 
-                      class="grid-image"
-                      onerror="this.src='/static/community/images/no-image.png'"
-                  />
-                  <div class="grid-info">
-                      <h4>${book.title.replace(/<[^>]*>/g, '')}</h4>
-                      <p>${book.author}</p>
-                  </div>
-              </div>
-          `).join('') :
-          '<p>검색된 에세이가 없습니다.</p>';
-          
-  } catch (error) {
-      console.error('API 요청 오류:', error);
-      container.innerHTML = `
-          <p>데이터를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.</p>
-          <p>오류 상세: ${error.message}</p>
-      `;
-  }
-});
-
-
-// 사람소리 섹션 밑 서브섹션 추가를 위한 코드
-
+// 4. Mobile Submenu Toggle
 document.addEventListener('DOMContentLoaded', () => {
   const submenuParent = document.querySelector('.has-submenu');
-  if (submenuParent) {
-    submenuParent.addEventListener('click', function(e) {
-      // On mobile, toggle the submenu on click
-      if (window.innerWidth <= 768) {
-        e.preventDefault(); // prevent default anchor click if needed
-        const submenu = submenuParent.querySelector('.submenu');
-        if (submenu) {
-          submenu.classList.toggle('active'); 
-          // 'active' could be set to display:block in CSS
-        }
-      }
+  
+  if (submenuParent && window.innerWidth <= 768) {
+    submenuParent.addEventListener('click', (e) => {
+      e.preventDefault();
+      submenuParent.querySelector('.submenu').classList.toggle('active');
     });
   }
 });
 
-
-
-// 사이드바 축소 기능 추가
-document.addEventListener('DOMContentLoaded', () => {
-  const sidebar = document.querySelector('.sidebar');
-  let isCollapsed = false;
-
-  // 윈도우 크기 변경에 따라 사이드바 자동 축소
-  window.addEventListener('resize', () => {
-    if (window.innerWidth <= 1200 && !isCollapsed) {
-      sidebar.classList.add('collapsed');
-      isCollapsed = true;
-    } else if (window.innerWidth > 1200 && isCollapsed) {
-      sidebar.classList.remove('collapsed');
-      isCollapsed = false;
-    }
-  });
-
-  // 사이드바에 마우스를 올리면 다시 펴지고, 떠나면 접힘
-  sidebar.addEventListener('mouseenter', () => {
-    if (isCollapsed) {
-      sidebar.classList.remove('collapsed');
-    }
-  });
-
-  sidebar.addEventListener('mouseleave', () => {
-    if (isCollapsed) {
-      sidebar.classList.add('collapsed');
-    }
+// 5. Error Handling for Images
+document.querySelectorAll('img').forEach(img => {
+  img.addEventListener('error', (e) => {
+    e.target.src = '{% static "community/images/no-image.png" %}';
+    e.target.alt = 'Image not available';
   });
 });
-
-
-//쓸데없는 js파일들 정리

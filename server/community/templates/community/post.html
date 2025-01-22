@@ -1,7 +1,11 @@
 <!-- community/templates/community/post.html -->
 
-{% extends 'community/index.html' %}
+{% extends "community/base.html" %}
 {% load static %}
+
+{% block title %}글 작성{% endblock %}
+
+
 
 {% block content %}
 <section class="section active" id="post-section">
