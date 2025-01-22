@@ -282,19 +282,65 @@
     {% endblock %}
   </main>
 
+
+
+
   <!-- 오른쪽 사이드바 -->
   <aside class="sidebar right-sidebar">
+
+    <!-- 검색창 -->
     <div class="search-container">
       <input type="text" id="search-input" placeholder="게시글 검색..." />
       <button class="btn hover-effect" id="search-btn">검색</button>
     </div>
-    <div class="notice-display">
-      <h2>공지사항</h2>
-      <ul>
-        <li>새로운 이벤트가 시작되었습니다!</li>
-        <li>사이트 점검 안내 (1월 15일)</li>
-        <li>봄맞이 독서 챌린지 안내</li>
-      </ul>
+
+    <!-- 이벤트, 독서모임, 독서팁 섹션 -->
+    <div class="sidebar-section">
+        <h2>이벤트</h2>
+        <div class="event-list">
+            {% for event in events %}
+            <div class="event-item">
+                <h4>{{ event.title }}</h4>
+                <p class="event-date">{{ event.event_date|date:"Y.m.d" }}</p>
+                <p class="event-content">{{ event.content|truncatechars:50 }}</p>
+                {% if user.is_staff %}
+                <a href="{% url 'admin:community_eventpost_change' event.id %}" class="edit-link">Edit</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="sidebar-section">
+        <h2>독서모임</h2>
+        <div class="group-list">
+            {% for group in reading_groups %}
+            <div class="group-item">
+                <h4>{{ group.title }}</h4>
+                <p class="meeting-time">{{ group.meeting_time|date:"Y.m.d H:i" }}</p>
+                <p class="group-content">{{ group.content|truncatechars:50 }}</p>
+                {% if user.is_staff %}
+                <a href="{% url 'admin:community_readinggrouppost_change' group.id %}" class="edit-link">Edit</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="sidebar-section">
+        <h2>독서팁</h2>
+        <div class="tip-list">
+            {% for tip in tips %}
+            <div class="tip-item">
+                <h4>{{ tip.title }}</h4>
+                <p class="tip-category">{{ tip.category }}</p>
+                <p class="tip-content">{{ tip.content|truncatechars:50 }}</p>
+                {% if user.is_staff %}
+                <a href="{% url 'admin:community_readingtippost_change' tip.id %}" class="edit-link">Edit</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
     </div>
   </aside>
 

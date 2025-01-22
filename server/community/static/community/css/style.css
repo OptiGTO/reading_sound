@@ -221,40 +221,94 @@
 
 
 
-  /****************************************************
-   * 4. 오른쪽 사이드바
-   ****************************************************/
-  /* Styles specifically for the right-hand sidebar. */
-  .sidebar.right-sidebar {
-    border-right: none;           /* No right border needed on the right sidebar */
-    background-color: #fff5d9;
-    /* Left border for visual separation */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: 250px;                 /* Fixed width similar to left sidebar */
-  }
-  
-  /* Display block for notices on the right sidebar. */
-  .notice-display {
-    background-color: #fcfaf7;    /* Slightly off-white background */
-    border: 1px solid #ece7df;    /* Subtle grayish border */
-    border-radius: 5px;           /* Rounded corners for a softer look */
-    padding: 1rem;                /* Internal spacing */
-    margin-top: 1rem;             /* Gap from elements above */
-  }
-  
-  .notice-display h2 {
-    margin-bottom: 0.5rem;        /* Space below heading */
-    color: #5f4b32;               /* Consistent brown color for text */
-  }
-  
-  /* Bullet points inside the notice list. */
-  .notice-display ul {
-    list-style: disc inside;      /* Shows bullet points inside the container */
-    color: #5f4b32;               /* Brown color for list items */
-  }
-  
+/****************************************************
+* 4. 오른쪽 사이드바 (Updated)
+****************************************************/
+.sidebar.right-sidebar {
+  border-right: none;
+  background-color: #fff5d9;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 250px;
+  padding: 1rem;  /* Added padding for consistency */
+}
+
+.sidebar-section {
+  background-color: #fcfaf7;
+  border: 1px solid #ece7df;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.sidebar-section:hover {
+  transform: translateY(-2px);
+}
+
+.sidebar-section h2 {
+  margin-bottom: 0.8rem;
+  color: #5f4b32;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.event-item,
+.group-item,
+.tip-item {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #ece7df;
+}
+
+.event-item:last-child,
+.group-item:last-child,
+.tip-item:last-child {
+  border-bottom: none;
+}
+
+.event-date,
+.meeting-time,
+.tip-category {
+  font-size: 0.85rem;
+  color: #7f6e58;
+  margin: 0.3rem 0;
+}
+
+.edit-link {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #8a745c;  /* Matched with notice text color */
+  text-decoration: none;
+  margin-top: 0.5rem;
+}
+
+.edit-link:hover {
+  text-decoration: underline;
+  color: #6b5a48;
+}
+
+/* Adjusted existing notice display to match */
+.notice-display {
+  background-color: #fcfaf7;
+  border: 1px solid #ece7df;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.notice-display h2 {
+  margin-bottom: 0.8rem;
+  color: #5f4b32;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.notice-display ul {
+  list-style: disc inside;
+  color: #5f4b32;
+  padding-left: 0;
+}
   
   /****************************************************
    * 5. 탑 바 & 버튼

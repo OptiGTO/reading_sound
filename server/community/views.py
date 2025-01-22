@@ -1,7 +1,7 @@
 #File: community/views.py
 import json
 from django.shortcuts import render, redirect
-from .models import Book, Post
+from .models import Book, Post, EventPost, ReadingGroupPost, ReadingTipPost
 from .forms import PostForm
 from django.conf import settings
 import requests
@@ -12,9 +12,12 @@ from django.views.decorators.csrf import csrf_exempt
 
 def home_view(request):
     books = Book.objects.all()
-    context = {"books": books}
     posts = Post.objects.all().order_by('-created_at')
-    context.update({'posts': posts})
+    context = {"books": books,
+               "posts": posts, 
+               'events': EventPost.objects.filter(is_active=True),
+               'reading_groups': ReadingGroupPost.objects.filter(is_active=True),
+               'tips': ReadingTipPost.objects.filter(is_active=True),} 
     return render(request, "community/index.html", context)
 
 

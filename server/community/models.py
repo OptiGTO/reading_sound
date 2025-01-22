@@ -50,3 +50,28 @@ class Post(models.Model):
     
     def __str__(self):
         return self.title
+
+
+
+
+
+User = get_user_model()
+
+class BasePost(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+class EventPost(BasePost):
+    event_date = models.DateField()
+
+class ReadingGroupPost(BasePost):
+    meeting_time = models.DateTimeField()
+
+class ReadingTipPost(BasePost):
+    category = models.CharField(max_length=50)
