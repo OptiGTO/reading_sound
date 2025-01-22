@@ -4,6 +4,7 @@
 from django.db import models
 from django.utils import timezone
 from ckeditor_uploader.fields import RichTextUploadingField  # 파일 업로드 지원
+from django.contrib.auth import get_user_model
 
 class Book(models.Model):
     # NAVER Book API에서 받아올 수 있는 주요 필드 예시
