@@ -1,15 +1,18 @@
-#File: community/views.py
+# community/views.py
 import json
 from django.shortcuts import render, redirect
-from .models import Book, Post, EventPost, ReadingGroupPost, ReadingTipPost
-from .forms import PostForm
-from django.conf import settings
-import requests
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+import requests
+from .models import Book, Post, EventPost, ReadingGroupPost, ReadingTipPost
+from .forms import PostForm
+from .services import search_naver_books  # Keep service layer separation
 
-
-
+#공용필드
 def get_common_context():
     return {
         'events': EventPost.objects.filter(is_active=True),
@@ -17,57 +20,54 @@ def get_common_context():
         'tips': ReadingTipPost.objects.filter(is_active=True),
     }
 
+
 def home_view(request):
-    books = Book.objects.all()
-    posts = Post.objects.all().order_by('-created_at')
-    context = {"books": books,
-               "posts": posts, 
-               } 
+    context = {
+        "books": Book.objects.all(),
+        "posts": Post.objects.all().order_by('-created_at')
+    }
     context.update(get_common_context())
     return render(request, "community/index.html", context)
 
 
+
 def post_view(request):
     context = get_common_context()
+    
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)  # 이미지 업로드 고려 시 request.FILES 필요
-        
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            # 1) 먼저 새 글(Post) 객체를 생성 (commit=False)
-            post = form.save(commit=False)
+            return handle_post_submission(request, form)
+    
+    return render(request, 'community/post.html', 
+                 {'form': PostForm(), **context})
 
-            # 2) 사용자가 선택한 책 데이터 처리
-            selected_book_data = request.POST.get('selected_book_data', None)
-            if selected_book_data:
-                book_info = json.loads(selected_book_data)
-                
-                # 책이 DB에 있는지 확인 (unique 조건은 적절히 조정)
-                # 예: title과 author로 찾는다거나, link로 찾는다거나
-                # 아래는 가장 단순하게 title + author로 검색한 예시
-                title = book_info.get('title', '')
-                author = book_info.get('author', '')
-                
-                book_obj, created = Book.objects.get_or_create(
-                    title=title,
-                    author=author,
-                    defaults={
-                        'publisher': book_info.get('publisher', ''),
-                        'pubdate': book_info.get('pubdate', ''),
-                        'thumbnail_url': book_info.get('thumbnail_url', ''),
-                        'link': book_info.get('link', ''),
-                    }
-                )
-                # 새로 생성된 Book 객체를 Post에 연결
-                post.book = book_obj
+def handle_post_submission(request, form):
+    try:
+        post = form.save(commit=False)
+        if book_data := process_book_data(request):
+            post.book = book_data
+        post.save()
+        return redirect('community:home')
+    except json.JSONDecodeError:
+        messages.error(request, "Invalid book data format")
+    except Exception as e:
+        messages.error(request, f"Error saving post: {str(e)}")
+    return redirect('community:post')
 
-            # 3) Post 객체 최종 저장
-            post.save()
+def process_book_data(request):
+    if selected_data := request.POST.get('selected_book_data'):
+        book_info = json.loads(selected_data)
+        return Book.objects.get_or_create(
+            title=book_info.get('title', ''),
+            author=book_info.get('author', ''),
+            defaults={k: book_info.get(k, '') for k in [
+                'publisher', 'pubdate', 'thumbnail_url', 'link'
+            ]}
+        )[0]
+    return None
 
-            return redirect('community:home')  # 게시 후 홈으로 이동
-    else:
-        form = PostForm()
-
-    return render(request, 'community/post.html', {'form': form},context)
+# Naver API Views
 
 
 def login_view(request):
@@ -115,41 +115,76 @@ def notice(request):
     # Add notice-specific context
     return render(request, 'community/notice.html', context)
 
-def naver_book_json(request):
-    """
-    Example view that calls the Naver Book Search API 
-    and returns JSON data to the client.
-    """
-    # 1) Get query (keyword) from request GET parameters (or hardcode for testing).
-    query = request.GET.get('query', '주식')  # Default to '주식' if not provided.
 
-    # 2) Define the endpoint and headers.
-    NAVER_API_URL = "https://openapi.naver.com/v1/search/book.json"  # JSON endpoint
-    headers = {
-        "X-Naver-Client-Id": settings.NAVER_CLIENT_ID,
-        "X-Naver-Client-Secret": settings.NAVER_CLIENT_SECRET,
-    }
 
-    # 3) Define any additional query parameters (like display, start).
-    params = {
-        "query": query,
-        "display": 10,       # how many results to display per page
-        "start": 1,         # which page of results to start
-    }
 
-    # 4) Make the request using `requests`.
-    response = requests.get(NAVER_API_URL, headers=headers, params=params)
 
-    # 5) Handle potential errors (e.g., 4xx or 5xx from the Naver API).
-    if response.status_code != 200:
-        return JsonResponse(
-            {"error": f"Failed to fetch data from Naver API. Status code: {response.status_code}"},
-            status=500
+def naver_books(request):
+    if request.method == 'GET':
+        query = request.GET.get('query', '에세이')
+        params = {
+            "query": query,
+            "display": 8,
+            "start": 1,
+        }
+        return fetch_naver_data(params)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+def fetch_naver_data(params):
+    try:
+        response = requests.get(
+            "https://openapi.naver.com/v1/search/book.json",
+            headers={
+                "X-Naver-Client-Id": settings.NAVER_CLIENT_ID,
+                "X-Naver-Client-Secret": settings.NAVER_CLIENT_SECRET,
+            },
+            params=params
         )
+        return JsonResponse(response.json() if response.status_code == 200 
+                          else {"error": "API request failed"}, 
+                          safe=False, 
+                          status=response.status_code)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
-    # 6) Return the JSON response from Naver directly to the client.
-    data = response.json()  # The Naver Book Search API will give JSON
-    return JsonResponse(data, safe=False)
+# Admin Views
+@staff_member_required
+def book_search_view(request):
+    context = {}
+    if request.method == "POST":
+        if keyword := request.POST.get("keyword", "").strip():
+            context.update({
+                "results": search_naver_books(keyword),
+                "keyword": keyword
+            })
+        else:
+            messages.warning(request, "Please enter a search term")
+    return render(request, "admin/book_search.html", context)
+
+@staff_member_required
+def book_add_view(request):
+    if request.method == "POST":
+        book_data = {field: request.POST.get(field) 
+                    for field in Book._meta.get_all_field_names() 
+                    if field in request.POST}
+        
+        if Book.objects.filter(title=book_data['title'], 
+                             author=book_data['author']).exists():
+            messages.warning(request, f"Book already exists: {book_data['title']}")
+        else:
+            Book.objects.create(**book_data)
+            messages.success(request, f"Book added: {book_data['title']}")
+            return redirect(reverse('admin:community_book_changelist'))
+    return redirect(reverse('admin_books_search'))
+
+
+
+
+"""----------------------------------------------------------------------------------------------------------------------------------------------"""
+
+
+
+
 
 
 

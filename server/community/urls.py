@@ -7,9 +7,9 @@ app_name = 'community'
 
 urlpatterns = [
     
-    path('naver-book-json/', views.naver_book_json, name='naver-book-json'),
-    path('naver-book-template/', views.naver_book_template, name='naver-book-template'),
+
     path('naver-books/', views.naver_books, name='naver_books'),
+
     path('post/', views.post_view, name='post'),
     path('login/', views.login_view, name='login'),
     path('book_sound/', views.book_sound, name='book_sound'),
@@ -19,6 +19,8 @@ urlpatterns = [
     path('your_content/', views.your_content, name='your_content'),
     path('parrhesia/', views.parrhesia, name='parrhesia'),
     path('recommend_book/', views.recommend_book, name='recommend_book'),
+
+    
     path('notice/', views.notice, name='notice'),
     path('', views.home_view, name='home'),
 ]

@@ -1,352 +1,140 @@
-<!--File: community/templates/community/index.html-->
-
+<!-- File: community/templates/community/index.html -->
+{% extends "community/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>읽는소리 - 홈</title>
-  
-  <!-- Updated path to CSS -->
-  <link rel="stylesheet" href="{% static 'community/css/style.css' %}" />
 
-  <!-- Font Awesome (Optional) -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
-</head>
+{% block title %}홈{% endblock %}
 
-<body>
-  <!-- 왼쪽 사이드바 -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <!-- Updated logo path -->
-      <img src="{% static 'community/images/logo.png' %}" alt="읽는소리" class="brand-logo" />
-    </div>
-    
-    <!-- 로그인 / 회원가입 버튼 -->
-    <div class="login-container">
-      <a href="{% url 'community:login' %}" class="hover-effect btn" id="login-btn">로그인 / 회원가입</a>
-    </div>
+{% block content %}
 
-   <!-- 내비게이션 메뉴 -->
-<nav class="nav-menu">
-  <ul>
-    <!-- 1) 홈 -->
-    <li>
-      <a href="{% url 'community:home' %}" class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}">
-        <i class="fas fa-home"></i>
-        <span>홈</span>
-      </a>
-    </li>
-
-    <!-- 2) 책소리 - 책 관련 글 -->
-    <li>
-      <a href="{% url 'community:book_sound' %}" class="nav-link{% if request.resolver_match.url_name == 'book_sound' %} active{% endif %}">
-        <i class="fas fa-book"></i>
-        <span>책소리 - 책 관련 글</span>
-      </a>
-    </li>
-
-    <!-- 3) 사람소리 - 독서 콘텐츠 -->
-    <li class="has-submenu">
-      <a href="{% url 'community:reading_meeting' %}" class="nav-link{% if 'group-section' in request.path %} active{% endif %}">
-        <i class="fas fa-users"></i>
-        <span>사람소리 - 독서 콘텐츠</span>
-      </a>
-      <ul class="submenu">
-        <li>
-          <a href="{% url 'community:reading_meeting' %}" class="{% if request.resolver_match.url_name == 'reading_meeting' %}active{% endif %}">
-            <i class="fas fa-users"></i>
-            <span>독서 모임</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'community:review_event' %}" class="{% if request.resolver_match.url_name == 'review_event' %}active{% endif %}">
-            <i class="fas fa-pencil-alt"></i>
-            <span>서평 이벤트</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'community:booktalk' %}" class="{% if request.resolver_match.url_name == 'booktalk' %}active{% endif %}">
-            <i class="fas fa-comments"></i>
-            <span>북토크</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'community:your_content' %}" class="{% if request.resolver_match.url_name == 'your_content' %}active{% endif %}">
-            <i class="fas fa-pencil-alt"></i>
-            <span>당신의 콘텐츠</span>
-          </a>
-        </li>
-        <li>
-          <a href="{% url 'community:parrhesia' %}" class="{% if request.resolver_match.url_name == 'parrhesia' %}active{% endif %}">
-            <i class="fas fa-comments"></i>
-            <span>파르헤시아</span>
-          </a>
-        </li>
-      </ul>
-    </li>
-
-    <!-- 4) 추천 도서 -->
-    <li>
-      <a href="{% url 'community:recommend_book' %}" class="nav-link{% if request.resolver_match.url_name == 'recommend_book' %} active{% endif %}">
-        <i class="fas fa-star"></i>
-        <span>북소리 - 추천 도서</span>
-      </a>
-    </li>
-
-    <!-- 5) 공지사항 -->
-    <li>
-      <a href="{% url 'community:notice' %}" class="nav-link{% if request.resolver_match.url_name == 'notice' %} active{% endif %}">
-        <i class="fas fa-bell"></i>
-        <span>공지사항</span>
-      </a>
-    </li>
-  </ul>
-</nav>
-    
-    <!-- 무작위 책 추천 섹션 -->
-    <div class="random-book-section">
-      <h2>무작위 책</h2>
-      <div id="random-book-container"></div>
-      <button class="btn hover-effect" id="random-book-btn">놀라게 해줘!</button>
-    </div>
-  </aside>
-  
-  <!-- 메인 콘텐츠 영역 -->
-  <main class="content">
-    <!-- 상단 바 -->
-    <header class="top-bar">
-      <div class="user-info" id="user-info">
-        <span id="user-nickname">손님</span>
-      </div>
-    </header>
-
-    {% block content %}
-    <!-- =========================
-         1) HOME SECTION 
-         ========================= -->
-    <section class="section active" id="home-section">
-      <h2>홈 화면</h2>
-      <div class="post-bulletin-nav">
-        <button class="btn hover-effect sub-link active" data-subsection="home-full-board">
-          <i class="fas fa-th-large"></i> 전체
-        </button>
-        <button class="btn hover-effect sub-link" data-subsection="home-essay-board">
-          <i class="fas fa-pencil-alt"></i> 에세이
-        </button>
-        <button class="btn hover-effect sub-link" data-subsection="home-novel-board">
-          <i class="fas fa-book"></i> 소설
-        </button>
-        <button class="btn hover-effect sub-link" data-subsection="home-poetry-board">
-          <i class="fas fa-feather-alt"></i> 시
-        </button>
-        <button class="btn hover-effect sub-link" data-subsection="home-nonlit-board">
-          <i class="fas fa-newspaper"></i> 비문학
-        </button>
-      </div>
-      
-      <div id="home-board-container">
-        <!-- 1) 전체 게시판 -->
-        <section class="sub-section active" id="home-full-board">
-          <h3>전체 게시판</h3>
-          <div class="home-grid-container">
-            
-            {% for book in books %}
-            <div class="home-grid-item">
-              <img src="{{ book.thumbnail_url|default_if_none:'path/to/default_image.png' }}" 
-                   alt="{{ book.title }}" 
-                   class="grid-image">
-              <div class="grid-info">
-                <h4>{{ book.title }}</h4>
-                <p>{{ book.author }}</p>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </section>
-
-        <!-- 2) 에세이 게시판 -->
-
-        <section class="sub-section" id="home-essay-board">
-          <h3>에세이 게시판</h3>
-            <div class="home-grid-container">
-              
-            </div>
-
-          </section>
-        </section>
-
-        <!-- 3) 소설 게시판 -->
-        <section class="sub-section" id="home-novel-board">
-          <h3>소설 게시판</h3>
-            <!-- More articles... -->
-          </section>
-        </section>
-
-        <!-- 4) 시 게시판 -->
-        <section class="sub-section" id="home-poetry-board">
-          <h3>시 게시판</h3>
-            <!-- More articles... -->
-          </section>
-        </section>
-
-        <!-- 5) 비문학 게시판 -->
-        <section class="sub-section" id="home-nonlit-board">
-          <h3>비문학 게시판</h3>
-            <!-- More articles... -->
-          </section>
-        </section>
-      </div> <!-- #home-board-container 끝 -->
-    </section>
-
-    <!-- =========================
-         2) 게시글 SECTION 
-         ========================= -->
-    <section class="section" id="post-section">
-      <h2>게시글</h2>
-      <div class="post-bulletin-nav">
-        <button class="btn hover-effect sub-link active" data-subsection="post-full-board">
-          <i class="fas fa-th-large"></i> 전체
-        </button>
-        <button class="btn hover-effect sub-link" data-subsection="post-essay-board">
-          <i class="fas fa-pencil-alt"></i> 에세이
-        </button>
-        <button class="btn hover-effect sub-link" data-subsection="post-novel-board">
-          <i class="fas fa-book"></i> 소설
-        </button>
-        <button class="btn hover-effect sub-link" data-subsection="post-poetry-board">
-          <i class="fas fa-feather-alt"></i> 시
-        </button>
-        <button class="btn hover-effect sub-link" data-subsection="post-nonlit-board">
-          <i class="fas fa-newspaper"></i> 비문학
-        </button>
-      </div>
-      
-      <div id="post-board-container">
-        <!-- 1) 전체 게시판 -->
-        <section class="sub-section active" id="post-full-board">
-          <h3>전체 게시판</h3>
-          <section class="post-list">
-            <article class="post-card hover-effect">
-              <div class="post-title-vertical">
-                <br>달러구트 꿈 백화점
-              </div>
-              <div class="post-image">
-                <img src="{% static 'community/images/달러구트 소설.png' %}" alt="책 표지" class="post-thumbnail" />
-              </div>
-              <div class="post-info">
-                <h4 class="post-title"><꿈을 도매가로 팝니다></h4>
-                <p class="post-stats"></p>
-                <p class="post-excerpt">
-                  이 책에 대한 사용자의 의견을 간략히 소개합니다...
-                </p>
-              </div>
-            </article>
-
-            <!-- Additional articles... -->
-           
-          </section>
-        </section>
-
-        <!-- 2) 에세이 게시판, 3) 소설 게시판, etc. ... -->
-        
-      </div> <!-- #post-board-container 끝 -->
-    </section> <!-- #post-section 끝 -->
-
-    <!-- Other sections: group, recommended, notice, settings, etc. -->
-    <section class="section" id="group-section">
-      <h2>사람소리</h2>
-      <p>독서 모임 및 관련 활동을 소개하는 공간입니다.</p>
-    </section>
-
-    <section class="section" id="recommended-section">
-      <h2>북소리</h2>
-      <p>관리자 혹은 회원들이 추천하는 도서 목록을 여기서 볼 수 있어요.</p>
-    </section>
-
-    <section class="section" id="notice-section">
-      <h2>공지사항</h2>
-      <p>커뮤니티나 모임에 대한 중요한 소식을 전합니다.</p>
-    </section>
-
-    
-    {% endblock %}
-  </main>
-
-
-
-
-  <!-- 오른쪽 사이드바 -->
-  <aside class="sidebar right-sidebar">
-
-    <!-- 검색창 -->
-    <div class="search-container">
-      <input type="text" id="search-input" placeholder="게시글 검색..." />
-      <button class="btn hover-effect" id="search-btn">검색</button>
-    </div>
-
-    <!-- 이벤트, 독서모임, 독서팁 섹션 -->
-    <div class="sidebar-section">
-        <h2>이벤트</h2>
-        <div class="event-list">
-            {% for event in events %}
-            <div class="event-item">
-                <h4>{{ event.title }}</h4>
-                <p class="event-date">{{ event.event_date|date:"Y.m.d" }}</p>
-                <p class="event-content">{{ event.content|truncatechars:50 }}</p>
-                {% if user.is_staff %}
-                <a href="{% url 'admin:community_eventpost_change' event.id %}" class="edit-link">Edit</a>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="sidebar-section">
-        <h2>독서모임</h2>
-        <div class="group-list">
-            {% for group in reading_groups %}
-            <div class="group-item">
-                <h4>{{ group.title }}</h4>
-                <p class="meeting-time">{{ group.meeting_time|date:"Y.m.d H:i" }}</p>
-                <p class="group-content">{{ group.content|truncatechars:50 }}</p>
-                {% if user.is_staff %}
-                <a href="{% url 'admin:community_readinggrouppost_change' group.id %}" class="edit-link">Edit</a>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="sidebar-section">
-        <h2>독서팁</h2>
-        <div class="tip-list">
-            {% for tip in tips %}
-            <div class="tip-item">
-                <h4>{{ tip.title }}</h4>
-                <p class="tip-category">{{ tip.category }}</p>
-                <p class="tip-content">{{ tip.content|truncatechars:50 }}</p>
-                {% if user.is_staff %}
-                <a href="{% url 'admin:community_readingtippost_change' tip.id %}" class="edit-link">Edit</a>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-  </aside>
-
-  <!-- 플로팅 글쓰기 버튼 -->
-  <div class="floating-btn-container">
-    <a href="{% url 'community:post' %}" class="btn fab hover-effect" id="post-btn">+</a>
+<section class="section active" id="home-section">
+  <h2>홈 화면</h2>
+  <div class="post-bulletin-nav">
+    <button class="btn hover-effect sub-link active" data-subsection="home-full-board">
+      <i class="fas fa-th-large"></i> 전체
+    </button>
+    <button class="btn hover-effect sub-link" data-subsection="home-essay-board">
+      <i class="fas fa-pencil-alt"></i> 에세이
+    </button>
+    <button class="btn hover-effect sub-link" data-subsection="home-novel-board">
+      <i class="fas fa-book"></i> 소설
+    </button>
+    <button class="btn hover-effect sub-link" data-subsection="home-poetry-board">
+      <i class="fas fa-feather-alt"></i> 시
+    </button>
+    <button class="btn hover-effect sub-link" data-subsection="home-nonlit-board">
+      <i class="fas fa-newspaper"></i> 비문학
+    </button>
   </div>
+  
+  <div id="home-board-container">
+    <!-- 1) 전체 게시판 -->
+    <section class="sub-section active" id="home-full-board">
+      <h3>전체 게시판</h3>
+      <div class="home-grid-container">
+        
+        {% for book in books %}
+        <div class="home-grid-item">
+          <img src="{{ book.thumbnail_url|default_if_none:'path/to/default_image.png' }}" 
+               alt="{{ book.title }}" 
+               class="grid-image">
+          <div class="grid-info">
+            <h4>{{ book.title }}</h4>
+            <p>{{ book.author }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
 
-  <!-- Updated path to JavaScript -->
-  <script src="{% static 'community/js/script.js' %}"></script>
-</body>
-</html>
+    <!-- 2) 에세이 게시판 -->
+
+    <section class="sub-section" id="home-essay-board">
+      <h3>에세이 게시판</h3>
+        <div class="home-grid-container">
+          
+        </div>
+
+      </section>
+    </section>
+
+    <!-- 3) 소설 게시판 -->
+    <section class="sub-section" id="home-novel-board">
+      <h3>소설 게시판</h3>
+        <!-- More articles... -->
+      </section>
+    </section>
+
+    <!-- 4) 시 게시판 -->
+    <section class="sub-section" id="home-poetry-board">
+      <h3>시 게시판</h3>
+        <!-- More articles... -->
+      </section>
+    </section>
+
+    <!-- 5) 비문학 게시판 -->
+    <section class="sub-section" id="home-nonlit-board">
+      <h3>비문학 게시판</h3>
+        <!-- More articles... -->
+      </section>
+    </section>
+  </div> <!-- #home-board-container 끝 -->
+</section>
+
+<!-- =========================
+     2) 게시글 SECTION 
+     ========================= -->
+<section class="section" id="post-section">
+  <h2>게시글</h2>
+  <div class="post-bulletin-nav">
+    <button class="btn hover-effect sub-link active" data-subsection="post-full-board">
+      <i class="fas fa-th-large"></i> 전체
+    </button>
+    <button class="btn hover-effect sub-link" data-subsection="post-essay-board">
+      <i class="fas fa-pencil-alt"></i> 에세이
+    </button>
+    <button class="btn hover-effect sub-link" data-subsection="post-novel-board">
+      <i class="fas fa-book"></i> 소설
+    </button>
+    <button class="btn hover-effect sub-link" data-subsection="post-poetry-board">
+      <i class="fas fa-feather-alt"></i> 시
+    </button>
+    <button class="btn hover-effect sub-link" data-subsection="post-nonlit-board">
+      <i class="fas fa-newspaper"></i> 비문학
+    </button>
+  </div>
+  
+  <div id="post-board-container">
+    <!-- 1) 전체 게시판 -->
+    <section class="sub-section active" id="post-full-board">
+      <h3>전체 게시판</h3>
+      <section class="post-list">
+        <article class="post-card hover-effect">
+          <div class="post-title-vertical">
+            <br>달러구트 꿈 백화점
+          </div>
+          <div class="post-image">
+            <img src="{% static 'community/images/달러구트 소설.png' %}" alt="책 표지" class="post-thumbnail" />
+          </div>
+          <div class="post-info">
+            <h4 class="post-title"><꿈을 도매가로 팝니다></h4>
+            <p class="post-stats"></p>
+            <p class="post-excerpt">
+              이 책에 대한 사용자의 의견을 간략히 소개합니다...
+            </p>
+          </div>
+        </article>
+
+        <!-- Additional articles... -->
+       
+      </section>
+    </section>
+
+    <!-- 2) 에세이 게시판, 3) 소설 게시판, etc. ... -->
+    
+  </div> <!-- #post-board-container 끝 -->
+</section> <!-- #post-section 끝 -->
+
+
+
+
+{% endblock %}
