@@ -3,7 +3,7 @@
 
 from django.contrib import admin
 from django.urls import path, include
-from community.admin_views import book_search_view, book_add_view
+from community.views import book_search_view, book_add_view
 from django.conf import settings
 from django.conf.urls.static import static
 

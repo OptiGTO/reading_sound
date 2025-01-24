@@ -34,6 +34,23 @@ if (randomBookBtn) {
 }
 
 // 2. Sub-section Navigation (Only for Home & Post sections)
+document.querySelectorAll('.sub-link').forEach(button => {
+  button.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    // 현재 활성화된 버튼과 섹션 비활성화
+    const parentSection = button.closest('.section');
+    parentSection.querySelectorAll('.sub-link.active').forEach(btn => btn.classList.remove('active'));
+    parentSection.querySelectorAll('.sub-section.active').forEach(section => section.classList.remove('active'));
+    
+    // 새로 선택된 요소 활성화
+    button.classList.add('active');
+    const targetId = button.dataset.subsection;
+    parentSection.querySelector(`#${targetId}`).classList.add('active');
+  });
+});
+
+
 
 
 // 3. CSRF Token Handling & Form Submission
@@ -69,6 +86,9 @@ document.querySelectorAll('form').forEach(form => {
     }
   });
 });
+
+
+
 
 // 4. Mobile Submenu Toggle
 document.addEventListener('DOMContentLoaded', () => {
