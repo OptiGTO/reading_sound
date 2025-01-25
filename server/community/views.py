@@ -150,9 +150,8 @@ def signup(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{error}")
-    elif request.user.is_authenticated:
-        return redirect('community:home')
-    
+    elif request.user.is_authenticated:                              # 이미 로그인 되어있으면 홈으로 이동(사용자의 마지막 페이지로 이동하는건 나중에 추가해야함.)
+        return redirect('community:home')           
     else:
         context['form'] = CustomUserCreationForm()
     

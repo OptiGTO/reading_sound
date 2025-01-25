@@ -212,9 +212,11 @@
   </aside>
 
   <!-- 플로팅 글쓰기 버튼 -->
+  {% if user.is_authenticated %}  
   <div class="floating-btn-container">
     <a href="{% url 'community:post' %}" class="btn fab hover-effect" id="post-btn">+</a>
   </div>
+  {% endif %}
 
   <!-- Updated path to JavaScript -->
   <script src="{% static 'community/js/script.js' %}"></script>
