@@ -205,3 +205,32 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGIN_URL = 'community:login'
 LOGIN_REDIRECT_URL = 'community:home'
 LOGOUT_REDIRECT_URL = 'community:home'
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    # 배포시 실제 도메인 추가
+]
+
+
+SESSION_COOKIE_SECURE = False  # 개발시 False
+SESSION_COOKIE_SAMESITE = 'Lax'  # 기본값 유지
+
+
+
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.security.csrf': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}

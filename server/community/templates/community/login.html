@@ -8,7 +8,7 @@
   <h2>Login</h2>
   {% if form.errors %}
     <div class="alert alert-danger">
-      Invalid username or password
+      잘못된 아이디 또는 비밀번호입니다.
     </div>
   {% endif %}
 
@@ -16,14 +16,20 @@
     {% csrf_token %}
     <div class="form-group">
       {{ form.username.label_tag }}
-      {{ form.username|add_class:"form-control" }}  <!-- 클래스 추가 -->
-  </div>
-  <div class="form-group">
+      {{ form.username|add_class:"form-control" }}  <!-- 아이디 입력 필드 -->
+      {% if form.username.errors %}  <!-- 추가: 사용자명 에러 표시 -->
+        <small class="text-danger">{{ form.username.errors }}</small>
+      {% endif %}
+    </div>
+    <div class="form-group">
       {{ form.password.label_tag }}
-      {{ form.password|add_class:"form-control" }}  <!-- 클래스 추가 -->
-  </div>
+      {{ form.password|add_class:"form-control" }}  <!-- 비밀번호 입력 필드 -->
+      {% if form.password.errors %}  <!-- 추가: 비밀번호 에러 표시 -->
+        <small class="text-danger">{{ form.password.errors }}</small>
+      {% endif %}
+    </div>
     
-    <button type="submit" class="btn btn-primary">Login</button>
-    <a href="{% url 'community:signup' %}" class="btn btn-link">Create Account</a>
+    <button type="submit" class="btn btn-primary">로그인</button>
+    <a href="{% url 'community:signup' %}" class="btn btn-link">회원가입 </a>
   </form>
 {% endblock %}

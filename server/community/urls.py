@@ -1,8 +1,11 @@
 #File: community/urls.py
-
+#
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+
+
+
 
 app_name = 'community'
 
@@ -24,10 +27,7 @@ urlpatterns = [
     path('notice/', views.notice, name='notice'),       # 공지사항 뷰
 
 
-    path('login/', auth_views.LoginView.as_view(            # 로그인 뷰
-        template_name='community/login.html',
-        form_class=CustomAuthForm  # 커스텀 폼 지정
-    ), name='login'),
+    path('login/', views.login_view, name='login'),    # 로그인 뷰
 
     path('logout/', auth_views.LogoutView.as_view(next_page='community:home'), name='logout'),  # 로그아웃 뷰
     path('signup/', views.signup, name='signup'),   # 회원가입 뷰

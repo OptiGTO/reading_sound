@@ -31,7 +31,7 @@
     <!-- 로그인 / 회원가입 버튼 -->
     <div class="login-container">
       {% if user.is_authenticated %}
-    <span>Welcome, {{ user.username }}!</span>
+    <span>당신의 글이 울리는 곳, {{ user.username }}</span>
     <form action="{% url 'logout' %}" method="post" style="display: inline;">
       {% csrf_token %}
       <button type="submit" class="btn hover-effect">로그아웃</button>
@@ -43,6 +43,7 @@
 </div>
 
    <!-- 내비게이션 메뉴 -->
+    
 <nav class="nav-menu">
   <ul>
     <!-- 1) 홈 -->
@@ -135,7 +136,7 @@
     <!-- 상단 바 -->
     <header class="top-bar">
       <div class="user-info" id="user-info">
-        <span id="user-nickname">손님</span>
+        <span id="user-nickname"> {{ user.username }} </span>
       </div>
     </header>
 
@@ -164,7 +165,7 @@
     <div class="sidebar-section">
         <h2>이벤트</h2>
         <div class="event-list">
-            {% for event in events %}
+            {% for event in sidebar.events %}
             <div class="event-item">
                 <h4>{{ event.title }}</h4>
                 <p class="event-date">{{ event.event_date|date:"Y.m.d" }}</p>
@@ -180,7 +181,7 @@
     <div class="sidebar-section">
         <h2>독서모임</h2>
         <div class="group-list">
-            {% for group in reading_groups %}
+            {% for group in sidebar.reading_groups %}
             <div class="group-item">
                 <h4>{{ group.title }}</h4>
                 <p class="meeting-time">{{ group.meeting_time|date:"Y.m.d H:i" }}</p>
@@ -196,7 +197,7 @@
     <div class="sidebar-section">
         <h2>독서팁</h2>
         <div class="tip-list">
-            {% for tip in tips %}
+            {% for tip in sidebar.tips %}
             <div class="tip-item">
                 <h4>{{ tip.title }}</h4>
                 <p class="tip-category">{{ tip.category }}</p>
@@ -219,3 +220,5 @@
   <script src="{% static 'community/js/script.js' %}"></script>
 </body>
 </html>
+
+
