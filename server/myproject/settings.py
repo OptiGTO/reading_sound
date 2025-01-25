@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'ckeditor',
     'ckeditor_uploader',
+    'widget_tweaks',
     
 ]
 
@@ -174,3 +175,33 @@ CKEDITOR_CONFIGS = {
         'filebrowserBrowseUrl': "/ckeditor/browse/",
     },
 }
+
+# CORS 설정
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# 로그인 URL 설정
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+
+
+LOGIN_URL = 'community:login'
+LOGIN_REDIRECT_URL = 'community:home'
+LOGOUT_REDIRECT_URL = 'community:home'

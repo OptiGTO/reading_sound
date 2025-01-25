@@ -1,2 +1,6 @@
 venv/
-ngrok
+ngrok.exe
+*.pyc
+__pycache__/
+db.sqlite3
+media/

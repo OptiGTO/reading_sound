@@ -30,8 +30,17 @@
     
     <!-- 로그인 / 회원가입 버튼 -->
     <div class="login-container">
-      <a href="{% url 'community:login' %}" class="hover-effect btn" id="login-btn">로그인 / 회원가입</a>
-    </div>
+      {% if user.is_authenticated %}
+    <span>Welcome, {{ user.username }}!</span>
+    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn hover-effect">로그아웃</button>
+    </form>
+  {% else %}
+    <a href="{% url 'community:login' %}" class="btn hover-effect">로그인</a>
+    <a href="{% url 'community:signup' %}" class="btn hover-effect">회원가입</a>
+  {% endif %}
+</div>
 
    <!-- 내비게이션 메뉴 -->
 <nav class="nav-menu">
@@ -49,6 +58,13 @@
       <a href="{% url 'community:book_sound' %}" class="nav-link{% if request.resolver_match.url_name == 'book_sound' %} active{% endif %}">
         <i class="fas fa-book"></i>
         <span>책 게시글 </span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'community:reading_meeting' %}" class="nav-link{% if request.resolver_match.url_name == 'reading_meeting' %} active{% endif %}">
+        <i class="fas fa-book"></i>
+        <span>독서 모임 </span>
       </a>
     </li>
 
