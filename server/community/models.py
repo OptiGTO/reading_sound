@@ -17,6 +17,15 @@ class Book(models.Model):
     pubdate      = models.CharField(max_length=20, blank=True, null=True)  # YYYYMMDD 형태가 올 수 있음
     thumbnail_url= models.URLField(blank=True, null=True)
     link         = models.URLField(blank=True, null=True)  # NAVER 도서 링크
+
+    priority = models.PositiveIntegerField(
+        default=0, 
+        null=True, 
+        blank=True,
+        verbose_name='우선순위', 
+        help_text='낮은 숫자가 더 높은 우선순위(1 > 2), 미설정시 자동 정렬'
+    )  # 우선순위 필드 추가
+
     
     def __str__(self):
         return self.title
@@ -31,7 +40,7 @@ class PostCategory(models.TextChoices):
 class Post(models.Model):
     title       = models.CharField(max_length=200) 
     content     = RichTextUploadingField()  
-    writer      = models.ForeignKey(User, on_delete=models.CASCADE, null=True)        # 기존 User 사용
+    writer      = models.ForeignKey(User, on_delete=models.CASCADE)
     
     # 글 태그(분류)
     category    = models.CharField(

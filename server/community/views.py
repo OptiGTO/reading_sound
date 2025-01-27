@@ -240,10 +240,11 @@ def book_add_view(request):
     """관리자용 도서 추가 기능"""
     context = get_common_context(request)
     if request.method == "POST":
+        # 모든 필드 이름을 가져오는 방식 수정
         book_data = {
-            field: request.POST.get(field) 
-            for field in Book._meta.get_all_field_names() 
-            if field in request.POST
+            field.name: request.POST.get(field.name)
+            for field in Book._meta.get_fields()
+            if field.name in request.POST
         }
         
         if Book.objects.filter(

@@ -1,10 +1,14 @@
 from django.contrib import admin
+from django.db import models
 from .models import Post, Book, EventPost, ReadingGroupPost, ReadingTipPost
 # Register your models here.
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ("title", "writer", "category", "created_at",)
+    list_display_links = ("title", "writer", "category", "created_at",)
+    ordering = ("-created_at",)
+
 
     def changelist_view(self, request, extra_context=None):
         if not extra_context:
@@ -16,9 +20,20 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "publisher", "pubdate",)
+    list_display = ("priority", "title", "author", "publisher", "pubdate", "isbn")
+    list_display_links = ("title",)
+    list_editable = ("priority",)
+    ordering = ("priority", "-pubdate")
 
-    def changelist_view(self, request, extra_context=None):
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.order_by(
+            models.F('priority').asc(nulls_last=True),
+            '-pubdate'
+        )
+
+    # 검색 기능 추가
+    def changelist_view(self, request, extra_context=None): #
         if not extra_context:
             extra_context = {}
         extra_context["admin_books_search_url"] = "/admin/books/search/"
