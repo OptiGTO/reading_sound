@@ -2,7 +2,6 @@
 
 from django import forms
 from .models import Post
-from ckeditor.widgets import CKEditorWidget
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
@@ -17,7 +16,24 @@ class PostForm(forms.ModelForm):
                 'style': 'width: 100%', 
                 'placeholder': '제목을 입력하세요'
             }),
-            'content': CKEditorWidget(),
+            'content': forms.Textarea(attrs={
+                'class': 'form-control', 
+                'style': 'width: 100%', 
+                'placeholder': '내용을 입력하세요',
+                'rows': 10,
+                'cols': 100,
+                'height': '600px',
+                'toolbar': 'Basic',
+                'toolbar_Basic': [
+                    ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
+                    ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'],
+                    ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+                    ['Link', 'Unlink'],
+                    ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar'],
+                    ['Source'],
+                ],
+                
+            }),
             'category': forms.Select(attrs={'class': 'form-control'}),
         }
 

@@ -45,9 +45,10 @@ def post_view(request):
     if not request.user.is_authenticated:
         messages.error(request, "로그인이 필요합니다.")
         return redirect('community:login')
+
     
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         
         if form.is_valid():
             try:
@@ -70,35 +71,37 @@ def post_view(request):
                             }
                         )
                         post.book = book
-                    except json.JSONDecodeError as e:
-                        print(f"Book data parsing error: {e}")
-                
-                # 게시글 저장
-                post.save()
-                
+                    except json.JSONDecodeError:
+                        # 책 정보 파싱 오류는 무시하고 계속 진행
+                        pass
                 # 이미지 처리
                 if images := request.FILES.getlist('post_images'):
                     for image in images:
                         PostImage.objects.create(post=post, image=image)
                 
+                post.save()
+                
+                
+                
+                
+
+                # 성공 메시지 + 리다이렉트
                 messages.success(request, "게시물이 성공적으로 작성되었습니다.")
                 return redirect('community:home')
                 
             except Exception as e:
                 print(f"Error saving post: {e}")
-                messages.error(request, f"게시물 저장 중 오류가 발생했습니다: {str(e)}")
+                messages.error(request, "게시물 저장 중 오류가 발생했습니다. 다시 시도해주세요.")
         else:
-            print(f"Form errors: {form.errors}")
+            # 폼 검증 실패 시
             messages.error(request, "입력 형식이 올바르지 않습니다. 다시 확인해주세요.")
     else:
         form = PostForm()
     
     context = {
-        
         'form': form,
+        **get_common_context(request)
     }
-
-    context.update(get_common_context(request))
     
     return render(request, 'community/post.html', context)
 

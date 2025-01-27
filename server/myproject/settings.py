@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'community',
     'corsheaders',
-    'ckeditor',
+    #'ckeditor', #ckeditor 사용하지 말것 사용시 계속 오류남
     #'ckeditor_uploader',
     'widget_tweaks',
     
@@ -170,10 +170,12 @@ ALLOWED_HOSTS = ['*']  # 모든 호스트 허용
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CKEDITOR_UPLOAD_PATH = 'uploads/ckeditor/'  # 업로드 경로 설정
+# CKEDITOR_UPLOAD_PATH = 'uploads/ckeditor/'  # 업로드 경로 설정
 
 
 # CKEditor 설정
+
+"""
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
@@ -187,6 +189,7 @@ CKEDITOR_CONFIGS = {
         'filebrowserBrowseUrl': "/ckeditor/browse/",
     },
 }
+"""
 
 # CORS 설정
 AUTHENTICATION_BACKENDS = [

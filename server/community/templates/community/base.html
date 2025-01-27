@@ -18,7 +18,17 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
-  {% block extrahead %}{% endblock %}
+
+  {% if messages %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    {% for message in messages %}
+      alert("{{ message|escapejs }}");
+    {% endfor %}
+  });
+</script>
+{% endif %}
+
 </head>
 
 <body>

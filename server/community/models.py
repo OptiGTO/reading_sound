@@ -2,7 +2,6 @@
 
 from django.db import models
 from django.utils import timezone
-from ckeditor.fields import RichTextField  # 파일 업로드 지원
 from django.contrib.auth import get_user_model             # User 모델을 가져오는 방식 수정
 
 User = get_user_model()                                   # 파일 상단에서 한 번만 정의
@@ -39,7 +38,7 @@ class PostCategory(models.TextChoices):
 
 class Post(models.Model):
     title       = models.CharField(max_length=200) 
-    content     = RichTextField()
+    content     = models.TextField()
 
     writer      = models.ForeignKey(User, on_delete=models.CASCADE)
     
@@ -78,7 +77,7 @@ class PostImage(models.Model):
 # BasePost와 관련 모델들
 class BasePost(models.Model):
     title = models.CharField(max_length=200)
-    content = RichTextField()
+    content = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
