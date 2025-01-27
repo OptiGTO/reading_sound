@@ -11,21 +11,33 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-import os
-from pathlib import Path
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i)hqz20(!-z$-%cibz=1y8x+s)4&dzr=2--**n7f@$$w59*867'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
+
+
+import os
+from pathlib import Path
+import environ
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+env_file = BASE_DIR / '.env'
+
+if env_file.exists():
+    environ.Env.read_env(str(env_file))
+
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env.bool("DEBUG", default=False)
+
 
 ALLOWED_HOSTS = []
 
@@ -149,8 +161,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 
-NAVER_CLIENT_ID = '_kgSLfQCwC9lIdFQGHaX'
-NAVER_CLIENT_SECRET = 'w8K5A7qPw9'
+NAVER_CLIENT_ID = env('NAVER_CLIENT_ID') # 네이버 클라이언트 ID
+NAVER_CLIENT_SECRET = env('NAVER_CLIENT_SECRET') # 네이버 클라이언트 시크릿
 
 ALLOWED_HOSTS = ['*']  # 모든 호스트 허용
 
