@@ -181,7 +181,7 @@
     display: none;
     position: absolute;
     top: 100%;  /* Places submenu below the parent item */
-    left: 0;    /* Aligns the submenu’s left edge with the parent item’s left edge */
+    left: 0;    /* Aligns the submenu's left edge with the parent item's left edge */
     background-color: #fafafa;
     list-style: none;
     margin: 0;
@@ -840,7 +840,84 @@ input::placeholder {
 }
 
 
+/* 비밀번호 재설정 페이지 스타일 */
+.card {
+  border: none;                                          /* 카드 테두리 제거 */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);             /* 그림자 효과 */
+  border-radius: 15px;                                  /* 모서리 둥글게 */
+}
 
+.card-header {
+  background-color: #f8f9fa;                            /* 헤더 배경색 */
+  border-bottom: 1px solid #eee;                        /* 헤더 구분선 */
+  border-radius: 15px 15px 0 0 !important;             /* 상단 모서리만 둥글게 */
+  padding: 20px;                                        /* 여백 */
+}
+
+.card-header h3 {
+  color: #333;                                          /* 제목 색상 */
+  font-weight: 600;                                     /* 글씨 두께 */
+  margin: 0;                                            /* 마진 제거 */
+}
+
+.card-body {
+  padding: 30px;                                        /* 본문 여백 */
+}
+
+.form-control {
+  height: 50px;                                         /* 입력창 높이 */
+  border-radius: 8px;                                   /* 입력창 모서리 */
+  border: 1px solid #ddd;                              /* 테두리 색상 */
+  padding: 10px 15px;                                  /* 입력창 내부 여백 */
+  font-size: 16px;                                     /* 글자 크기 */
+  transition: all 0.3s ease;                           /* 애니메이션 효과 */
+}
+
+.form-control:focus {
+  border-color: #4a90e2;                               /* 포커스시 테두리 색상 */
+  box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);  /* 포커스시 그림자 */
+}
+
+.btn-primary {
+  height: 50px;                                        /* 버튼 높이 */
+  background-color: #4a90e2;                           /* 버튼 배경색 */
+  border: none;                                        /* 테두리 제거 */
+  font-size: 16px;                                     /* 글자 크기 */
+  font-weight: 600;                                    /* 글자 두께 */
+  border-radius: 8px;                                  /* 모서리 둥글게 */
+  transition: all 0.3s ease;                           /* 애니메이션 효과 */
+}
+
+.btn-primary:hover {
+  background-color: #357abd;                           /* 호버시 배경색 */
+  transform: translateY(-1px);                         /* 호버시 살짝 위로 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);           /* 호버시 그림자 */
+}
+
+.card-footer {
+  background-color: #f8f9fa;                           /* 푸터 배경색 */
+  border-top: 1px solid #eee;                          /* 푸터 구분선 */
+  border-radius: 0 0 15px 15px !important;            /* 하단 모서리만 둥글게 */
+  padding: 20px;                                       /* 여백 */
+}
+
+.card-footer a {
+  color: #4a90e2;                                      /* 링크 색상 */
+  text-decoration: none;                               /* 밑줄 제거 */
+  font-weight: 600;                                    /* 글자 두께 */
+}
+
+.card-footer a:hover {
+  color: #357abd;                                      /* 호버시 링크 색상 */
+  text-decoration: underline;                          /* 호버시 밑줄 */
+}
+
+.alert {
+  border-radius: 8px;                                  /* 알림창 모서리 */
+  padding: 15px 20px;                                  /* 알림창 여백 */
+  margin-bottom: 10px;                                 /* 알림창 간격 */
+  border: none;                                        /* 테두리 제거 */
+}
 
 
   /****************************************************
@@ -955,4 +1032,18 @@ input::placeholder {
       grid-template-columns: 1fr;             /* 1열로 변경 */
     }
   }
+  
+
+
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;                                 /* 모바일에서의 여백 */
+    }
+    
+    .card {
+        margin: 10px;                                    /* 모바일에서의 카드 여백 */
+    }
+}
   

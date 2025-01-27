@@ -28,18 +28,21 @@ class BookAdmin(admin.ModelAdmin):
 
 @admin.register(EventPost)
 class EventPostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'event_date', 'is_active')
-    list_filter = ('is_active', 'event_date')
+    list_display = ('title', 'author', 'event_date', 'is_active', 'is_pinned', 'is_deleted')
+    list_filter = ('is_active', 'event_date', 'is_pinned', 'is_deleted')
     search_fields = ('title', 'content')
+    list_editable = ('is_active', 'is_pinned')
 
 @admin.register(ReadingGroupPost)
 class ReadingGroupAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'meeting_time', 'is_active')
-    list_filter = ('is_active', 'meeting_time')
+    list_display = ('title', 'author', 'meeting_time', 'is_active', 'is_pinned', 'is_deleted')
+    list_filter = ('is_active', 'meeting_time', 'is_pinned', 'is_deleted')
     search_fields = ('title', 'content')
+    list_editable = ('is_active', 'is_pinned')
 
 @admin.register(ReadingTipPost)
 class ReadingTipAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'category', 'is_active')
-    list_filter = ('is_active', 'category')
+    list_display = ('title', 'author', 'category', 'is_active', 'is_pinned', 'is_deleted')
+    list_filter = ('is_active', 'category', 'is_pinned', 'is_deleted')
     search_fields = ('title', 'content')
+    list_editable = ('is_active', 'is_pinned')

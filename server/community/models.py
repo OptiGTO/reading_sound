@@ -1,13 +1,16 @@
 # File: community/models.py
 
-
 from django.db import models
 from django.utils import timezone
 from ckeditor_uploader.fields import RichTextUploadingField  # 파일 업로드 지원
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model             # User 모델을 가져오는 방식 수정
 
+User = get_user_model()                                   # 파일 상단에서 한 번만 정의
+
+# 책 모델
 class Book(models.Model):
     # NAVER Book API에서 받아올 수 있는 주요 필드 예시
+    isbn         = models.CharField(max_length=13, unique=True, null=True)
     title        = models.CharField(max_length=200)
     author       = models.CharField(max_length=100, blank=True, null=True)
     publisher    = models.CharField(max_length=100, blank=True, null=True)
@@ -27,10 +30,8 @@ class PostCategory(models.TextChoices):
 
 class Post(models.Model):
     title       = models.CharField(max_length=200) 
-    content = RichTextUploadingField()  # 파일 업로드가 가능한 CKEditor 필드
-    
-    # 작성자 (인증기능 추가 전까지는 CharField로 간단히)
-    writer      = models.CharField(max_length=50, default='익명')
+    content     = RichTextUploadingField()  
+    writer      = models.ForeignKey(User, on_delete=models.CASCADE, null=True)        # 기존 User 사용
     
     # 글 태그(분류)
     category    = models.CharField(
@@ -52,17 +53,16 @@ class Post(models.Model):
         return self.title
 
 
-
-
-
-User = get_user_model()
-
+# BasePost와 관련 모델들
 class BasePost(models.Model):
     title = models.CharField(max_length=200)
-    content = models.TextField()
+    content = RichTextUploadingField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+    is_pinned = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
@@ -74,4 +74,13 @@ class ReadingGroupPost(BasePost):
     meeting_time = models.DateTimeField()
 
 class ReadingTipPost(BasePost):
-    category = models.CharField(max_length=50)
+    CATEGORY_CHOICES = [
+        ('reading', '독서 팁'),
+        ('writing', '글쓰기 팁'),
+        ('other', '기타'),
+    ]
+    category = models.CharField(
+        max_length=50,
+        choices=CATEGORY_CHOICES,
+        default='reading'
+    )

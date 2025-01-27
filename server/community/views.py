@@ -157,6 +157,14 @@ def signup(request):
     
     return render(request, 'community/signup.html', context)
 
+
+# 비밀번호 찾기 뷰 (수정 버전)
+def password_reset(request):
+    """비밀번호 찾기 페이지 렌더링"""
+    context = get_common_context(request)
+    return render(request, 'community/password_reset.html', context)
+
+
 # 로그인 뷰 (수정 버전)
 def login_view(request):
     """로그인 페이지 렌더링 및 로그인 처리"""
