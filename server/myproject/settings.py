@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'community',
     'corsheaders',
     'ckeditor',
-    'ckeditor_uploader',
+    #'ckeditor_uploader',
     'widget_tweaks',
     
 ]

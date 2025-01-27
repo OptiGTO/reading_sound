@@ -1,0 +1,1049 @@
+/****************************************************
+ * 1. 전역 리셋 & 박스 사이징
+ ****************************************************/
+/* This section resets default margins/paddings and 
+   ensures all elements use border-box sizing. */
+
+   * {
+    margin: 0;      /* Removes all default margins on every element */
+    padding: 0;     /* Removes all default padding on every element */
+    box-sizing: border-box;  /* Makes width/height include border & padding */
+  }
+  
+  
+  /****************************************************
+   * 2. 바디 & 기본 레이아웃
+   ****************************************************/
+  /* Sets up the body as a flex container with a light
+     background color and a default font. */
+  
+  body {
+    display: flex;                /* Turns <body> into a flex container */
+    min-height: 100vh;            /* Ensures the body is at least full viewport height */
+    justify-content: center;      /* Centers content horizontally */
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
+    /* Sets a clean, modern font stack */
+    background-color: #fff5d9;    /* Applies a light beige background color */
+  }
+  
+  
+  /****************************************************
+   * 3. 왼쪽 사이드바
+   ****************************************************/
+  /* Styles for the main left sidebar: width, background,
+     and layout. */
+  
+  .sidebar {
+    width: 250px;                 /* Fixed width for the sidebar */
+    background-color: #ffe6a6;    /* Light beige background */
+    padding: 1rem;                /* Internal spacing on all sides */
+    border-right: 2px solid #d8c9b7; 
+    /* Thin border on the right side for separation */
+    display: flex;                /* Makes the sidebar a flex container */
+    flex-direction: column;       /* Arranges children vertically */
+    justify-content: space-between; 
+    /* Distributes items: top, middle, bottom */
+    transition: width 0.3s ease;  /* Smooth transition when width changes */
+    overflow-x: hidden;           /* Hides horizontal scroll if content overflows */
+  }
+  
+  /* When the sidebar is in a "collapsed" state. */
+  .sidebar.collapsed {
+    width: 60px;                  /* Narrower width for collapsed mode */
+  }
+  
+  /* Elements to hide when the sidebar is collapsed. */
+  .sidebar.collapsed .brand-title,
+  .sidebar.collapsed .random-book-section,
+  .sidebar.collapsed .login-container {
+    display: none;                /* Hide these sections entirely */
+  }
+  
+  /* Adjust menu links in collapsed mode. */
+  .sidebar.collapsed .nav-menu .nav-link {
+    padding: 0.5rem;              /* Smaller padding */
+    text-align: center;           /* Center icons */
+  }
+  
+  /* Hide the text span; keep icons only. */
+  .sidebar.collapsed .nav-menu .nav-link span {
+    display: none;                /* No text label in collapsed mode */
+  }
+  
+  /* Increase icon size in collapsed mode. */
+  .sidebar.collapsed .nav-menu .nav-link i {
+    font-size: 1.5rem;            /* Bigger icons */
+    margin: 0;                    /* Remove default margin */
+  }
+  
+  /* Sidebar header area, for branding or logo. */
+  .sidebar-header {
+    text-align: center;           /* Centers content horizontally */
+    padding: 0.5rem 0;            /* Vertical padding top and bottom */
+    margin-bottom: 0.5rem;        /* Space below the header area */
+  }
+  
+  /* Logo image settings. */
+  .brand-logo {
+    max-width: 100px;             /* Limits the maximum width of the logo */
+    height: auto;                 /* Keeps aspect ratio */
+    display: block;               /* Makes it a block element for margin auto to work */
+    margin: 0 auto;               /* Centers the logo horizontally */
+  }
+  
+  /* Smaller logo when sidebar is collapsed. */
+  .sidebar.collapsed .brand-logo {
+    max-width: 40px;              /* Reduced width to fit collapsed sidebar */
+    padding: 5px;                 /* Optional small padding around the logo */
+  }
+  
+  /* Brand title text. */
+  .sidebar-header .brand-title {
+    font-family: Georgia, "Times New Roman", serif; 
+    /* Classic serif font for the brand title */
+    font-size: 1.5rem;            /* Larger font size */
+    color: #5f4b32;               /* Darker brown text */
+    margin-bottom: 1rem;          /* Space below the title */
+  }
+  
+  /* Navigation menu list reset. */
+  .nav-menu ul {
+    list-style-type: none;        /* Removes bullets from the list */
+  }
+  
+  /* Links within the sidebar menu. */
+  .nav-menu .nav-link {
+    display: block;               /* Full-width clickable area */
+    text-decoration: none;        /* Removes underline for links */
+    font-size: 1rem;              /* Medium font size */
+    color: #5f4b32;               /* Dark brown text color */
+    padding: 0.5rem 0;            /* Vertical padding */
+    transition: color 0.3s ease;  /* Smooth color change on hover/focus */
+  }
+  
+  /* Hover effect for nav links. */
+  .nav-menu .nav-link:hover {
+    color: #9a8469;               /* Lighter brown on hover */
+  }
+  
+  /* Section for displaying random book info. */
+  .random-book-section {
+    margin: 2rem 0;               /* Vertical spacing above and below */
+    padding: 1rem;                /* Internal padding */
+    background-color: #fcfaf7;    /* Slightly off-white background */
+    border: 1px solid #ece7df;    /* Light border around the box */
+    border-radius: 5px;           /* Subtle rounded corners */
+  }
+  
+  /* Random book section title style. */
+  .random-book-section h2 {
+    color: #5f4b32;               /* Dark brown text color */
+    margin-bottom: 0.5rem;        /* Space below the heading */
+  }
+  
+  /* Container for login button, placed at bottom of sidebar. */
+  .login-container {
+  }
+
+  #login-btn {
+    background-color: #5f4b32;    /* 어두운 갈색 배경 */
+    color: #fff;                  /* 흰색 텍스트 */
+    border: none;                 /* 테두리 없음 */
+    border-radius: 4px;           /* 모서리 둥글게 */
+    cursor: pointer;              /* 호버시 포인터 커서 */
+    transition: background-color 0.3s ease;  /* 부드러운 호버 효과 */
+    position: relative;
+    width: 100%;                  /* 부모 요소의 너비로 변경 */
+    max-width: 220px;            /* 최대 너비 설정 */
+    height: auto;                 /* 높이 자동 조정 */
+    font-size: 1.2rem;           /* 글자 크기 증가 */
+    padding: 15px 20px;          /* 패딩 증가 */
+    margin: 15px auto;           /* 상하 여백 증가 및 중앙 정렬 */
+  }
+
+
+
+  .nav-menu .nav-link i {
+    margin-right: 10px;           /* Gap between the icon and the text */
+    width: 20px;                  /* Consistent icon width to align text */
+    text-align: center;           /* Center the icon in its space */
+  }
+  
+
+
+    /*사람 섹션 밑 서브 섹션 추가를 위한 css스타일링 Assuming .nav-menu ul li has position relative or absolute styling */
+  .nav-menu ul li.has-submenu {
+    position: relative;
+  }
+
+  /* Hide submenu by default */
+  .nav-menu ul li.has-submenu .submenu {
+    display: none;
+    position: absolute;
+    top: 100%;  /* Places submenu below the parent item */
+    left: 0;    /* Aligns the submenu's left edge with the parent item's left edge */
+    background-color: #fafafa;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: 180px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+  }
+
+  /* Show on hover */
+  .nav-menu ul li.has-submenu:hover > .submenu {
+    display: block;
+  }
+
+  /* Submenu links styling */
+  .nav-menu ul li.has-submenu .submenu li a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+  }
+
+  .nav-menu ul li.has-submenu .submenu li a:hover {
+    background-color: #ddd; 
+  }
+
+
+    .submenu {
+        top: 100%;
+        left: 0;
+    }
+
+  .nav-menu ul li.has-submenu .submenu.active {
+     display: block;
+  }
+    
+
+
+
+/****************************************************
+* 4. 오른쪽 사이드바 (Updated)
+****************************************************/
+.sidebar.right-sidebar {
+  border-right: none;
+  background-color: #fff5d9;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 250px;
+  padding: 1rem;  /* Added padding for consistency */
+}
+
+.sidebar-section {
+  background-color: #fcfaf7;
+  border: 1px solid #ece7df;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.sidebar-section:hover {
+  transform: translateY(-2px);
+}
+
+.sidebar-section h2 {
+  margin-bottom: 0.8rem;
+  color: #5f4b32;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.event-item,
+.group-item,
+.tip-item {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #ece7df;
+}
+
+.event-item:last-child,
+.group-item:last-child,
+.tip-item:last-child {
+  border-bottom: none;
+}
+
+.event-date,
+.meeting-time,
+.tip-category {
+  font-size: 0.85rem;
+  color: #7f6e58;
+  margin: 0.3rem 0;
+}
+
+.edit-link {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #8a745c;  /* Matched with notice text color */
+  text-decoration: none;
+  margin-top: 0.5rem;
+}
+
+.edit-link:hover {
+  text-decoration: underline;
+  color: #6b5a48;
+}
+
+/* Adjusted existing notice display to match */
+.notice-display {
+  background-color: #fcfaf7;
+  border: 1px solid #ece7df;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.notice-display h2 {
+  margin-bottom: 0.8rem;
+  color: #5f4b32;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.notice-display ul {
+  list-style: disc inside;
+  color: #5f4b32;
+  padding-left: 0;
+}
+  
+  /****************************************************
+   * 5. 탑 바 & 버튼
+   ****************************************************/
+  /* The main content area that stretches between sidebars. */
+  .content {
+    flex: 1;                      /* Fills remaining space in flex layout */
+    padding: 1rem 2rem;           /* Padding around content */
+    display: flex;                /* Another flex container */
+    flex-direction: column;       /* Content flows vertically */
+    max-width: 1200px;           /* Constrains the maximum width for readability */
+  }
+  
+  /* Top bar typically holds user info, settings, etc. */
+  .top-bar {
+    display: flex;                /* Horizontal arrangement */
+    justify-content: space-between; 
+    /* Spreads items to the edges (logo/user info) */
+    align-items: center;          /* Vertically centers items */
+    margin-bottom: 1rem;          /* Spacing below the top bar */
+  }
+  
+  /* Basic user info styling, e.g., "Welcome, User" */
+  .user-info {
+    font-size: 1rem;              /* Standard font size */
+    color: #5f4b32;               /* Brown color for text */
+  }
+  
+  /* Shared button styles throughout the site. */
+  .btn {
+    background-color: #5f4b32;    /* Dark brown background */
+    color: #fff;                  /* White text for contrast */
+    border: none;                 /* No border */
+    border-radius: 4px;           /* Slightly rounded corners */
+    padding: 0.6rem 1rem;         /* Spacing for comfortable click area */
+    cursor: pointer;              /* Pointer cursor on hover */
+    font-size: 1rem;              /* Medium font size */
+    transition: background-color 0.3s ease; 
+    /* Smooth hover effect */
+    position: relative;           /* Positioned relative for spinner overlay */
+  }
+  
+  /* Hover state for buttons. */
+  .btn:hover {
+    background-color: #9a8469;    /* Lighter shade of brown */
+  }
+  
+  /* Class to enable subtle "lift" effect on hover. */
+  .hover-effect {
+    transition: transform 0.2s ease; 
+    /* Smooth transformation */
+  }
+  
+  .hover-effect:hover {
+    transform: translateY(-2px);  /* Moves element slightly upwards */
+  }
+  
+  /* Loading spinner that can appear on button while submitting. */
+  .spinner {
+    width: 1em;                   /* Spinner diameter relative to text size */
+    height: 1em;                  /* Same as width for a circle */
+    border: 2px solid #ccc;       /* Light grey ring */
+    border-top: 2px solid #5f4b32; 
+    /* Darker brown on top for the spinning effect */
+    border-radius: 50%;           /* Circular shape */
+    animation: spin 1s linear infinite; 
+    /* Continuous rotation */
+    display: none;                /* Hidden by default */
+    position: absolute;           /* Positioned within parent button */
+    left: 10px;                   /* Slightly from the left edge */
+    top: 50%;                     /* Vertically centered */
+    transform: translateY(-50%);  /* Perfect vertical centering */
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+    /* Keyframe for continuous 360 rotation */
+  }
+  
+  
+  /****************************************************
+   * 6. 포스트 리스트 & 카드 (REVISED)
+   ****************************************************/
+  /* Grid container for post listings. */
+  .post-list {
+    display: grid;                /* CSS grid layout */
+    grid-template-columns: 1fr 1fr; 
+    /* Two columns of equal width */
+    gap: 1.5rem;                  /* Horizontal & vertical gap between cards */
+    justify-content: space-between; 
+    /* Distributes columns across the available space */
+  }
+  
+  /* Basic styling for each post card. */
+  .post-card {
+    width: 100%;                  /* Fills the parent grid column width */
+    height: auto;
+    min-height: 200px;            /* Ensures some minimum height for card content */
+    display: flex;                /* Flex layout inside card */
+    background-color: #fcfaf7;    /* Off-white background */
+    border: 1px solid #ece7df;    /* Light border */
+    border-radius: 8px;           /* Slight rounding of corners */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /* Subtle drop shadow for depth */
+    overflow: hidden;             /* Hide any child overflow */
+    position: relative;           /* For positioning child elements if needed */
+  }
+  
+  /* Vertical title area on the left side of the card. */
+  .post-title-vertical {
+    writing-mode: vertical-rl;    /* Vertical writing mode (right-to-left) */
+    text-orientation: mixed;      /* Proper orientation for vertical text */
+    font-size: 1.5rem;            /* Larger text size for emphasis */
+    font-weight: bold;           /* Bold for visibility */
+    color: #5f4b32;               /* Brown text color */
+    background-color: #f2ebe0;    /* Slightly darker beige for contrast */
+    padding: 1rem;                /* Space around the vertical text */
+    display: flex;                /* Center the text vertically & horizontally */
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #d8c9b7; 
+    /* Divider between text panel and main content */
+    position: relative;           /* Stacking context if needed */
+    z-index: 1;                   /* Ensures text panel is above the image layer */
+  }
+  
+  /* Container for the book/post image, shifted to the left. */
+  .post-image {
+    flex: 0 0 auto;               /* Prevents the image area from shrinking */
+    position: relative;           /* For offset positioning */
+    left: -30px;                  /* Moves the image left to overlap the vertical bar */
+    margin-right: -30px;          /* Pulls it a bit into the content area */
+    height: auto;
+    display: flex;                /* Center image vertically/horizontally */
+    align-items: center;
+    justify-content: center;
+    z-index: 0;                   /* Sits behind the vertical text panel */
+  }
+  
+  /* Ensures the thumbnail scales correctly. */
+  .post-image .post-thumbnail {
+    max-width: 100%;             /* Constrains the image width to container */
+    height: auto;                /* Maintains aspect ratio */
+    object-fit: contain;         /* Ensures full image is visible */
+    display: block;              /* Removes any inline spacing issues */
+  }
+  
+  /* The main info area for the post (title, excerpt, etc.). */
+  .post-info {
+    flex: 1;                     /* Takes up remaining horizontal space */
+    padding: 1rem 1rem 1rem 2rem; 
+    /* More space on the left to accommodate the offset image */
+    border-left: 1px solid #d8c9b7;  
+    /* Divider from the image area */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;     /* Vertically center the text */
+    color: #5f4b32;              /* Brown text color for consistency */
+  }
+  
+  /* Post title style inside .post-info */
+  .post-info h3 {
+    margin-bottom: 0.75rem;       /* Space below the title */
+    font-size: 1.2rem;            /* Slightly larger font */
+  }
+  
+  /* Default spacing for paragraphs */
+  .post-info p {
+    margin-bottom: 0.5rem;        /* Space below each paragraph */
+  }
+  
+  /* Last paragraph can have a bit more space at the end. */
+  .post-info p:last-child {
+    margin-bottom: 1rem;
+  }
+  
+  /* Hover effect: subtle lift and bigger shadow. */
+  .post-card.hover-effect:hover {
+    transform: translateY(-2px);  /* Slight upward shift */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15); 
+    /* More pronounced shadow */
+  }
+  
+  
+  /****************************************************
+   * 7. 검색 컨테이너 & 공지
+   ****************************************************/
+  /* Container for the search bar and button. */
+  .search-container {
+    display: flex;                /* Horizontal layout */
+    gap: 10px;                    /* Spacing between elements */
+    align-items: center;          /* Vertically center the input/button */
+    justify-content: center;      /* Center content horizontally */
+    margin-bottom: 20px;          /* Space below the search area */
+  }
+  
+  /* Search input styling. */
+  #search-input {
+    width: 150px;                 /* Reasonable width for a small search box */
+    height: 40px;                 /* Consistent height with the button */
+    font-size: 16px;              /* Readable text size */
+    padding: 5px 10px;            /* Spacing inside the input */
+    border-radius: 4px;           /* Rounded corners */
+    border: 1px solid #ccc;       /* Light gray border */
+  }
+  
+  /* Focus state for the input. */
+  #search-input:focus {
+    border-color: #9a8469;        /* Slightly different brown border on focus */
+    outline: none;                /* Removes the default browser outline */
+    box-shadow: 0 0 5px rgba(154,132,105,0.5); 
+    /* Glow around the input for focus feedback */
+  }
+  
+  /* Placeholder text style. */
+  #search-input::placeholder {
+    color: #999999;               /* Gray text for placeholder */
+    font-style: italic;           /* Gives placeholder a different style */
+  }
+  
+  /* Search button next to the input. */
+  #search-btn {
+    width: 100px;                 /* Similar height to input but narrower width */
+    height: 40px;                 /* Matches input height for a clean lineup */
+    font-size: 16px;              /* Readable text size */
+    padding: 5px 10px;            /* Internal padding */
+    border-radius: 4px;           /* Rounded corners */
+    border: none;                 /* No border */
+    background-color: #9a8469;    /* Mid-brown color */
+    color: #ffffff;               /* White text for contrast */
+    cursor: pointer;              /* Pointer cursor on hover */
+    transition: background-color 0.3s ease;  
+    /* Smooth color change on hover */
+  }
+  
+  /* Hover state for search button. */
+  #search-btn:hover {
+    background-color: #7d6658;    /* Slightly darker shade of brown */
+  }
+  
+  
+  /****************************************************
+   * 8. 게시글 섹션 버킷 (섹션, 서브섹션)
+   ****************************************************/
+  /* Overall sections are hidden by default. */
+  .section {
+    display: none;                /* Hide all sections initially */
+  }
+  
+  /* .active class makes the chosen section visible. */
+  .section.active {
+    display: block;               /* Only the active section is shown */
+  }
+  
+  /* Sub-sections also hidden by default. */
+  .sub-section {
+    display: none;
+  }
+  
+  /* Active sub-section becomes visible. */
+  .sub-section.active {
+    display: block;
+  }
+  
+  /* Navigation container for the home bulletin boards (tabs). */
+  .post-bulletin-nav {
+    display: flex;
+    justify-content: flex-start;  /* Aligns buttons to the left */
+    align-items: center;
+    gap: 10px;                    /* Spacing between tab buttons */
+    margin-bottom: 20px;          /* Space below the nav bar */
+  }
+  
+  /* Active sub-link styling (e.g., highlight the selected tab). */
+  .post-bulletin-nav .sub-link.active {
+    background-color: #9a8469;    /* Brown background for the active tab */
+    color: #ffffff;               /* White text for contrast */
+    border: none;                 /* Removes any default border */
+  }
+  
+  /* Default style for sub-link tabs. */
+  .post-bulletin-nav .sub-link {
+    background-color: #f2ebe0;    /* Light beige background */
+    color: #5f4b32;               /* Brown text */
+    border: none;                 /* No border */
+    padding: 10px 20px;           /* Comfortable click/touch area */
+    cursor: pointer;              /* Pointer on hover */
+    border-radius: 4px;           /* Slightly rounded corners */
+    transition: background-color 0.3s ease; 
+    /* Smooth change on hover/focus */
+  }
+
+  /****************************************************
+   * 9. 홈 섹션 버킷 (섹션, 서브섹션)
+   ****************************************************/
+  /* Overall sections are hidden by default. */
+  .section {
+    display: none;                /* Hide all sections initially */
+  }
+  
+  /* .active class makes the chosen section visible. */
+  .section.active {
+    display: block;               /* Only the active section is shown */
+  }
+  
+  /* Sub-sections also hidden by default. */
+  .sub-section {
+    display: none;
+  }
+  
+  /* Active sub-section becomes visible. */
+  .sub-section.active {
+    display: block;
+  }
+  
+  /* Navigation container for the home bulletin boards (tabs). */
+  .home-bulletin-nav {
+    display: flex;
+    justify-content: flex-start;    /* 버튼들을 왼쪽으로 정렬 */
+    align-items: center;            /* 세로 중앙 정렬 */
+    gap: 10px;                      /* 탭 버튼 사이 간격 */
+    margin-bottom: 20px;            /* 네비게이션 바 아래 여백 */
+  }
+  
+  /* Active sub-link styling (e.g., highlight the selected tab). */
+  .home-bulletin-nav .sub-link.active {
+    background-color: #9a8469;      /* 활성 탭의 갈색 배경 */
+    color: #ffffff;                 /* 대비를 위한 흰색 텍스트 */
+    border: none;                   /* 기본 테두리 제거 */
+  }
+  
+  /* Default style for sub-link tabs. */
+  .home-bulletin-nav .sub-link {
+    background-color: #f2ebe0;      /* 연한 베이지색 배경 */
+    color: #5f4b32;                 /* 갈색 텍스트 */
+    border: none;                   /* 테두리 없음 */
+    padding: 10px 20px;            /* 클릭/터치 영역 여유 공간 */
+    cursor: pointer;               /* 마우스 오버시 포인터 커서 */
+    border-radius: 4px;            /* 모서리 둥글게 */
+    transition: background-color 0.3s ease;  /* 부드러운 배경색 전환 효과 */
+  }
+  
+  /* 서브링크 탭 호버 효과 */
+  .home-bulletin-nav .sub-link:hover {
+    background-color: #d8c9b7;      /* 호버시 약간 더 진한 베이지색 */
+  }
+  
+  
+  /****************************************************
+   * 9. 플로팅 액션 버튼 컨테이너
+   ****************************************************/
+  /* Positions a floating button at bottom-right. */
+  .floating-btn-container {
+    position: fixed;              /* Stays in place when scrolling */
+    bottom: 2rem;                 /* Distance from the bottom edge */
+    right: 2rem;                  /* Distance from the right edge */
+    z-index: 10;                  /* Above most other elements */
+  }
+  
+  /* The floating action button (FAB). */
+  .btn.fab {
+    width: 50px;                  /* Square button */
+    height: 50px;
+    border-radius: 50%;           /* Fully circular shape */
+    font-size: 1.5rem;            /* Larger text for a plus sign (+) */
+    font-weight: bold;            /* Bolder text for the icon */
+    display: flex;                /* Center the icon text */
+    align-items: center;
+    justify-content: center;
+    padding: 0;                   /* No extra padding needed */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
+    /* Elevated shadow for a floating look */
+  }
+  
+  /* Slight scale-up on hover for the FAB. */
+  .btn.fab:hover {
+    transform: scale(1.05) translateY(-2px);
+    /* Grows a bit and shifts up slightly */
+  }
+  
+  /****************************************************
+   * 10. 홈 그리드 컨테이너
+   ****************************************************/
+ /* 홈 섹션 그리드 레이아웃 */                                /* 홈 섹션의 그리드 레이아웃 정의 */
+ .home-grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);                    /* 4열 그리드 유지 */
+  gap: 15px;                                               /* 그리드 간격 축소 */
+  padding: 15px;                                           /* 컨테이너 패딩 축소 */
+}
+
+/* 그리드 아이템 스타일 */                                    /* 각 그리드 아이템의 스타일 정의 */
+.home-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px;                                            /* 내부 패딩 축소 */
+  background: #ffffff;
+  border-radius: 6px;                                      /* 모서리 라운딩 축소 */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);                  /* 그림자 효과 축소 */
+  transition: transform 0.3s ease;
+}
+
+/* 그리드 아이템 호버 효과 */                                 /* 마우스 오버시 효과 */
+.home-grid-item:hover {
+  transform: translateY(-3px);                             /* 호버시 이동 거리 축소 */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);                  /* 호버시 그림자 축소 */
+}
+
+/* 이미지 스타일 */                                          /* 그리드 내 이미지 스타일 */
+.grid-image {
+  width: 90%;                                              /* 이미지 너비 축소 */
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* 그리드 정보 스타일 */
+.grid-info {
+  width: 100%;
+}
+
+.grid-info h4 {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: #5f4b32;
+}
+
+.grid-info p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+
+
+
+
+.icon-class {
+  pointer-events: none; /* 아이콘이 클릭 이벤트를 차단하지 않도록 설정 */
+}
+
+
+
+
+
+
+/****************************************************
+  * 11. 로그인/회원가입페이지
+  ****************************************************/
+
+  /* Signup Page Styling */
+.signup-form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.error-message {
+  color: #dc3545;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+}
+
+.login-link {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Logout Page Styling */
+.logout-message {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.logout-message .btn {
+  margin: 10px;
+  width: 200px;
+}
+
+input[type="text"], 
+input[type="password"] {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+
+input[type="password"] {
+  display: block !important; /* 강제 표시 */
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 2px solid #5f4b32; /* 어두운 갈색 테두리 */
+  border-radius: 5px;
+  background-color: #fff8f0; /* 밝은 베이지 배경 */
+}
+
+/* 플레이스홀더 스타일링 */
+input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+
+/* 비밀번호 재설정 페이지 스타일 */
+.card {
+  border: none;                                          /* 카드 테두리 제거 */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);             /* 그림자 효과 */
+  border-radius: 15px;                                  /* 모서리 둥글게 */
+}
+
+.card-header {
+  background-color: #f8f9fa;                            /* 헤더 배경색 */
+  border-bottom: 1px solid #eee;                        /* 헤더 구분선 */
+  border-radius: 15px 15px 0 0 !important;             /* 상단 모서리만 둥글게 */
+  padding: 20px;                                        /* 여백 */
+}
+
+.card-header h3 {
+  color: #333;                                          /* 제목 색상 */
+  font-weight: 600;                                     /* 글씨 두께 */
+  margin: 0;                                            /* 마진 제거 */
+}
+
+.card-body {
+  padding: 30px;                                        /* 본문 여백 */
+}
+
+.form-control {
+  height: 50px;                                         /* 입력창 높이 */
+  border-radius: 8px;                                   /* 입력창 모서리 */
+  border: 1px solid #ddd;                              /* 테두리 색상 */
+  padding: 10px 15px;                                  /* 입력창 내부 여백 */
+  font-size: 16px;                                     /* 글자 크기 */
+  transition: all 0.3s ease;                           /* 애니메이션 효과 */
+}
+
+.form-control:focus {
+  border-color: #4a90e2;                               /* 포커스시 테두리 색상 */
+  box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);  /* 포커스시 그림자 */
+}
+
+.btn-primary {
+  height: 50px;                                        /* 버튼 높이 */
+  background-color: #4a90e2;                           /* 버튼 배경색 */
+  border: none;                                        /* 테두리 제거 */
+  font-size: 16px;                                     /* 글자 크기 */
+  font-weight: 600;                                    /* 글자 두께 */
+  border-radius: 8px;                                  /* 모서리 둥글게 */
+  transition: all 0.3s ease;                           /* 애니메이션 효과 */
+}
+
+.btn-primary:hover {
+  background-color: #357abd;                           /* 호버시 배경색 */
+  transform: translateY(-1px);                         /* 호버시 살짝 위로 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);           /* 호버시 그림자 */
+}
+
+.card-footer {
+  background-color: #f8f9fa;                           /* 푸터 배경색 */
+  border-top: 1px solid #eee;                          /* 푸터 구분선 */
+  border-radius: 0 0 15px 15px !important;            /* 하단 모서리만 둥글게 */
+  padding: 20px;                                       /* 여백 */
+}
+
+.card-footer a {
+  color: #4a90e2;                                      /* 링크 색상 */
+  text-decoration: none;                               /* 밑줄 제거 */
+  font-weight: 600;                                    /* 글자 두께 */
+}
+
+.card-footer a:hover {
+  color: #357abd;                                      /* 호버시 링크 색상 */
+  text-decoration: underline;                          /* 호버시 밑줄 */
+}
+
+.alert {
+  border-radius: 8px;                                  /* 알림창 모서리 */
+  padding: 15px 20px;                                  /* 알림창 여백 */
+  margin-bottom: 10px;                                 /* 알림창 간격 */
+  border: none;                                        /* 테두리 제거 */
+}
+
+
+  /****************************************************
+   * 12. 반응성
+   ****************************************************/
+  /* Responsive adjustments for screens up to 768px wide. */
+
+  @media (max-width: 1200px) {
+    .home-grid-container {
+      grid-template-columns: repeat(3, 1fr);  /* 3열로 변경 */
+    }
+  }
+
+
+
+
+  @media (max-width: 768px) {
+    /* Mobile/Tablet layout changes. */
+  
+    body {
+      flex-direction: column;     /* Stack content vertically */
+      align-items: center;        /* Center horizontally */
+    }
+  
+    .sidebar {
+      width: 100%;                /* Full width for the sidebar */
+      border-right: none;         /* No vertical border on smaller screens */
+      border-bottom: 2px solid #d8c9b7; 
+      /* Horizontal border instead */
+      flex-direction: row;        /* Sidebar items in a row */
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;           /* Sticks to the top when scrolling */
+      top: 0;                     /* Positions at the top */
+      height: 100%;               /* Let the content define actual height */
+      overflow-y: auto;           /* Allows vertical scrolling if needed */
+    }
+  
+    .sidebar.right-sidebar {
+      border-left: none;          /* No left border in mobile view */
+    }
+  
+    /* Hide certain sections (like random-book, login) on narrow screens. */
+    .random-book-section,
+    .login-container {
+      display: none;
+    }
+  
+    /* Content area is now full width. */
+    .content {
+      padding: 1rem;
+      max-width: 100%;            /* No max constraint on small screens */
+    }
+  
+    /* Post cards stack vertically. */
+    .post-card {
+      width: 100%;
+      flex-direction: column;     /* Image & text stack vertically */
+    }
+  
+    /* Vertical title becomes horizontal. */
+    .post-title-vertical {
+      writing-mode: horizontal-tb; 
+      /* Reverts to normal text flow */
+      border-right: none;         /* Remove vertical divider */
+      border-bottom: 1px solid #d8c9b7; 
+      /* Horizontal separator instead */
+      padding: 0.5rem;            /* Smaller padding in mobile mode */
+      text-align: center;         /* Center the text horizontally */
+    }
+  
+    /* Image is no longer offset. */
+    .post-image {
+      left: 0;                    /* No offset to the left */
+      margin-right: 0;            /* No negative margin on the right */
+      flex-basis: auto;           /* Let it size naturally */
+      width: 100%;                /* Image takes full width of container */
+    }
+  
+    /* Post list in a single column. */
+    .post-list {
+      grid-template-columns: 1fr; /* One column grid */
+    }
+  
+    /* Info panel adjusted for a vertical layout. */
+    .post-info {
+      border-left: none;          /* Remove left divider */
+      border-top: 1px solid #d8c9b7; 
+      /* Horizontal divider between image/title and info */
+      padding-left: 1rem;         /* Less left padding needed */
+    }
+
+    .home-grid-container {
+      grid-template-columns: repeat(2, 1fr);  /* 2열로 변경 */
+    }
+
+    .nav-menu ul li.has-submenu:hover > .submenu {
+      /* On mobile, disable the hover approach */
+      display: none !important;
+    }
+
+  }
+  
+  /* Extra space for icons in the nav links. */
+
+  
+  
+
+  
+  @media (max-width: 480px) {
+    .home-grid-container {
+      grid-template-columns: 1fr;             /* 1열로 변경 */
+    }
+  }
+  
+
+
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;                                 /* 모바일에서의 여백 */
+    }
+    
+    .card {
+        margin: 10px;                                    /* 모바일에서의 카드 여백 */
+    }
+}
+  

@@ -5,8 +5,8 @@ from .models import Post, Book, EventPost, ReadingGroupPost, ReadingTipPost, Pos
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("title", "writer", "category", "created_at",)
-    list_display_links = ("title", "writer", "category", "created_at",)
+    list_display = ("title", "writer", "category", "created_at", "book")
+    list_display_links = ("title", "writer", "category", "created_at", "book")
     ordering = ("-created_at",)
 
 
@@ -16,6 +16,13 @@ class PostAdmin(admin.ModelAdmin):
         extra_context["admin_books_search_url"] = "/admin/books/search/"
         return super().changelist_view(request, extra_context=extra_context)
     
+
+@admin.register(PostImage)
+class PostImageAdmin(admin.ModelAdmin):
+    list_display = ('post', 'image', 'created_at')
+    list_filter = ('post', 'created_at')
+    search_fields = ('post__title',)
+    ordering = ('post', 'created_at')
 
 
 @admin.register(Book)
@@ -62,9 +69,3 @@ class ReadingTipAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')
     list_editable = ('is_active', 'is_pinned')
 
-@admin.register(PostImage)
-class PostImageAdmin(admin.ModelAdmin):
-    list_display = ('post', 'image', 'created_at')
-    list_filter = ('post', 'created_at')
-    search_fields = ('post__title',)
-    ordering = ('post', 'created_at')

@@ -45,41 +45,60 @@ def post_view(request):
     if not request.user.is_authenticated:
         messages.error(request, "로그인이 필요합니다.")
         return redirect('community:login')
-        
-    context = get_common_context(request)
     
     if request.method == 'POST':
-        post_form = PostForm(request.POST)
-        if post_form.is_valid():
+        form = PostForm(request.POST)
+        
+        if form.is_valid():
             try:
-                post = post_form.save(commit=False)
+                # 게시글 기본 정보 저장
+                post = form.save(commit=False)
                 post.writer = request.user
                 
-                if book_data := process_book_data(request):
-                    post.book = book_data
+                # 책 정보 처리
+                if selected_book_data := request.POST.get('selected_book_data'):
+                    try:
+                        book_info = json.loads(selected_book_data)
+                        book, _ = Book.objects.get_or_create(
+                            title=book_info.get('title'),
+                            defaults={
+                                'author': book_info.get('author', ''),
+                                'publisher': book_info.get('publisher', ''),
+                                'pubdate': book_info.get('pubdate', ''),
+                                'thumbnail_url': book_info.get('thumbnail_url', ''),
+                                'link': book_info.get('link', '')
+                            }
+                        )
+                        post.book = book
+                    except json.JSONDecodeError as e:
+                        print(f"Book data parsing error: {e}")
+                
+                # 게시글 저장
                 post.save()
                 
-                # 다중 이미지 처리
-                for image_file in request.FILES.getlist('post_images'):  # name 속성 변경
-                    try:
-                        PostImage.objects.create(
-                            post=post,
-                            image=image_file
-                        )
-                    except Exception as e:
-                        messages.warning(request, f"이미지 '{image_file.name}' 저장 중 오류 발생: {str(e)}")
+                # 이미지 처리
+                if images := request.FILES.getlist('post_images'):
+                    for image in images:
+                        PostImage.objects.create(post=post, image=image)
                 
                 messages.success(request, "게시물이 성공적으로 작성되었습니다.")
                 return redirect('community:home')
                 
             except Exception as e:
+                print(f"Error saving post: {e}")
                 messages.error(request, f"게시물 저장 중 오류가 발생했습니다: {str(e)}")
         else:
-            messages.error(request, "입력 형식이 올바르지 않습니다.")
-        context['form'] = post_form
+            print(f"Form errors: {form.errors}")
+            messages.error(request, "입력 형식이 올바르지 않습니다. 다시 확인해주세요.")
+    else:
+        form = PostForm()
     
-    if 'form' not in context:
-        context['form'] = PostForm()
+    context = {
+        
+        'form': form,
+    }
+
+    context.update(get_common_context(request))
     
     return render(request, 'community/post.html', context)
 
@@ -213,6 +232,33 @@ def login_view(request):
         context['form'] = CustomAuthForm()
     
     return render(request, 'community/login.html', context)
+
+
+# 네이버 책 검색 뷰
+def naver_book_json(request):
+    query = request.GET.get('query')
+    if not query:
+        return JsonResponse({'error': '검색어가 필요합니다.'}, status=400)
+
+    headers = {
+        'X-Naver-Client-Id': settings.NAVER_CLIENT_ID,
+        'X-CSRFToken': request.META.get('HTTP_X_CSRFTOKEN', ''),
+        'X-Naver-Client-Secret': settings.NAVER_CLIENT_SECRET,
+    }
+    
+    try:
+        response = requests.get(
+            f'https://openapi.naver.com/v1/search/book.json',
+            headers=headers,
+            params={'query': query}
+        )
+        response.raise_for_status()  # HTTP 오류 발생시 예외 발생
+        return JsonResponse(response.json())
+    except requests.RequestException as e:
+        print(f"네이버 API 호출 오류: {str(e)}")  # 서버 로그에 오류 기록
+        return JsonResponse({'error': '네이버 API 호출 중 오류가 발생했습니다.'}, status=500)
+
+
 
 # 네이버 도서 API 관련 뷰 (수정 버전)
 def naver_books(request):

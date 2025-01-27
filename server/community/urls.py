@@ -13,6 +13,7 @@ urlpatterns = [
     
 
     path('naver-books/', views.naver_books, name='naver_books'), # 네이버 책 검색 뷰
+    path('naver-book-json/', views.naver_book_json, name='naver_book_json'),  # 네이버 책 검색 뷰
 
     path('post/', views.post_view, name='post'),      # 게시물 뷰
     path('book_sound/', views.book_sound, name='book_sound'),   # 책 소리 뷰

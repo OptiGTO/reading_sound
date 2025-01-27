@@ -2,20 +2,32 @@
 
 from django import forms
 from .models import Post
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from ckeditor.widgets import CKEditorWidget
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content', 'category', 'book']
+        fields = ['title', 'content', 'category']  # book 필드는 제외
         
         widgets = {
-                'title': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 100%', 'placeholder': '제목을 입력하세요'}),
-                'content': CKEditorUploadingWidget(),
+            'title': forms.TextInput(attrs={
+                'class': 'form-control', 
+                'style': 'width: 100%', 
+                'placeholder': '제목을 입력하세요'
+            }),
+            'content': CKEditorWidget(),
+            'category': forms.Select(attrs={'class': 'form-control'}),
         }
-        # 필요하다면 widgets나 labels 등을 커스터마이징할 수 있음.
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if not cleaned_data.get('title'):
+            raise forms.ValidationError('제목을 입력해주세요.')
+        if not cleaned_data.get('content'):
+            raise forms.ValidationError('내용을 입력해주세요.')
+        return cleaned_data
 
 class CustomAuthForm(AuthenticationForm):
     username = forms.CharField(
