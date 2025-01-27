@@ -26,7 +26,7 @@ class Book(models.Model):
         help_text='낮은 숫자가 더 높은 우선순위(1 > 2), 미설정시 자동 정렬'
     )  # 우선순위 필드 추가
 
-    
+
     def __str__(self):
         return self.title
 
@@ -53,7 +53,7 @@ class Post(models.Model):
     book        = models.ForeignKey('Book', on_delete=models.CASCADE, null=True, blank=True)
     
     # 이미지 첨부
-    image       = models.ImageField(upload_to='post_images/', blank=True, null=True)
+    #image       = models.ImageField(upload_to='post_images/', blank=True, null=True)
 
     # 작성일 (자동 기록)
     created_at  = models.DateTimeField(auto_now_add=True)
@@ -61,6 +61,18 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+# 새로 추가: 다중 이미지를 위한 모델
+class PostImage(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='post_images/')
+    order = models.PositiveIntegerField(default=0)  # 이미지 순서 필드 추가
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'created_at']
+
+    def __str__(self):
+        return f"Image for {self.post.title}"
 
 # BasePost와 관련 모델들
 class BasePost(models.Model):

@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import requests
-from .models import Book, Post, EventPost, ReadingGroupPost, ReadingTipPost
+from .models import Book, Post, EventPost, ReadingGroupPost, ReadingTipPost, PostImage
 from .forms import PostForm, CustomUserCreationForm, CustomAuthForm
 from .services import search_naver_books
 from django.contrib.auth import views as auth_views
@@ -42,13 +42,41 @@ def home_view(request):
 # 게시물 생성 뷰
 def post_view(request):
     """새 게시물 작성 처리"""
+    if not request.user.is_authenticated:
+        messages.error(request, "로그인이 필요합니다.")
+        return redirect('community:login')
+        
     context = get_common_context(request)
     
     if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
-        if form.is_valid():
-            return handle_post_submission(request, form)
-        context['form'] = form
+        post_form = PostForm(request.POST)
+        if post_form.is_valid():
+            try:
+                post = post_form.save(commit=False)
+                post.writer = request.user
+                
+                if book_data := process_book_data(request):
+                    post.book = book_data
+                post.save()
+                
+                # 다중 이미지 처리
+                for image_file in request.FILES.getlist('post_images'):  # name 속성 변경
+                    try:
+                        PostImage.objects.create(
+                            post=post,
+                            image=image_file
+                        )
+                    except Exception as e:
+                        messages.warning(request, f"이미지 '{image_file.name}' 저장 중 오류 발생: {str(e)}")
+                
+                messages.success(request, "게시물이 성공적으로 작성되었습니다.")
+                return redirect('community:home')
+                
+            except Exception as e:
+                messages.error(request, f"게시물 저장 중 오류가 발생했습니다: {str(e)}")
+        else:
+            messages.error(request, "입력 형식이 올바르지 않습니다.")
+        context['form'] = post_form
     
     if 'form' not in context:
         context['form'] = PostForm()

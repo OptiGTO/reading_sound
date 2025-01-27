@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db import models
-from .models import Post, Book, EventPost, ReadingGroupPost, ReadingTipPost
+from .models import Post, Book, EventPost, ReadingGroupPost, ReadingTipPost, PostImage
 # Register your models here.
 
 @admin.register(Post)
@@ -61,3 +61,10 @@ class ReadingTipAdmin(admin.ModelAdmin):
     list_filter = ('is_active', 'category', 'is_pinned', 'is_deleted')
     search_fields = ('title', 'content')
     list_editable = ('is_active', 'is_pinned')
+
+@admin.register(PostImage)
+class PostImageAdmin(admin.ModelAdmin):
+    list_display = ('post', 'image', 'created_at')
+    list_filter = ('post', 'created_at')
+    search_fields = ('post__title',)
+    ordering = ('post', 'created_at')
