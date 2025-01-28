@@ -1,10 +1,12 @@
 // File: community/static/community/js/script.js
 
 /*****************************************************
+ * 현재 js 파일 로드 되지 않음
  * script.js 
  * 1. Random Book Recommendation
  * 2. Sub-section Navigation (Home & Post sections only)
  * 3. Form Handling
+ * 
  *****************************************************/
 
 // 1. Random Book Recommendation Functionality
@@ -60,10 +62,56 @@ if (tokenElement) {
   csrftoken = tokenElement.value;
 }
 
+
+
+// 4. Mobile Submenu Toggle
+document.addEventListener('DOMContentLoaded', () => {
+  const submenuParent = document.querySelector('.has-submenu');
+  
+  if (submenuParent && window.innerWidth <= 768) {
+    submenuParent.addEventListener('click', (e) => {
+      e.preventDefault();
+      submenuParent.querySelector('.submenu').classList.toggle('active');
+    });
+  }
+});
+
+// 5. Error Handling for Images
+document.querySelectorAll('img').forEach(img => {
+  img.addEventListener('error', (e) => {
+    e.target.src = '{% static "community/images/no-image.png" %}';
+    e.target.alt = 'Image not available';
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+
+document.querySelector('form').addEventListener('submit', function(e) {
+  // 캐시 방지 파라미터 추가
+  const timestamp = new Date().getTime();
+  window.location.href = `{% url 'community:home' %}?nocache=${timestamp}`;
+});
+*/
+
+
 // Generic form handler
+/*
 document.querySelectorAll('form').forEach(form => {
   form.addEventListener('submit', async (event) => {
-    event.preventDefault();
+    //event.preventDefault();
     
     try {
       const formData = new FormData(form);
@@ -86,26 +134,4 @@ document.querySelectorAll('form').forEach(form => {
     }
   });
 });
-
-
-
-
-// 4. Mobile Submenu Toggle
-document.addEventListener('DOMContentLoaded', () => {
-  const submenuParent = document.querySelector('.has-submenu');
-  
-  if (submenuParent && window.innerWidth <= 768) {
-    submenuParent.addEventListener('click', (e) => {
-      e.preventDefault();
-      submenuParent.querySelector('.submenu').classList.toggle('active');
-    });
-  }
-});
-
-// 5. Error Handling for Images
-document.querySelectorAll('img').forEach(img => {
-  img.addEventListener('error', (e) => {
-    e.target.src = '{% static "community/images/no-image.png" %}';
-    e.target.alt = 'Image not available';
-  });
-});
+*/

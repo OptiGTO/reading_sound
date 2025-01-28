@@ -14,21 +14,24 @@
     
     <!-- 제목 필드 -->
     <div class="form-group">
-        <label for="id_title">제목:</label>
-        {{ form.title }}
+      <label for="{{ form.title.id_for_label }}">제목:</label>
+      {{ form.title }}
+      <small class="form-error">{{ form.title.errors }}</small
     </div>
 
     <!-- 카테고리 필드 -->
     <div class="form-group">
-        <label for="id_category">카테고리:</label>
-        {{ form.category }}
+      <label for="{{ form.category.id_for_label }}">카테고리:</label>
+      {{ form.category }}
+      <small class="form-error">{{ form.category.errors }}</small>
     </div>
 
     <!-- 내용 필드 -->
     <div class="form-group">
-      <label for="id_content">내용:</label>
+      <label for="{{ form.content.id_for_label }}">내용:</label>
       {{ form.content }}
-  </div>
+      <small class="form-error">{{ form.content.errors }}</small>
+    </div>
     
     <!-- 다중 이미지 업로드 필드 -->
     <div class="form-group">
@@ -42,7 +45,7 @@
     
 
     
-    <button type="submit" class="btn hover-effect" onclick="window.location.href='{% url 'community:home' %}'"> 글쓰기</button>
+    <button type="submit" class="btn hover-effect"> 글쓰기</button>
   </form>
 
 
@@ -192,5 +195,12 @@
       }
     }
   }
+
+  document.querySelector('form').addEventListener('submit', function(e) {
+    // preventDefault 제거
+    // 폼이 정상적으로 서버로 제출되도록 함
+    const form = this;
+    form.submit();  // 폼 제출
+  });
 </script>
 {% endblock %}
