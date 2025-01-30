@@ -33,7 +33,11 @@
       <div class="home-grid-container">
         
         {% for book in books %}
-        <div class="home-grid-item">
+        <div class="home-grid-item" 
+             data-description="{{ book.description|default:'설명이 없습니다.' }}"
+             data-publisher="{{ book.publisher|default:'출판사 정보 없음' }}"
+             data-pubdate="{{ book.pubdate|default:'출판일 정보 없음' }}"
+             data-isbn="{{ book.isbn|default:'ISBN 정보 없음' }}">
           <img src="{{ book.thumbnail_url|default_if_none:'path/to/default_image.png' }}" 
                alt="{{ book.title }}" 
                class="grid-image">
@@ -89,8 +93,43 @@
   </div> <!-- #home-board-container 끝 -->
 </section>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelectorAll('.home-grid-item');
+  const rightSidebar = document.querySelector('.right-sidebar');
+  const originalSidebarContent = rightSidebar.innerHTML;
+  let hoverTimer; // 호버 타이머 변수
 
-
-
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      // 0.3초 딜레이 후 실행
+      hoverTimer = setTimeout(() => {
+        rightSidebar.dataset.originalContent = rightSidebar.innerHTML;
+        rightSidebar.innerHTML = `
+          <h3>📖 책 상세 정보</h3>
+          <div class="book-detail">
+            <p class="publisher"><strong>출판사:</strong> ${card.dataset.publisher}</p>
+            <p class="pubdate"><strong>출판일:</strong> ${card.dataset.pubdate}</p>
+            <p class="isbn"><strong>ISBN:</strong> ${card.dataset.isbn}</p>
+            <p class="description"><strong>설명:</strong> ${card.dataset.description}</p>
+          </div>
+        `;
+        rightSidebar.classList.add('book-info-active', 'show');
+      }, 300); // 300ms = 0.3초
+    });
+    
+    card.addEventListener('mouseleave', () => {
+      clearTimeout(hoverTimer); // 타이머 취소
+      rightSidebar.classList.remove('show');
+      setTimeout(() => {
+        if(rightSidebar.dataset.originalContent) {
+          rightSidebar.innerHTML = rightSidebar.dataset.originalContent;
+        }
+        rightSidebar.classList.remove('book-info-active');
+      }, 200); // 사라질 때 애니메이션 시간
+    });
+  });
+});
+</script>
 
 {% endblock %}

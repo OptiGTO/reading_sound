@@ -2,20 +2,22 @@
 import json
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, views as auth_views
+from django.contrib.auth import login as auth_login
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 import requests
-from .models import Book, Post, EventPost, ReadingGroupPost, ReadingTipPost, PostImage
+from .models import (
+    Book, PostImage, GeneralPost, ReadingGroupPost, 
+    ReadingTipPost, BookReviewEventPost, BookTalkEventPost,
+    PersonalBookEventPost, BookEventPost
+)
 from .forms import PostForm, CustomUserCreationForm, CustomAuthForm
 from .services import search_naver_books
-from django.contrib.auth import views as auth_views
-from django.contrib.auth import login as auth_login
-from django.shortcuts import redirect
-from django.urls import reverse
 
 #----------------------------------------공통 관련---------------------------------------------------------
 # 공통 컨텍스트 생성 함수
@@ -25,7 +27,7 @@ def get_common_context(request):
         'site_name': 'reading_sound',
         'current_user': request.user if request.user.is_authenticated else None,
         'sidebar': {
-            'events': EventPost.objects.filter(is_active=True),
+            'events': BookEventPost.objects.filter(is_active=True),
             'reading_groups': ReadingGroupPost.objects.filter(is_active=True),
             'tips': ReadingTipPost.objects.filter(is_active=True),
         }
@@ -41,28 +43,18 @@ def post_view(request):
         messages.error(request, "로그인이 필요합니다.")
         return redirect('community:login')
 
-    
     if request.method == 'POST':
-        print("\n=== 폼 데이터 수신 ===")  # 디버그 로그
         form = PostForm(request.POST, request.FILES)
-        print(f"폼 유효성: {form.is_valid()}")  # 폼 검증 결과 출력
-        print(f"POST 데이터: {request.POST}")  # 전송된 데이터 확인
-        print(f"FILES 데이터: {request.FILES}")  # 파일 데이터 확인
-
         if form.is_valid():
             try:
                 # 게시글 기본 정보 저장
                 post = form.save(commit=False)
                 post.writer = request.user
-                print(f"저장 전 Post 객체: {post.__dict__}")  # 객체 상태 출력
-                
+
                 # 책 정보 처리
                 if selected_book_data := request.POST.get('selected_book_data'):
-                    print(f"선택된 책 데이터: {selected_book_data}")  # 책 데이터 출력
                     try:
                         book_info = json.loads(selected_book_data)
-                        print(f"파싱된 책 정보: {book_info}")  # 파싱 결과 확인
-
                         book, _ = Book.objects.get_or_create(
                             title=book_info.get('title'),
                             defaults={
@@ -75,33 +67,29 @@ def post_view(request):
                         )
                         post.book = book
                     except json.JSONDecodeError:
-                        # 책 정보 파싱 오류는 무시하고 계속 진행
                         pass
+
+                # 게시글 저장
+                post.save()
+                form.save_m2m()  # 태그 관계 저장
+
                 # 이미지 처리
                 if images := request.FILES.getlist('post_images'):
                     for image in images:
                         PostImage.objects.create(post=post, image=image)
-                
-                post.save()
 
-
-                # 성공 메시지 + 리다이렉트
                 messages.success(request, "게시물이 성공적으로 작성되었습니다.")
-                print("리다이렉트 준비 완료")  # 디버그 로그
-                response = redirect(reverse('community:home'))                    #강제 리다이렉트 후에 수정해야함
+                response = redirect('community:home')
                 response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
                 response['Pragma'] = 'no-cache'
                 response['Expires'] = '0'
                 return response
 
-                
             except Exception as e:
                 print(f"Error saving post: {e}")
                 messages.error(request, "게시물 저장 중 오류가 발생했습니다. 다시 시도해주세요.")
         else:
-            # 폼 검증 실패 시
-            print("폼 검증 실패")  # 디버그 로그
-            print(f"폼 오류: {form.errors}")  # 폼 오류 출력
+            print(f"폼 오류: {form.errors}")
             messages.error(request, "입력 형식이 올바르지 않습니다. 다시 확인해주세요.")
     else:
         form = PostForm()
@@ -148,62 +136,97 @@ def process_book_data(request):
 def home_view(request):
     """홈페이지 렌더링 - 도서 목록 및 게시물 표시"""
     base_context = get_common_context(request)
+    
     context = {
         **base_context,
         "books": Book.objects.all(),
-        "posts": Post.objects.all().order_by('-created_at')
     }
     return render(request, "community/index.html", context)
+
+
+#책 게시판 뷰
+def general_post(request):
+    """일반 게시판 페이지 렌더링"""
+    posts = GeneralPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 GeneralPost 사용
+    context = {
+        **get_common_context(request),
+        "posts": posts
+    }
+    return render(request, 'community/general_post.html', context)
 
 # 독서 모임 뷰 (수정 버전)
 def reading_meeting(request):
     """독서 모임 페이지 렌더링"""
-    context = get_common_context(request)
+    posts = ReadingGroupPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 ReadingGroupPost 사용
+    context = {
+        **get_common_context(request),
+        "posts": posts
+    }
     return render(request, 'community/reading_meeting.html', context)
 
 # 리뷰 이벤트 뷰 (수정 버전)
 def review_event(request):
     """리뷰 이벤트 페이지 렌더링"""
-    context = get_common_context(request)
+    posts = BookReviewEventPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 BookReviewEventPost 사용
+    context = {
+        **get_common_context(request),
+        "posts": posts
+    }
     return render(request, 'community/review_event.html', context)
 
 # 북토크 뷰 (수정 버전)
 def booktalk(request):
     """북토크 페이지 렌더링"""
-    context = get_common_context(request)
+    posts = BookTalkEventPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 BookTalkPost 사용
+    context = {
+        **get_common_context(request),
+        "posts": posts
+    }
     return render(request, 'community/booktalk.html', context)
 
 # 사용자 콘텐츠 뷰 (수정 버전)
-def your_content(request):
-    """사용자 콘텐츠 페이지 렌더링"""
-    context = get_common_context(request)
-    return render(request, 'community/your_content.html', context)
+def personal_event(request):
+    """개인 이벤트 페이지 렌더링"""
+    posts = PersonalBookEventPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 PersonalBookEventPost 사용
+    context = {
+        **get_common_context(request),
+        "posts": posts
+    }
+    return render(request, 'community/personal_event.html', context)
 
-# 파르헤시아 뷰 (수정 버전)
-def parrhesia(request):
-    """파르헤시아 페이지 렌더링"""
-    context = get_common_context(request)
-    return render(request, 'community/parrhesia.html', context)
 
-# 북사운드 뷰 (수정 버전)
-def book_sound(request):
-    """북사운드 페이지 렌더링"""
-    context = get_common_context(request)
-    return render(request, 'community/book_sound.html', context)
+
 
 # 도서 추천 뷰 (수정 버전)
 def recommend_book(request):
     """도서 추천 페이지 렌더링"""
-    context = get_common_context(request)
+    #posts = RecommendBookPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 RecommendBookPost 사용
+    context = {
+        **get_common_context(request),
+        #"posts": posts
+    }
     return render(request, 'community/recommend_book.html', context)
 
 # 공지사항 뷰 (수정 버전)
 def notice(request):
     """공지사항 페이지 렌더링"""
-    context = get_common_context(request)
+    #posts = NoticePost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 NoticePost 사용
+    context = {
+        **get_common_context(request),
+        #"posts": posts
+    }
     return render(request, 'community/notice.html', context)
 
 
+
+
+# 파르헤시아 뷰 (수정 버전)
+""" 파르헤시아 페이지 렌더링 이후 추가 예정
+def parrhesia(request):
+    
+    context = get_common_context(request)
+    return render(request, 'community/parrhesia.html', context)
+"""
 
 
 #----------------------------------------회원가입 관련---------------------------------------------------------

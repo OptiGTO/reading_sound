@@ -1,30 +1,38 @@
 from django.contrib import admin
 from django.db import models
-from .models import Post, Book, EventPost, ReadingGroupPost, ReadingTipPost, PostImage
+from .models import (
+    GeneralPost, Book, BookEventPost, BookReviewEventPost, 
+    ReadingGroupPost, ReadingTipPost, PostImage, PostTag
+)
 # Register your models here.
 
-@admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+@admin.register(GeneralPost)
+class GeneralPostAdmin(admin.ModelAdmin):
     list_display = ("title", "writer", "category", "created_at", "book")
     list_display_links = ("title", "writer", "category", "created_at", "book")
-    ordering = ("-created_at",)
-
+    ordering = ("-created_at", "is_pinned")
 
     def changelist_view(self, request, extra_context=None):
         if not extra_context:
             extra_context = {}
         extra_context["admin_books_search_url"] = "/admin/books/search/"
         return super().changelist_view(request, extra_context=extra_context)
-    
 
+@admin.register(BookReviewEventPost)
+class BookReviewEventPostAdmin(admin.ModelAdmin):
+    list_display = ("title", "writer", "category", "created_at", "book")
+    list_display_links = ("title", "writer", "category", "created_at", "book")
+    ordering = ("-created_at","is_pinned")
+
+#----------------------------------이미지 관련----------------------------------
 @admin.register(PostImage)
 class PostImageAdmin(admin.ModelAdmin):
     list_display = ('post', 'image', 'created_at')
-    list_filter = ('post', 'created_at')
+    list_filter = ('post', 'created_at',)
     search_fields = ('post__title',)
     ordering = ('post', 'created_at')
 
-
+#----------------------------------책 관리자 권한 관련----------------------------------
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ("priority", "title", "author", "publisher", "pubdate", "isbn")
@@ -46,26 +54,25 @@ class BookAdmin(admin.ModelAdmin):
         extra_context["admin_books_search_url"] = "/admin/books/search/"
         return super().changelist_view(request, extra_context=extra_context)
 
-
-
-@admin.register(EventPost)
-class EventPostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'event_date', 'is_active', 'is_pinned', 'is_deleted')
-    list_filter = ('is_active', 'event_date', 'is_pinned', 'is_deleted')
+#----------------------------------사이드바 관련----------------------------------
+@admin.register(BookEventPost)
+class BookEventPostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'writer', 'event_start_date', 'is_active', 'is_pinned')
+    list_filter = ('is_active', 'event_start_date', 'is_pinned', 'is_deleted')
     search_fields = ('title', 'content')
     list_editable = ('is_active', 'is_pinned')
 
 @admin.register(ReadingGroupPost)
-class ReadingGroupAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'meeting_time', 'is_active', 'is_pinned', 'is_deleted')
-    list_filter = ('is_active', 'meeting_time', 'is_pinned', 'is_deleted')
+class ReadingGroupPostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'writer', 'event_date', 'is_active', 'is_pinned')
+    list_filter = ('is_active', 'event_date', 'is_pinned', 'is_deleted')
     search_fields = ('title', 'content')
     list_editable = ('is_active', 'is_pinned')
 
 @admin.register(ReadingTipPost)
-class ReadingTipAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'category', 'is_active', 'is_pinned', 'is_deleted')
-    list_filter = ('is_active', 'category', 'is_pinned', 'is_deleted')
+class ReadingTipPostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'writer', 'tip_category', 'is_active', 'is_pinned')
+    list_filter = ('is_active', 'tip_category', 'is_pinned', 'is_deleted')
     search_fields = ('title', 'content')
     list_editable = ('is_active', 'is_pinned')
 

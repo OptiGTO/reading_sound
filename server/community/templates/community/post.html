@@ -16,7 +16,7 @@
     <div class="form-group">
       <label for="{{ form.title.id_for_label }}">제목:</label>
       {{ form.title }}
-      <small class="form-error">{{ form.title.errors }}</small
+      <small class="form-error">{{ form.title.errors }}</small>
     </div>
 
     <!-- 카테고리 필드 -->
@@ -24,6 +24,13 @@
       <label for="{{ form.category.id_for_label }}">카테고리:</label>
       {{ form.category }}
       <small class="form-error">{{ form.category.errors }}</small>
+    </div>
+
+    <!-- 태그 필드 -->
+    <div class="form-group">
+      <label for="{{ form.tags.id_for_label }}">태그:</label>
+      {{ form.tags }}
+      <small class="form-error">{{ form.tags.errors }}</small>
     </div>
 
     <!-- 내용 필드 -->

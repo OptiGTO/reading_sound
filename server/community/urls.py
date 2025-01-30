@@ -15,13 +15,13 @@ urlpatterns = [
     path('naver-books/', views.naver_books, name='naver_books'), # 네이버 책 검색 뷰
     path('naver-book-json/', views.naver_book_json, name='naver_book_json'),  # 네이버 책 검색 뷰
 
-    path('post/', views.post_view, name='post'),      # 게시물 뷰
-    path('book_sound/', views.book_sound, name='book_sound'),   # 책 소리 뷰
+    path('post/', views.post_view, name='post'),      # 글쓰기 뷰
+    path('general_post/', views.general_post, name='general_post'), # 일반 게시판 뷰
     path('reading_meeting/', views.reading_meeting, name='reading_meeting'),        # 독서 모임 뷰
     path('review_event/', views.review_event, name='review_event'), # 리뷰 이벤트 뷰
     path('booktalk/', views.booktalk, name='booktalk'),     # 북토크 뷰
-    path('your_content/', views.your_content, name='your_content'), # 사용자 콘텐츠 뷰
-    path('parrhesia/', views.parrhesia, name='parrhesia'),  # 파르헤시아 뷰
+    path('personal_event/', views.personal_event, name='personal_event'), # 개인 이벤트 뷰
+    #path('parrhesia/', views.parrhesia, name='parrhesia'),  # 파르헤시아 뷰
     path('recommend_book/', views.recommend_book, name='recommend_book'), # 도서 추천 뷰
 
     

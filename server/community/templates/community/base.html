@@ -1,8 +1,9 @@
 <!--File: community/templates/community/base.html-->
-
+<!-- js파일 통합 완료 2025.01.28   -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
+<!-------------------------------------------------------- 헤드 영역(css, 폰트, 캐시 관련) -------------------------------------------------------->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,7 +27,7 @@
 </head>
 
 <body>
-  <!-- 왼쪽 사이드바 -->
+  <!-------------------------------------------------- 좌측 사이드바 로고 출력 , 로그인 / 회원가입 버튼 출력 -------------------------------------------------------->
   <aside class="sidebar">
     <div class="sidebar-header">
       <!-- Updated logo path -->
@@ -47,7 +48,7 @@
   {% endif %}
 </div>
 
-   <!-- 내비게이션 메뉴 -->
+   <!----------------------------------------- 좌측 사이드바 내비게이션 메뉴 -------------------------------------------------------->
     
 <nav class="nav-menu">
   <ul>
@@ -61,7 +62,7 @@
 
     <!-- 서평 -->
     <li>
-      <a href="{% url 'community:book_sound' %}" class="nav-link{% if request.resolver_match.url_name == 'book_sound' %} active{% endif %}">
+      <a href="{% url 'community:general_post' %}" class="nav-link{% if request.resolver_match.url_name == 'book_sound' %} active{% endif %}">
         <i class="fas fa-book"></i>
         <span>책 게시글 </span>
       </a>
@@ -74,19 +75,21 @@
       </a>
     </li>
 
-    <!-- 독서 콘텐츠 -->
+    <!-- 책이벤트 (호버시 서브 메뉴 보이게)-->
     <li class="has-submenu">
       <a href="{% url 'community:reading_meeting' %}" class="nav-link{% if 'group-section' in request.path %} active{% endif %}">
         <i class="fas fa-users"></i>
         <span>책 이벤트</span>
       </a>
       <ul class="submenu">
+        <!--  
         <li>
           <a href="{% url 'community:reading_meeting' %}" class="{% if request.resolver_match.url_name == 'reading_meeting' %}active{% endif %}">
             <i class="fas fa-users"></i>
             <span>독서 모임</span>
           </a>
         </li>
+          -->
         <li>
           <a href="{% url 'community:review_event' %}" class="{% if request.resolver_match.url_name == 'review_event' %}active{% endif %}">
             <i class="fas fa-pencil-alt"></i>
@@ -100,7 +103,7 @@
           </a>
         </li>
         <li>
-          <a href="{% url 'community:your_content' %}" class="{% if request.resolver_match.url_name == 'your_content' %}active{% endif %}">
+          <a href="{% url 'community:personal_event' %}" class="{% if request.resolver_match.url_name == 'personal_event' %}active{% endif %}">
             <i class="fas fa-pencil-alt"></i>
             <span>개인 이벤트</span>
           </a>
@@ -117,17 +120,18 @@
       </a>
     </li>
 
-    <!-- 5) 공지사항 -->
+    <!-- 공지사항 주석처리
     <li>
       <a href="{% url 'community:notice' %}" class="nav-link{% if request.resolver_match.url_name == 'notice' %} active{% endif %}">
         <i class="fas fa-bell"></i>
         <span>공지사항</span>
       </a>
     </li>
+    -->
   </ul>
 </nav>
     
-    <!-- 무작위 책 추천 섹션 -->
+    <!---------------------------------- 무작위 책 추천 섹션 -------------------------------------------------------->
     <div class="random-book-section">
       <h2>무작위 책</h2>
       <div id="random-book-container"></div>
@@ -136,17 +140,15 @@
   </aside>
   
 
-  <!-- 메인 콘텐츠 영역 -->
+  <!-------------------------------------------------- 메인 콘텐츠 상단 영역 -------------------------------------------------------->
   <main class="content">
-    <!-- 상단 바 -->
     <header class="top-bar">
       <div class="user-info" id="user-info">
         <span id="user-nickname"> {{ user.username }} </span>
       </div>
     </header>
 
-
-    <div class="messages-container">
+    <div class="messages-container">   <!-- 메시지 컨테이너(게시글 출력 혹은 출력 실패 시 메시지 출력) -->
       {% if messages %}
           {% for message in messages %}
           <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
@@ -156,27 +158,27 @@
           {% endfor %}
       {% endif %}
   </div>
- <!---------------------------------------------------------------------------------------------------------->
+ <!-------------------------------------------------- 메인 콘텐츠 하단 영역 -------------------------------------------------------->
    
  
  
     {% block content %}
+
+
+
     {% endblock %}
   </main>
 
-<!---------------------------------------------------------------------------------------------------------->
+<!-------------------------------------------------- 오른쪽 사이드바 -------------------------------------------------------->
 
 
-  <!-- 오른쪽 사이드바 -->
   <aside class="sidebar right-sidebar">
 
-    <!-- 검색창 -->
     <div class="search-container">
       <input type="text" id="search-input" placeholder="게시글 검색..." />
       <button class="btn hover-effect" id="search-btn">검색</button>
     </div>
 
-    <!-- 이벤트, 독서모임, 독서팁 섹션 -->
     <div class="sidebar-section">
         <h2>이벤트</h2>
         <div class="event-list">
@@ -232,6 +234,8 @@
     <a href="{% url 'community:post' %}" class="btn fab hover-effect" id="post-btn">+</a>
   </div>
   {% endif %}
+
+<!-------------------------------------------------- js 파일 통합 완료 2025.01.28 -------------------------------------------------------->
 
   <script>
     // 1. 무작위 책 추천 기능                                                           // 랜덤 책 추천 기능
