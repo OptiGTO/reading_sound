@@ -11,7 +11,8 @@ app_name = 'community'
 
 urlpatterns = [
     
-
+    
+    path('get-posts-by-book/', views.get_posts_by_book, name='get_posts_by_book'), # 책별 게시물 조회 뷰
     path('naver-books/', views.naver_books, name='naver_books'), # 네이버 책 검색 뷰
     path('naver-book-json/', views.naver_book_json, name='naver_book_json'),  # 네이버 책 검색 뷰
 
@@ -45,8 +46,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='community:home'), name='logout'),  # 로그아웃 뷰
     path('signup/', views.signup, name='signup'),   # 회원가입 뷰
 
-    # 책별 게시물 조회 뷰
-    path('get-posts-by-book/', views.get_posts_by_book, name='get_posts_by_book'),
+    
 
 
     path('', views.home_view, name='home'),

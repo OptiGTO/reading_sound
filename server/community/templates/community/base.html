@@ -335,9 +335,12 @@
 
         // 서버에서 게시물 데이터 요청
         fetch(`/community/get-posts-by-book/?isbn=${encodeURIComponent(isbn)}`, {
+            method: 'GET',  // GET 요청임을 명시
             headers: {
-                'X-CSRFToken': csrftoken
-            }
+                'X-CSRFToken': csrftoken,
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin'  // CSRF 토큰을 포함하기 위한 설정
         })
         .then(response => {
             if (!response.ok) {

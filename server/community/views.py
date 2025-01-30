@@ -410,12 +410,14 @@ def book_add_view(request):
 
 
 # 책별 게시물 조회 뷰
+
 def get_posts_by_book(request):
+    """특정 도서와 관련된 게시물 목록을 반환하는 API"""
     isbn = request.GET.get('isbn', '')
     try:
+        # 도서 검색 조건 개선
         book = Book.objects.filter(
-            models.Q(isbn=isbn) | 
-            models.Q(title=request.GET.get('title', ''))
+            models.Q(isbn=isbn) if isbn else models.Q(title=request.GET.get('title', ''))
         ).first()
         
         if not book:
@@ -423,7 +425,7 @@ def get_posts_by_book(request):
                 'posts': [],
                 'message': '해당하는 책을 찾을 수 없습니다.',
                 'status': 'no_book'
-            })
+            }, safe=False)
 
         posts = []
         post_types = [GeneralPost, ReadingGroupPost, BookReviewEventPost, 
@@ -431,23 +433,22 @@ def get_posts_by_book(request):
         
         for post_type in post_types:
             posts.extend(
-                post_type.objects.filter(
+                list(post_type.objects.filter(                                    # list() 변환 추가
                     book=book,
                     is_deleted=False,
                     is_active=True
                 ).values(
-                    'title', 'content', 
-                    'writer__username',  # 작성자 필드명 일관성 확인
-                    'created_at'         # 날짜 필드명 일관성 확인
-                )
+                    'id',                                                         # id 필드 추가
+                    'title', 
+                    'content', 
+                    'writer__username',
+                    'created_at'
+                ))
             )
         
-        # 날짜 포맷팅 개선 (None 체크 추가)
+        # 날짜 직렬화 처리
         for post in posts:
-            if post['created_at']:
-                post['created_at'] = post['created_at'].strftime('%Y-%m-%d %H:%M')
-            else:
-                post['created_at'] = '날짜 정보 없음'
+            post['created_at'] = post['created_at'].strftime('%Y-%m-%d %H:%M') if post['created_at'] else '날짜 정보 없음'
 
         posts.sort(key=lambda x: x['created_at'], reverse=True)
         posts = posts[:10]
@@ -456,13 +457,10 @@ def get_posts_by_book(request):
             'posts': posts,
             'book_title': book.title,
             'status': 'success'
-        })
+        }, safe=False)
 
     except Exception as e:
-        # 오류 로깅 추가
-        print(f"Error in get_posts_by_book: {str(e)}")
         return JsonResponse({
             'error': '게시물을 불러오는 중 오류가 발생했습니다.',
-            'detail': str(e),  # 개발 환경에서만 노출
             'status': 'error'
         }, status=500)
