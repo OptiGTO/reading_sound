@@ -14,10 +14,12 @@ import requests
 from .models import (
     Book, PostImage, GeneralPost, ReadingGroupPost, 
     ReadingTipPost, BookReviewEventPost, BookTalkEventPost,
-    PersonalBookEventPost, BookEventPost
+    PersonalBookEventPost, BookEventPost,
+    Post
 )
 from .forms import PostForm, CustomUserCreationForm, CustomAuthForm
 from .services import search_naver_books
+from django.db import models
 
 #----------------------------------------공통 관련---------------------------------------------------------
 # 공통 컨텍스트 생성 함수
@@ -301,12 +303,26 @@ def naver_book_json(request):
         response = requests.get(
             f'https://openapi.naver.com/v1/search/book.json',
             headers=headers,
-            params={'query': query}
+            params={
+                'query': query,
+                'd_isbn': '1'  # ISBN 정보를 포함하도록 설정                   # ISBN 정보 포함 요청
+            }
         )
-        response.raise_for_status()  # HTTP 오류 발생시 예외 발생
-        return JsonResponse(response.json())
+        response.raise_for_status()
+        data = response.json()
+        
+        # ISBN과 description 정보 처리                                         # 응답 데이터 처리
+        if 'items' in data:
+            for item in data['items']:
+                isbn = item.get('isbn', '')
+                if isbn and ' ' in isbn:
+                    isbn10, isbn13 = isbn.split(' ')
+                    item['isbn'] = isbn13 or isbn10
+                item['description'] = item.get('description', '').replace('<b>', '').replace('</b>', '')
+        
+        return JsonResponse(data)
     except requests.RequestException as e:
-        print(f"네이버 API 호출 오류: {str(e)}")  # 서버 로그에 오류 기록
+        print(f"네이버 API 호출 오류: {str(e)}")
         return JsonResponse({'error': '네이버 API 호출 중 오류가 발생했습니다.'}, status=500)
 
 
@@ -369,16 +385,17 @@ def book_add_view(request):
     """관리자용 도서 추가 기능"""
     context = get_common_context(request)
     if request.method == "POST":
-        # 모든 필드 이름을 가져오는 방식 수정
+        # ISBN을 포함한 모든 필드를 가져오도록 수정
+        book_fields = ['title', 'author', 'publisher', 'pubdate', 'thumbnail_url', 'link', 'isbn', 'description']
         book_data = {
-            field.name: request.POST.get(field.name)
-            for field in Book._meta.get_fields()
-            if field.name in request.POST
+            field: request.POST.get(field)
+            for field in book_fields
+            if request.POST.get(field)
         }
         
         if Book.objects.filter(
-            title=book_data['title'], 
-            author=book_data['author']
+            models.Q(title=book_data['title'], author=book_data['author']) |
+            (models.Q(isbn=book_data.get('isbn')) if book_data.get('isbn') else models.Q())
         ).exists():
             messages.warning(request, f"이미 존재하는 도서입니다: {book_data['title']}")
         else:
@@ -386,3 +403,66 @@ def book_add_view(request):
             messages.success(request, f"도서 추가 완료: {book_data['title']}")
             return redirect(reverse('admin:community_book_changelist'))
     return redirect(reverse('admin_books_search'))
+
+
+
+
+
+
+# 책별 게시물 조회 뷰
+def get_posts_by_book(request):
+    isbn = request.GET.get('isbn', '')
+    try:
+        book = Book.objects.filter(
+            models.Q(isbn=isbn) | 
+            models.Q(title=request.GET.get('title', ''))
+        ).first()
+        
+        if not book:
+            return JsonResponse({
+                'posts': [],
+                'message': '해당하는 책을 찾을 수 없습니다.',
+                'status': 'no_book'
+            })
+
+        posts = []
+        post_types = [GeneralPost, ReadingGroupPost, BookReviewEventPost, 
+                     BookTalkEventPost, PersonalBookEventPost]
+        
+        for post_type in post_types:
+            posts.extend(
+                post_type.objects.filter(
+                    book=book,
+                    is_deleted=False,
+                    is_active=True
+                ).values(
+                    'title', 'content', 
+                    'writer__username',  # 작성자 필드명 일관성 확인
+                    'created_at'         # 날짜 필드명 일관성 확인
+                )
+            )
+        
+        # 날짜 포맷팅 개선 (None 체크 추가)
+        for post in posts:
+            if post['created_at']:
+                post['created_at'] = post['created_at'].strftime('%Y-%m-%d %H:%M')
+            else:
+                post['created_at'] = '날짜 정보 없음'
+
+        posts.sort(key=lambda x: x['created_at'], reverse=True)
+        posts = posts[:10]
+            
+        return JsonResponse({
+            'posts': posts,
+            'book_title': book.title,
+            'status': 'success'
+        })
+
+    except Exception as e:
+        # 오류 로깅 추가
+        print(f"Error in get_posts_by_book: {str(e)}")
+        return JsonResponse({
+            'error': '게시물을 불러오는 중 오류가 발생했습니다.',
+            'detail': str(e),  # 개발 환경에서만 노출
+            'status': 'error'
+        }, status=500)

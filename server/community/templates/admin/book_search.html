@@ -25,6 +25,8 @@
           <input type="hidden" name="pubdate" value="{{ item.pubdate|safe }}">
           <input type="hidden" name="thumbnail_url" value="{{ item.image|safe }}">
           <input type="hidden" name="link" value="{{ item.link|safe }}">
+          <input type="hidden" name="isbn" value="{{ item.isbn|safe }}">
+          <input type="hidden" name="description" value="{{ item.description|safe }}">
 
           <!-- item.title, item.author 등에는 HTML 태그가 포함될 수 있어 <b> ... </b>, 따라서 .replace 등의 처리가 필요 -->
           <strong>제목:</strong> {{ item.title|safe|striptags }} /

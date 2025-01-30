@@ -37,7 +37,8 @@
              data-description="{{ book.description|default:'설명이 없습니다.' }}"
              data-publisher="{{ book.publisher|default:'출판사 정보 없음' }}"
              data-pubdate="{{ book.pubdate|default:'출판일 정보 없음' }}"
-             data-isbn="{{ book.isbn|default:'ISBN 정보 없음' }}">
+             data-isbn="{{ book.isbn|default:'ISBN 정보 없음' }}"
+             onclick="showBookPosts('{{ book.isbn }}', '{{ book.title|escapejs }}')">
           <img src="{{ book.thumbnail_url|default_if_none:'path/to/default_image.png' }}" 
                alt="{{ book.title }}" 
                class="grid-image">
@@ -97,36 +98,56 @@
 document.addEventListener('DOMContentLoaded', () => {
   const cards = document.querySelectorAll('.home-grid-item');
   const rightSidebar = document.querySelector('.right-sidebar');
+  if (!rightSidebar) return;
+  
+  // 초기 사이드바 내용을 저장
   const originalSidebarContent = rightSidebar.innerHTML;
-  let hoverTimer; // 호버 타이머 변수
+  let hoverTimer;
+  let isHovered = false;
 
   cards.forEach(card => {
     card.addEventListener('mouseenter', () => {
-      // 0.3초 딜레이 후 실행
+      isHovered = true;
       hoverTimer = setTimeout(() => {
-        rightSidebar.dataset.originalContent = rightSidebar.innerHTML;
+        if (!isHovered) return;
+        
+        const thumbnail = card.querySelector('img').src;
         rightSidebar.innerHTML = `
           <h3>📖 책 상세 정보</h3>
           <div class="book-detail">
-            <p class="publisher"><strong>출판사:</strong> ${card.dataset.publisher}</p>
-            <p class="pubdate"><strong>출판일:</strong> ${card.dataset.pubdate}</p>
-            <p class="isbn"><strong>ISBN:</strong> ${card.dataset.isbn}</p>
-            <p class="description"><strong>설명:</strong> ${card.dataset.description}</p>
+            <img src="${thumbnail}" 
+                 alt="${card.querySelector('h4').textContent}" 
+                 class="book-thumbnail">
+            <div class="book-info">
+              <p class="publisher"><strong>출판사:</strong> ${card.dataset.publisher || '정보 없음'}</p>
+              <p class="pubdate"><strong>출판일:</strong> ${card.dataset.pubdate || '정보 없음'}</p>
+              <p class="isbn"><strong>ISBN:</strong> ${card.dataset.isbn || '정보 없음'}</p>
+              <p class="description"><strong>설명:</strong> ${card.dataset.description || '설명이 없습니다.'}</p>
+            </div>
           </div>
         `;
         rightSidebar.classList.add('book-info-active', 'show');
-      }, 300); // 300ms = 0.3초
+      }, 300);
     });
     
     card.addEventListener('mouseleave', () => {
-      clearTimeout(hoverTimer); // 타이머 취소
-      rightSidebar.classList.remove('show');
+      isHovered = false;
+      clearTimeout(hoverTimer);
+      
+      // 부드러운 전환을 위한 타이밍 조정
       setTimeout(() => {
-        if(rightSidebar.dataset.originalContent) {
-          rightSidebar.innerHTML = rightSidebar.dataset.originalContent;
+        if (!isHovered) {
+          rightSidebar.classList.remove('show');
+          
+          // 페이드 아웃 효과 후 원래 내용으로 복원
+          setTimeout(() => {
+            if (!isHovered) {
+              rightSidebar.classList.remove('book-info-active');
+              rightSidebar.innerHTML = originalSidebarContent;
+            }
+          }, 300);  // show 클래스가 제거된 후 내용 변경
         }
-        rightSidebar.classList.remove('book-info-active');
-      }, 200); // 사라질 때 애니메이션 시간
+      }, 200);
     });
   });
 });
