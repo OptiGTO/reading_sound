@@ -409,7 +409,7 @@ def book_add_view(request):
 
 
 
-# 책별 게시물 조회 뷰
+# 홈 카드 클릭 시 책별 게시물 조회 뷰
 
 def get_posts_by_book(request):
     """특정 도서와 관련된 게시물 목록을 반환하는 API"""
@@ -464,3 +464,40 @@ def get_posts_by_book(request):
             'error': '게시물을 불러오는 중 오류가 발생했습니다.',
             'status': 'error'
         }, status=500)
+
+
+
+
+
+
+def search_view(request):
+    """통합 검색 뷰"""
+    query = request.GET.get('query', '')
+    results = {'books': [], 'posts': []}
+
+    if query:
+        # 책 검색 (제목 기준)
+        results['books'] = Book.objects.filter(
+            models.Q(title__icontains=query) |
+            models.Q(author__icontains=query) |
+            models.Q(publisher__icontains=query)
+        )[:5]  # 상위 5개 결과만 표시
+
+        # 게시물 검색 (제목+내용 기준)
+        post_models = [GeneralPost, ReadingGroupPost, BookReviewEventPost, 
+                      BookTalkEventPost, PersonalBookEventPost, ReadingTipPost]
+        
+        for model in post_models:
+            model_results = model.objects.filter(
+                models.Q(title__icontains=query) |
+                models.Q(content__icontains=query)
+            ).select_related('writer', 'book')[:10]  # 각 모델별 상위 10개
+            results['posts'].extend(model_results)
+
+    context = {
+        **get_common_context(request),
+        'query': query,
+        'results': results,
+        'result_count': len(results['books']) + len(results['posts'])
+    }
+    return render(request, 'community/search_results.html', context)

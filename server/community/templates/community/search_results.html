@@ -1,0 +1,56 @@
+{% extends "community/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="search-results-container">
+    <h2>'{{ query }}' 검색 결과 ({{ result_count }}건)</h2>
+    
+    <!-- 책 검색 결과 -->
+    {% if results.books %}
+    <section class="book-results">
+        <h3>관련 도서</h3>
+        <div class="book-list">
+            {% for book in results.books %}
+            <div class="book-item">
+                <img src="{{ book.thumbnail_url }}" alt="{{ book.title }}" class="book-thumbnail">
+                <div class="book-info">
+                    <h4>{{ book.title }}</h4>
+                    <p>{{ book.author }} | {{ book.publisher }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- 게시물 검색 결과 -->
+    {% if results.posts %}
+    <section class="post-results">
+        <h3>관련 게시물</h3>
+        <div class="post-list">
+            {% for post in results.posts %}
+            <div class="post-item">
+                <div class="post-header">
+                    <span class="post-category">{{ post.get_category_display }}</span>
+                    <h4><a href="#">{{ post.title }}</a></h4>
+                </div>
+                <div class="post-content">
+                    {{ post.content|truncatechars:150 }}
+                </div>
+                <div class="post-meta">
+                    <span>{{ post.writer.username }}</span>
+                    <span>{{ post.created_at|date:"Y.m.d" }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if result_count == 0 %}
+    <div class="no-results">
+        <p>검색 결과가 없습니다. 다른 키워드로 시도해보세요.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

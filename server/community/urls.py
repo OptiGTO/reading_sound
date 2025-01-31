@@ -24,7 +24,8 @@ urlpatterns = [
     path('personal_event/', views.personal_event, name='personal_event'), # 개인 이벤트 뷰
     #path('parrhesia/', views.parrhesia, name='parrhesia'),  # 파르헤시아 뷰
     path('recommend_book/', views.recommend_book, name='recommend_book'), # 도서 추천 뷰
-
+    
+    path('search/', views.search_view, name='search'), # 검색 뷰
     
     path('notice/', views.notice, name='notice'),       # 공지사항 뷰
 

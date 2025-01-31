@@ -385,6 +385,21 @@
             overlay.addEventListener('click', closeBookPosts);
         }
     });
+
+    // 7. 검색 기능 구현
+    document.getElementById('search-btn').addEventListener('click', function() {
+        const query = document.getElementById('search-input').value;
+        if(query.trim()) {
+            window.location.href = `{% url 'community:search' %}?query=${encodeURIComponent(query)}`;
+        }
+    });
+
+    // 엔터 키로 검색 가능하도록 추가
+    document.getElementById('search-input').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') {
+            document.getElementById('search-btn').click();
+        }
+    });
   </script>
 
   <!-- 책 게시물 팝업 모달 추가 -->

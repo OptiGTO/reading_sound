@@ -3,8 +3,46 @@
 
 {% block title %}독서 모임{% endblock %}
 
-
 {% block content %}
-  <h1>독서 모임</h1>
-  <p>이곳은 독서 모임 페이지입니다. 독서 모임 정보를 자유롭게 공유하세요.</p>
+  <div class="post-list-container">
+    <h1>독서 모임</h1>
+    <p>이곳은 독서 모임 페이지입니다. 다양한 독서 모임에 참여해보세요.</p>
+    
+    {% if posts %}
+      <div class="post-grid">
+        {% for post in posts %}
+          <div class="post-card">
+            {% if post.book %}
+              <div class="book-info">
+                {% if post.book.thumbnail_url %}
+                  <img src="{{ post.book.thumbnail_url }}" alt="{{ post.book.title }}" class="book-thumbnail">
+                {% endif %}
+                <h4 class="book-title">{{ post.book.title }}</h4>
+              </div>
+            {% endif %}
+            <div class="post-content">
+              <h3>{{ post.title }}</h3>
+              <p>{{ post.content|truncatechars:150 }}</p>
+              {% if post.event_date %}
+                <p class="event-date">모임 일자: {{ post.event_date|date:"Y-m-d" }}</p>
+              {% endif %}
+              <div class="post-meta">
+                <span class="writer">작성자: {{ post.writer.username }}</span>
+                <span class="date">{{ post.created_at|date:"Y-m-d H:i" }}</span>
+              </div>
+              {% if post.tags.all %}
+                <div class="post-tags">
+                  {% for tag in post.tags.all %}
+                    <span class="tag">{{ tag.name }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="no-posts">아직 작성된 독서 모임 게시글이 없습니다.</p>
+    {% endif %}
+  </div>
 {% endblock %}
