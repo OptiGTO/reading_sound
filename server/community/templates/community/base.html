@@ -78,7 +78,7 @@
 
     <!-- 책이벤트 (호버시 서브 메뉴 보이게)-->
     <li class="has-submenu">
-      <a href="#" class="nav-link{% if 'group-section' in request.path %} active{% endif %}">
+      <a href="{% url 'community:review_event' %}" class="nav-link{% if 'group-section' in request.path %} active{% endif %}">
         <i class="fas fa-users"></i>
         <span>책 이벤트</span>
       </a>
@@ -175,7 +175,7 @@
 
   <aside class="sidebar right-sidebar">
 
-    <div class="search-container">
+    <div class="search-container" data-search-url="{% url 'community:search' %}">
       <input type="text" id="search-input" placeholder="게시글 검색..." />
       <button class="btn hover-effect" id="search-btn">검색</button>
     </div>
@@ -386,18 +386,32 @@
         }
     });
 
-    // 7. 검색 기능 구현
-    document.getElementById('search-btn').addEventListener('click', function() {
-        const query = document.getElementById('search-input').value;
-        if(query.trim()) {
-            window.location.href = `{% url 'community:search' %}?query=${encodeURIComponent(query)}`;
-        }
-    });
+    // 7. 검색 기능 구현                                                           // 검색 기능 구현
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchBtn = document.getElementById('search-btn');
+        const searchInput = document.getElementById('search-input');
+        const searchContainer = document.querySelector('.search-container');
+        const searchUrl = searchContainer.dataset.searchUrl;  // 데이터 속성에서 URL 가져오기
 
-    // 엔터 키로 검색 가능하도록 추가
-    document.getElementById('search-input').addEventListener('keypress', function(e) {
-        if(e.key === 'Enter') {
-            document.getElementById('search-btn').click();
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                window.location.href = `${searchUrl}?query=${encodeURIComponent(query)}`;  // 동적 URL 사용
+            }
+        }
+
+        // 검색 버튼 클릭 이벤트
+        if (searchBtn) {
+            searchBtn.addEventListener('click', performSearch);
+        }
+
+        // 엔터키 이벤트
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
         }
     });
   </script>

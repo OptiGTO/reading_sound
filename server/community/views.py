@@ -64,7 +64,9 @@ def post_view(request):
                                 'publisher': book_info.get('publisher', ''),
                                 'pubdate': book_info.get('pubdate', ''),
                                 'thumbnail_url': book_info.get('thumbnail_url', ''),
-                                'link': book_info.get('link', '')
+                                'link': book_info.get('link', ''),
+                                'isbn': book_info.get('isbn', ''),
+                                'description': book_info.get('description', '')
                             }
                         )
                         post.book = book
@@ -127,7 +129,7 @@ def process_book_data(request):
             title=book_info.get('title', ''),
             author=book_info.get('author', ''),
             defaults={k: book_info.get(k, '') for k in [
-                'publisher', 'pubdate', 'thumbnail_url', 'link', 'isbn'
+                'publisher', 'pubdate', 'thumbnail_url', 'link', 'isbn' , 'description'
             ]}
         )[0]
     return None
@@ -470,6 +472,7 @@ def get_posts_by_book(request):
 
 
 
+# 통합 검색 뷰
 def search_view(request):
     """통합 검색 뷰"""
     query = request.GET.get('query', '')
