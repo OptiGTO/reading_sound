@@ -469,13 +469,13 @@ def book_add_view(request):
 
 # 홈 카드 클릭 시 책별 게시물 조회 뷰
 def get_posts_by_book(request):
-    """특정 도서와 관련된 게시물 목록을 반환하는 API"""                                             # 도서 관련 게시물 API
-    isbn = request.GET.get('isbn', '')                                                               # 도서 ISBN 조회
+    """특정 도서와 관련된 게시물 목록을 반환하는 API"""                                              # 도서 관련 게시물 API　　　　　
+    isbn = request.GET.get('isbn', '')                                                                # 도서 ISBN 조회　　　　　　　
     try:
-        # 도서 검색 조건 개선                                                                                  # 도서 검색 조건
-        book = Book.objects.filter(                                                                   # 도서 조회
+        # 도서 검색 조건 개선                                                                       # 도서 검색 조건　　　　　　　
+        book = Book.objects.filter(                                                                   # 도서 조회　　　　　　　　　
             models.Q(isbn=isbn) if isbn else models.Q(title=request.GET.get('title', ''))
-        ).first()                                                                                    # 첫 번째 도서 조회
+        ).first()                                                                                    # 첫 번째 도서 조회　　　　　
         
         if not book:
             return JsonResponse({
@@ -484,65 +484,67 @@ def get_posts_by_book(request):
                 'status': 'no_book'
             }, safe=False)
         
-        book.increase_views()  # 도서 조회수 증가                                                    # 도서 조회수 증가
-
+        book.increase_views()  # 도서 조회수 증가                                                     # 도서 조회수 증가　　　　　
+    
         posts = []
         post_types = [GeneralPost, ReadingGroupPost, BookReviewEventPost, 
-                     BookTalkEventPost, PersonalBookEventPost]                                      # 게시글 모델 리스트
+                      BookTalkEventPost, PersonalBookEventPost]                                   # 게시글 모델 리스트　　　　　
         
-        for post_type in post_types:                                                                   # 각 게시글 모델 반복
-            qs = post_type.objects.filter(                                                            # 특정 모델에서 도서 관련 게시글 조회
-                book=book,                                                                            # 요청한 도서
-                is_deleted=False,                                                                     # 삭제되지 않은 게시글
-                is_active=True                                                                        # 활성화된 게시글
-            ).order_by('-created_at')                                                                  # 최신순 정렬
-            for post in qs:                                                                              # 각 게시글에 대해 반복
-                # 게시글에 따른 상세 URL 생성                                                    # 상세 페이지 URL 생성
-                if post_type == GeneralPost:                                                             # 일반 게시글
-                    detail_url = reverse('community:general_post_detail', args=[post.id])                
-                elif post_type == ReadingGroupPost:                                                        # 독서 모임 게시글
+        for post_type in post_types:                                                                    # 각 게시글 모델 반복　　　　　
+            qs = post_type.objects.filter(                                                             # 특정 모델에서 도서 관련 게시글 조회　
+                book=book,                                                                             # 요청한 도서　　　　　　　
+                is_deleted=False,                                                                      # 삭제되지 않은 게시글　　　
+                is_active=True                                                                         # 활성화된 게시글　　　　　
+            ).order_by('-created_at')                                                                   # 최신순 정렬　　　　　　　
+            for post in qs:                                                                               # 각 게시글에 대해 반복　　　　　
+                # 게시글에 따른 상세 URL 생성                                                     # 상세 페이지 URL 생성　　　　　
+                if post_type == GeneralPost:                                                              # 일반 게시글　　　　　　　　
+                    detail_url = reverse('community:general_post_detail', args=[post.id])
+                elif post_type == ReadingGroupPost:                                                       # 독서 모임 게시글　　　　　
                     detail_url = reverse('community:reading_meeting_detail', args=[post.id])
-                elif post_type == BookReviewEventPost:                                                   # 리뷰 이벤트 게시글
+                elif post_type == BookReviewEventPost:                                                      # 리뷰 이벤트 게시글　　　　　
                     detail_url = reverse('community:review_event_detail', args=[post.id])
-                elif post_type == BookTalkEventPost:                                                     # 북토크 게시글
+                elif post_type == BookTalkEventPost:                                                        # 북토크 게시글　　　　　　　
                     detail_url = reverse('community:booktalk_detail', args=[post.id])
-                elif post_type == PersonalBookEventPost:                                                 # 개인 이벤트 게시글
+                elif post_type == PersonalBookEventPost:                                                    # 개인 이벤트 게시글　　　　
                     detail_url = reverse('community:personal_event_detail', args=[post.id])
                 else:
-                    detail_url = ''                                                                      # 기본 URL 빈 문자열
+                    detail_url = ''                                                                         # 기본 URL 빈 문자열　　　　
                 
-                post_dict = {                                                                            # 게시글 데이터를 딕셔너리로 저장
-                    'id': post.id,                                                                      # 게시글 ID
-                    'title': post.title,                                                                # 게시글 제목
-                    'content': post.content,                                                            # 게시글 내용
-                    'writer__username': post.writer.username,                                           # 작성자 이름
-                    'created_at': post.created_at,                                                      # 생성일시
-                    'detail_url': detail_url                                                            # 상세 페이지 URL 추가
+                post_dict = {                                                                               # 게시글 데이터를 딕셔너리로 저장　
+                    'id': post.id,                                                                         # 게시글 ID　　　　　　　　　
+                    'title': post.title,                                                                   # 게시글 제목　　　　　　　　
+                    'content': post.content,                                                               # 게시글 내용　　　　　　　　
+                    'writer__username': post.writer.username,                                              # 작성자 이름　　　　　　　　
+                    'created_at': post.created_at,                                                         # 생성일시　　　　　　　　　
+                    'detail_url': detail_url,                                                              # 상세 페이지 URL 추가　　　　
+                    'likes': post.likes                                                                    # 좋아요 수 추가　　　　　　　
                 }
-                ct = ContentType.objects.get_for_model(post)                                             # 게시글 모델의 ContentType
-                image_obj = PostImage.objects.filter(                                                     # 관련 이미지 조회
-                    content_type=ct,                                                                       # 게시글 ContentType 기준
-                    object_id=post.id                                                                      # 게시글 ID 기준
-                ).order_by('order').first()                                                                 # 주문 기준 첫 번째 이미지 선택
-                if image_obj:                                                                              # 이미지가 있을 경우
-                    post_dict['thumbnail_url'] = image_obj.image.url                                      # 썸네일 URL 추가
+                ct = ContentType.objects.get_for_model(post)                                               # 게시글 모델의 ContentType　　
+                image_obj = PostImage.objects.filter(                                                       # 관련 이미지 조회　　　　　　　
+                    content_type=ct,                                                                         # 게시글 ContentType 기준　　
+                    object_id=post.id                                                                        # 게시글 ID 기준　　　　　　　
+                ).order_by('order').first()                                                                  # 주문 기준 첫 번째 이미지 선택　
+                if image_obj:                                                                                # 이미지가 있을 경우　　　　　
+                    post_dict['thumbnail_url'] = image_obj.image.url                                       # 썸네일 URL 추가　　　　　　　
                 else:
-                    post_dict['thumbnail_url'] = ''                                                       # 이미지 없으면 빈 문자열
-                posts.append(post_dict)                                                                    # 리스트에 게시글 추가
-        
-        # 날짜 직렬화 처리                                                                              // 날짜 포맷 변경
+                    post_dict['thumbnail_url'] = ''                                                        # 이미지 없으면 빈 문자열　　　　
+                posts.append(post_dict)                                                                      # 리스트에 게시글 추가　　　　　
+            
+        # 날짜 직렬화 처리                                                                              # 날짜 포맷 변경　　　　　　　
         for post in posts:
             post['created_at'] = post['created_at'].strftime('%Y-%m-%d %H:%M') if post['created_at'] else '날짜 정보 없음'
-
+    
         posts.sort(key=lambda x: x['created_at'], reverse=True)
         posts = posts[:10]
             
         return JsonResponse({
             'posts': posts,
             'book_title': book.title,
+            'book_likes': book.likes,                                                                    # 도서 좋아요 수 추가　　　　　
             'status': 'success'
         }, safe=False)
-
+    
     except Exception as e:
         return JsonResponse({
             'error': '게시물을 불러오는 중 오류가 발생했습니다.',
@@ -586,4 +588,41 @@ def search_view(request):
         'result_count': len(results['books']) + len(results['posts'])
     }
     return render(request, 'community/search_results.html', context)
+
+@csrf_exempt                                                                # 좋아요 기능 처리 (도서)　　　
+def like_book(request):
+    if request.method == "POST":                                              # POST 메서드 확인　　　　　　
+        if not request.user.is_authenticated:                                # 인증된 사용자 확인　　　　　
+            return JsonResponse({'error': '로그인이 필요합니다.'}, status=401)    # 로그인 필요 메시지　　　　　　
+        book_id = request.POST.get('book_id')                                  # 도서 ID 추출　　　　　　　　　
+        if not book_id:
+            return JsonResponse({'error': '도서 ID가 제공되지 않았습니다.'}, status=400)  # 도서 ID 누락 메시지　　　　　
+        try:
+            book = Book.objects.get(pk=book_id)                                # 도서 객체 조회　　　　　　　
+            book.likes += 1                                                    # 좋아요 수 증가　　　　　　　
+            book.save()                                                        # 도서 객체 저장　　　　　　　
+            return JsonResponse({'success': True, 'likes': book.likes})          # 결과 반환　　　　　　　　　
+        except Book.DoesNotExist:
+            return JsonResponse({'error': '도서를 찾을 수 없습니다.'}, status=404)  # 도서 없음 메시지　　　　　
+    return JsonResponse({'error': '잘못된 요청입니다.'}, status=400)              # 잘못된 요청 메시지　　　　　
+
+@csrf_exempt                                                                # 좋아요 기능 처리 (게시물)　　
+def like_post(request):
+    if request.method == "POST":                                              # POST 메서드 확인　　　　　　
+        if not request.user.is_authenticated:                                # 인증된 사용자 확인　　　　　
+            return JsonResponse({'error': '로그인이 필요합니다.'}, status=401)    # 로그인 필요 메시지　　　　　　
+        post_id = request.POST.get('post_id')                                  # 게시물 ID 추출　　　　　　　　　
+        model_name = request.POST.get('model')                                 # 모델명(게시글 유형) 추출　　　　
+        if not post_id or not model_name:
+            return JsonResponse({'error': '게시물 ID와 모델명이 제공되지 않았습니다.'}, status=400)  # 필수 파라미터 누락 메시지　
+        try:
+            from django.apps import apps                                   # 앱 모델 가져오기　　　　　　　
+            Model = apps.get_model('community', model_name)                      # 모델 객체 얻기　　　　　　　
+            post = Model.objects.get(pk=post_id)                               # 게시물 객체 조회　　　　　　　
+            post.likes += 1                                                    # 좋아요 수 증가　　　　　　　
+            post.save()                                                        # 게시물 객체 저장　　　　　　　
+            return JsonResponse({'success': True, 'likes': post.likes})          # 결과 반환　　　　　　　　　
+        except Model.DoesNotExist:
+            return JsonResponse({'error': '게시글을 찾을 수 없습니다.'}, status=404)  # 게시글 없음 메시지　　　　　
+    return JsonResponse({'error': '잘못된 요청입니다.'}, status=400)              # 잘못된 요청 메시지　　　　　
 

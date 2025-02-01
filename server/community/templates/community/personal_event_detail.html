@@ -20,6 +20,16 @@
       {% endfor %}
     </div>
   {% endif %}
+
+
+  <!-- 좋아요(하모니) 버튼  // 좋아요 버튼 -->
+  <div class="like-container" style="margin-top:20px;">             <!-- 버튼 감싸는 영역  // 감싸는 영역 -->
+    <button id="like-btn" 
+            data-post-id="{{ post.id }}" 
+            data-model="PersonalEventPost"> 
+      🎵 하모니(좋아요) <span id="like-count">{{ post.likes }}</span>  <!-- 아이콘 및 좋아요 수  // 좋아요 수 -->
+    </button>
+  </div>
   
   <a href="{% url 'community:home' %}" class="btn hover-effect">목록으로 돌아가기</a>   <!-- 목록 복귀 버튼  // 복귀 버튼 -->
 </article>

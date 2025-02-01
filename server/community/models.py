@@ -94,6 +94,9 @@ class Book(models.Model):
     # 책 조회수 추가
     views = models.PositiveIntegerField(default=0, verbose_name="조회수")
 
+    # 좋아요 수 추가
+    likes = models.PositiveIntegerField(default=0, verbose_name="좋아요 수")
+
     class Meta:
         ordering = ['priority', 'title']  # 우선순위 높은(숫자 낮은) 책부터 정렬 후, 제목 순
         verbose_name = "책"
@@ -246,6 +249,10 @@ class Post(models.Model):
 
     # 예) 태그(M2M)
     tags        = models.ManyToManyField('PostTag', blank=True, verbose_name="태그")
+
+
+    # 좋아요 수 추가
+    likes = models.PositiveIntegerField(default=0, verbose_name="좋아요 수")
 
     # 예) 책 관련 글이면 연결 (null/blank 허용)
     book        = models.ForeignKey(

@@ -38,22 +38,23 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),    # 로그인 뷰
     
     # 비밀번호 재설정 관련 URL 패턴들
-    path('password_reset/', views.password_reset, name='password_reset'),
+    path('password_reset/', views.password_reset, name='password_reset'),   # 비밀번호 재설정 뷰
     path('password_reset/done/', 
          auth_views.PasswordResetDoneView.as_view(template_name='community/password_reset_done.html'), 
-         name='password_reset_done'),
+         name='password_reset_done'),   # 비밀번호 재설정 완료 뷰
     path('reset/<uidb64>/<token>/', 
          auth_views.PasswordResetConfirmView.as_view(template_name='community/password_reset_confirm.html'), 
-         name='password_reset_confirm'),
+         name='password_reset_confirm'),   # 비밀번호 재설정 확인 뷰
     path('reset/done/', 
          auth_views.PasswordResetCompleteView.as_view(template_name='community/password_reset_complete.html'), 
-         name='password_reset_complete'),
+         name='password_reset_complete'),   # 비밀번호 재설정 완료 뷰
     
+    # 로그아웃 뷰
     path('logout/', auth_views.LogoutView.as_view(next_page='community:home'), name='logout'),  # 로그아웃 뷰
     path('signup/', views.signup, name='signup'),   # 회원가입 뷰
 
-    
-
+    path('like-book/', views.like_book, name='like_book'),                  # 도서 좋아요 기능 뷰
+    path('like-post/', views.like_post, name='like_post'),                  # 게시글 좋아요 기능 뷰
 
     path('', views.home_view, name='home'),
 ]
