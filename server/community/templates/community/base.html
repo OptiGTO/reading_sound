@@ -280,11 +280,13 @@
       });
     });
 
-    // 3. CSRF 토큰 처리                                                               // CSRF 토큰 설정
-    let csrftoken;
-    const tokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
-    if (tokenElement) {
-      csrftoken = tokenElement.value;
+    // 3. CSRF 토큰 처리                                                              // CSRF 토큰 설정
+    let csrftoken = '';
+    const tokenElement = document.querySelector('input[name="csrfmiddlewaretoken"]');         // 토큰 엘리먼트 선택
+    if (tokenElement) {                                                                           // 토큰이 존재하면
+      csrftoken = tokenElement.value;                                                             // 토큰 저장
+    } else {
+      console.warn("CSRF 토큰 요소를 찾을 수 없습니다.");                                           // 토큰 경고 출력
     }
 
     // 4. 모바일 서브메뉴 토글                                                         // 모바일 메뉴 처리
@@ -336,7 +338,7 @@
         }
 
         // 서버에서 게시물 데이터 요청                                                            // 서버 요청
-        fetch(`/community/get-posts-by-book/?isbn=${encodeURIComponent(isbn)}`, {                  // ISBN을 포함한 요청 URL
+        fetch(`/community/get-posts-by-book/?isbn=${encodeURIComponent(isbn)}`, {                   // ISBN을 포함한 요청 URL
             method: 'GET',                                                                      // GET 요청
             headers: {
                 'X-CSRFToken': csrftoken,                                                       // CSRF 토큰 헤더
@@ -364,6 +366,11 @@
                 `).join('');
             } else {
                 container.innerHTML = '<p class="no-posts">관련 게시물이 없습니다.</p>';             // 게시물 없을 경우 메시지 출력
+            }
+            // 모달 좋아요 버튼에 도서 ID 할당                                                      // 좋아요 버튼 데이터 할당
+            const modalLikeBtn = document.getElementById("modal-like-btn");                        // 모달 좋아요 버튼 선택                                        
+            if(modalLikeBtn) {
+                modalLikeBtn.dataset.bookId = data.book_id;                                      // 도서 ID 설정                                                 
             }
         })
         .catch(error => {
@@ -420,30 +427,91 @@
         }
     });
 
-    // 8. 좋아요(하모니) 버튼 기능 구현                                                           // 좋아요(하모니) 버튼 기능 구현
-    document.getElementById('like-btn').addEventListener('click', function(){  // 이벤트 리스너 등록  // 리스너 등록
-    const postId = this.dataset.postId;                               // 게시글 ID 추출  // 추출
-    const modelName = this.dataset.model;                             // 모델명 추출  // 추출
-    fetch("{% url 'community:like_post' %}", {                          // API 엔드포인트 호출  // 호출
-      method: 'POST',                                                 // POST 메서드  // 메서드 지정
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'           // 헤더 설정  // 헤더 설정
-      },
-      body: `post_id=${postId}&model=${modelName}`                     // 파라미터 전송  // 파라미터 전송
-    })
-    .then(response => response.json())                                // 응답 JSON 변환  // 변환
-    .then(data => {                                                   // 응답 데이터 처리  // 처리
-      if(data.success){                                               // 성공 시  // 성공 조건
-        document.getElementById('like-count').innerText = data.likes;   // 좋아요 수 업데이트  // 업데이트
-      } else {                                                        // 실패 시  // 실패 조건
-        alert(data.error || '좋아요 처리 중 오류가 발생했습니다.');      // 오류 메시지 출력  // 출력
+    // 8. 게시글 좋아요(하모니) 버튼 기능 구현                                                           // 게시글 좋아요 버튼 기능 구현
+    document.addEventListener('DOMContentLoaded', () => {        // DOM 완전히 로드 후 실행   // DOMContentLoaded 이벤트    
+      // CSRF 토큰 처리                                                              // CSRF 토큰 설정
+      let csrftoken = '';
+      const tokenElement = document.querySelector('input[name="csrfmiddlewaretoken"]');   // 토큰 엘리먼트 선택
+      if (tokenElement) {                                                                // 토큰이 존재하면
+        csrftoken = tokenElement.value;                                                  // 토큰 저장
+      } else {
+        console.warn("CSRF 토큰 요소를 찾을 수 없습니다.");                              // 토큰 경고 출력
       }
-    })
-    .catch(error => {                                                 // 예외 처리  // 처리
-      console.error('Error:', error);                                 // 콘솔 오류 출력  // 출력
-      alert('좋아요 요청 중 오류가 발생했습니다.');                      // 사용자 오류 알림  // 알림
+
+      // 게시글 좋아요(하모니) 버튼 기능 구현                                      // 게시글 좋아요 버튼 기능 구현
+      const postLikeBtn = document.getElementById('like-btn');                           // 게시글 좋아요 버튼 선택
+      if (postLikeBtn) {                                                                 // 버튼이 존재하면
+        postLikeBtn.addEventListener('click', function(){                              // 이벤트 리스너 등록
+          const postId = this.dataset.postId;                                            // 게시글 ID 추출
+          const modelName = this.dataset.model;                                          // 모델명 추출
+          fetch("{% url 'community:like_post' %}", {                                      // API 호출
+            method: 'POST',                                                              // POST 메서드
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `post_id=${postId}&model=${modelName}`                                 // 파라미터 전송
+          })
+          .then(response => response.json())                                             // 응답 JSON 변환
+          .then(data => {                                                                // 응답 데이터 처리
+            if(data.success){                                                            // 성공 시
+              const likeCountElem = document.getElementById('like-count');               // 좋아요 수 요소 선택
+              if(likeCountElem) {                                                        // 요소 존재 시
+                likeCountElem.innerText = data.likes;                                    // 좋아요 수 업데이트
+              }
+            } else {                                                                     // 실패 시
+              alert(data.error || '좋아요 처리 중 오류가 발생했습니다.');
+            }
+          })
+          .catch(error => {                                                              // 예외 처리
+            console.error('Error:', error);
+            alert('좋아요 요청 중 오류가 발생했습니다.');
+          });
+        });
+      } else {                                                                           // 게시글 좋아요 버튼이 없으면
+        console.warn("게시글 좋아요 버튼('like-btn')이 존재하지 않습니다.");
+      }
+
+      // 책 좋아요(하모니) 버튼 기능 구현                                        // 책 좋아요 버튼 기능 구현
+      const modalLikeBtn = document.getElementById('modal-like-btn');                    // 모달 내 좋아요 버튼 선택
+      if (modalLikeBtn) {                                                                // 버튼이 존재하면
+        modalLikeBtn.addEventListener('click', function() {
+          const bookId = modalLikeBtn.dataset.bookId;                                    // 책 ID 추출
+          if (!bookId) {                                                                 // 책 ID가 없으면
+            console.error("책 ID가 없습니다.");
+            return;
+          }
+          fetch("{% url 'community:like_book' %}", {                                      // API 호출
+            method: "POST",                                                              // POST 요청
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "X-CSRFToken": csrftoken                                                   // CSRF 토큰 헤더
+            },
+            credentials: "same-origin",                                                  // 쿠키 전송
+            body: `book_id=${bookId}`                                                    // 파라미터 전송
+          })
+          .then(response => response.json())                                             // 응답 JSON 변환
+          .then(data => {                                                                // 응답 처리
+            if (data.success) {                                                          // 성공 시
+              console.log("좋아요가 완료되었습니다.");
+              const likeCountElem = document.getElementById('modal-like-count');           // 좋아요 카운트 요소 선택
+              if(likeCountElem){                                                         // 요소 존재하면
+                likeCountElem.innerText = data.likes;                                    // 좋아요 수 업데이트
+              }
+            } else {                                                                     // 실패 시
+              alert(data.error || "좋아요 처리 중 오류가 발생했습니다.");
+            }
+          })
+          .catch(error => {                                                              // 예외 처리
+            console.error("좋아요 요청 중 오류 발생:", error);
+            alert("좋아요 요청 중 오류가 발생했습니다.");
+          });
+        });
+      } else {                                                                           // 모달 좋아요 버튼이 없으면
+        console.warn("모달 좋아요 버튼('modal-like-btn')이 존재하지 않습니다.");
+      }
     });
-  });
+    
+
   </script>
 
   <!-- 책 게시물 팝업 모달 추가 -->
@@ -454,6 +522,11 @@
       <button class="modal-close" onclick="closeBookPosts()">&times;</button>
     </div>
     <div id="bookPostsContainer"></div>
+    <div class="modal-footer">
+      <button class="btn like-btn" id="modal-like-btn" data-book-id="">
+        <i class="fas fa-music"></i> 하모니(좋아요) <span id="modal-like-count">0</span>
+      </button>
+    </div>
   </div>
 </body>
 </html>
