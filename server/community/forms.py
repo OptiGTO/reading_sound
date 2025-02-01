@@ -3,7 +3,8 @@
 from django import forms
 from .models import GeneralPost, BookEventPost, BookReviewEventPost, ReadingGroupPost, ReadingTipPost, PostTag
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 class PostForm(forms.ModelForm):
     tags = forms.CharField(

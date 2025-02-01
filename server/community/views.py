@@ -20,6 +20,7 @@ from .models import (
 from .forms import PostForm, CustomUserCreationForm, CustomAuthForm
 from .services import search_naver_books
 from django.db import models
+from django.db.models import Q
 
 #----------------------------------------공통 관련---------------------------------------------------------
 # 공통 컨텍스트 생성 함수
@@ -80,7 +81,7 @@ def post_view(request):
                 # 이미지 처리
                 if images := request.FILES.getlist('post_images'):
                     for image in images:
-                        PostImage.objects.create(post=post, image=image)
+                        PostImage.objects.create(image=image, post=post)
 
                 messages.success(request, "게시물이 성공적으로 작성되었습니다.")
                 response = redirect('community:home')
@@ -395,10 +396,17 @@ def book_add_view(request):
             if request.POST.get(field)
         }
         
-        if Book.objects.filter(
-            models.Q(title=book_data['title'], author=book_data['author']) |
-            (models.Q(isbn=book_data.get('isbn')) if book_data.get('isbn') else models.Q())
-        ).exists():
+        if book_data.get('isbn'):
+            duplicate_exists = Book.objects.filter(
+            Q(title=book_data['title'], author=book_data['author']) |
+            Q(isbn=book_data['isbn'])
+            ).exists()
+        else:
+            duplicate_exists = Book.objects.filter(
+            title=book_data['title'], author=book_data['author']
+            ).exists()
+
+        if duplicate_exists:
             messages.warning(request, f"이미 존재하는 도서입니다: {book_data['title']}")
         else:
             Book.objects.create(**book_data)
@@ -428,6 +436,8 @@ def get_posts_by_book(request):
                 'message': '해당하는 책을 찾을 수 없습니다.',
                 'status': 'no_book'
             }, safe=False)
+        
+        book.increase_views()
 
         posts = []
         post_types = [GeneralPost, ReadingGroupPost, BookReviewEventPost, 
@@ -472,7 +482,7 @@ def get_posts_by_book(request):
 
 
 
-# 통합 검색 뷰
+# base.html 오른쪽 사이드바 통합 검색 뷰
 def search_view(request):
     """통합 검색 뷰"""
     query = request.GET.get('query', '')

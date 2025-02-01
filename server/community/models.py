@@ -84,10 +84,15 @@ class Book(models.Model):
         default=timezone.now,
         verbose_name="등록일"
     )
+
+
     updated_at = models.DateTimeField(auto_now=True, verbose_name="수정일")
 
     # 책 활성화 여부 (품절/절판 등으로 리스트 제외 처리 시 유용)
     is_active = models.BooleanField(default=True, verbose_name="활성화 여부")
+
+    # 책 조회수 추가
+    views = models.PositiveIntegerField(default=0, verbose_name="조회수")
 
     class Meta:
         ordering = ['priority', 'title']  # 우선순위 높은(숫자 낮은) 책부터 정렬 후, 제목 순
@@ -102,6 +107,11 @@ class Book(models.Model):
         책을 비활성화할 때 사용하는 예시 메소드 (품절/절판 처리 등).
         """
         self.is_active = False
+        self.save()
+
+    def increase_views(self):
+        """조회수 증가 메소드"""
+        self.views += 1
         self.save()
 
 #------------------------------ Post 공통 관리 모델--------------------------------------------------
