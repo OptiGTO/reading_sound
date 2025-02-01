@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model             # User 모델을 가�
 from django.utils.text import slugify
 from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()                                   # 파일 상단에서 한 번만 정의
@@ -214,6 +214,9 @@ class Post(models.Model):
     content     = models.TextField(verbose_name="내용")
     writer      = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="작성자")
     views       = models.PositiveIntegerField(default=0, verbose_name="조회수")
+
+    # 이미지 제너릭 리레션 필드 추가
+    postimage_set = GenericRelation(PostImage)
 
     # 날짜/시간
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name="등록일")

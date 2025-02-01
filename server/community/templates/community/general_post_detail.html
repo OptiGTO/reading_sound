@@ -1,0 +1,26 @@
+<!-- community/templates/community/general_post_detail.html -->     
+{% extends "community/base.html" %}                                <!-- 베이스 템플릿 확장  // 확장 -->
+{% load static %}                                                  <!-- 스태틱 파일 로드  // 스태틱 파일 로드 -->
+
+{% block title %}{{ post.title }}{% endblock %}                    <!-- 페이지 제목에 게시글 제목 사용  // 제목 사용 -->
+
+{% block content %}
+<article class="post-detail">                                       <!-- 게시글 상세 정보 영역  // 게시글 상세 영역 -->
+  <h1>{{ post.title }}</h1>                                           <!-- 게시글 제목 출력  // 제목 출력 -->
+  <p>작성자: {{ post.writer.username }}</p>                           <!-- 작성자 정보 출력  // 작성자 출력 -->
+  <div class="post-content">
+    {{ post.content|safe }}                                           <!-- 내용 렌더링 (HTML 허용)  // 내용 출력 -->
+  </div>
+  
+  <!-- 관련 이미지 출력 (있는 경우)  // 이미지 출력 -->
+  {% if post.postimage_set.all %}
+    <div class="post-images">
+      {% for image in post.postimage_set.all %}
+        <img src="{{ image.image.url }}" alt="게시글 이미지" style="max-width: 300px;">  <!-- 이미지 태그  // 이미지 태그 -->
+      {% endfor %}
+    </div>
+  {% endif %}
+  
+  <a href="{% url 'community:home' %}" class="btn hover-effect">목록으로 돌아가기</a>   <!-- 목록 복귀 버튼  // 복귀 버튼 -->
+</article>
+{% endblock %}

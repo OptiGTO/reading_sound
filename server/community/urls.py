@@ -18,10 +18,15 @@ urlpatterns = [
 
     path('post/', views.post_view, name='post'),      # 글쓰기 뷰
     path('general_post/', views.general_post, name='general_post'), # 일반 게시판 뷰
+    path('general_post/<int:pk>/', views.general_post_detail, name='general_post_detail'), # 일반 게시판 상세 뷰
     path('reading_meeting/', views.reading_meeting, name='reading_meeting'),        # 독서 모임 뷰
+    path('reading_meeting/<int:pk>/', views.reading_meeting_detail, name='reading_meeting_detail'), # 독서 모임 상세 뷰
     path('review_event/', views.review_event, name='review_event'), # 리뷰 이벤트 뷰
+    path('review_event/<int:pk>/', views.review_event_detail, name='review_event_detail'), # 리뷰 이벤트 상세 뷰
     path('booktalk/', views.booktalk, name='booktalk'),     # 북토크 뷰
+    path('booktalk/<int:pk>/', views.booktalk_detail, name='booktalk_detail'), # 북토크 상세 뷰
     path('personal_event/', views.personal_event, name='personal_event'), # 개인 이벤트 뷰
+    path('personal_event/<int:pk>/', views.personal_event_detail, name='personal_event_detail'), # 개인 이벤트 상세 뷰
     #path('parrhesia/', views.parrhesia, name='parrhesia'),  # 파르헤시아 뷰
     path('recommend_book/', views.recommend_book, name='recommend_book'), # 도서 추천 뷰
     

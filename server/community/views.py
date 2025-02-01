@@ -1,6 +1,6 @@
 # community/views.py (수정된 전체 버전)
 import json
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, views as auth_views
 from django.contrib.auth import login as auth_login
@@ -159,6 +159,17 @@ def general_post(request):
     }
     return render(request, 'community/general_post.html', context)
 
+
+# 일반 게시글 상세 페이지 뷰 (일반 게시글: 카테고리 'book_post')
+def general_post_detail(request, pk):
+    """일반 게시글 상세 페이지 뷰"""
+    post = get_object_or_404(GeneralPost, pk=pk)
+    context = {
+        'post': post,
+        **get_common_context(request)
+    }
+    return render(request, 'community/general_post_detail.html', context)
+
 # 독서 모임 뷰 (수정 버전)
 def reading_meeting(request):
     """독서 모임 페이지 렌더링"""
@@ -168,6 +179,16 @@ def reading_meeting(request):
         "posts": posts
     }
     return render(request, 'community/reading_meeting.html', context)
+
+
+def reading_meeting_detail(request, pk):
+    """독서 모임 상세 페이지 뷰"""
+    post = get_object_or_404(ReadingGroupPost, pk=pk)
+    context = {
+        'post': post,
+        **get_common_context(request)
+    }
+    return render(request, 'community/reading_meeting_detail.html', context)
 
 # 리뷰 이벤트 뷰 (수정 버전)
 def review_event(request):
@@ -179,6 +200,16 @@ def review_event(request):
     }
     return render(request, 'community/review_event.html', context)
 
+def review_event_detail(request, pk):
+    """리뷰 이벤트 상세 페이지 뷰"""
+    post = get_object_or_404(BookReviewEventPost, pk=pk)
+    context = {
+        'post': post,
+        **get_common_context(request)
+    }
+    return render(request, 'community/review_event_detail.html', context)
+
+
 # 북토크 뷰 (수정 버전)
 def booktalk(request):
     """북토크 페이지 렌더링"""
@@ -188,6 +219,17 @@ def booktalk(request):
         "posts": posts
     }
     return render(request, 'community/booktalk.html', context)
+
+def booktalk_detail(request, pk):
+    """북토크 상세 페이지 뷰"""
+    post = get_object_or_404(BookTalkEventPost, pk=pk)
+    context = {
+        'post': post,
+        **get_common_context(request)
+    }
+    return render(request, 'community/booktalk_detail.html', context)
+
+
 
 # 사용자 콘텐츠 뷰 (수정 버전)
 def personal_event(request):
@@ -199,8 +241,14 @@ def personal_event(request):
     }
     return render(request, 'community/personal_event.html', context)
 
-
-
+def personal_event_detail(request, pk):
+    """개인 이벤트 상세 페이지 뷰"""
+    post = get_object_or_404(PersonalBookEventPost, pk=pk)
+    context = {
+        'post': post,
+        **get_common_context(request)
+    }
+    return render(request, 'community/personal_event_detail.html', context)
 
 # 도서 추천 뷰 (수정 버전)
 def recommend_book(request):
@@ -420,15 +468,14 @@ def book_add_view(request):
 
 
 # 홈 카드 클릭 시 책별 게시물 조회 뷰
-
 def get_posts_by_book(request):
-    """특정 도서와 관련된 게시물 목록을 반환하는 API"""
-    isbn = request.GET.get('isbn', '')
+    """특정 도서와 관련된 게시물 목록을 반환하는 API"""                                             # 도서 관련 게시물 API
+    isbn = request.GET.get('isbn', '')                                                               # 도서 ISBN 조회
     try:
-        # 도서 검색 조건 개선
-        book = Book.objects.filter(
+        # 도서 검색 조건 개선                                                                                  # 도서 검색 조건
+        book = Book.objects.filter(                                                                   # 도서 조회
             models.Q(isbn=isbn) if isbn else models.Q(title=request.GET.get('title', ''))
-        ).first()
+        ).first()                                                                                    # 첫 번째 도서 조회
         
         if not book:
             return JsonResponse({
@@ -437,28 +484,53 @@ def get_posts_by_book(request):
                 'status': 'no_book'
             }, safe=False)
         
-        book.increase_views()
+        book.increase_views()  # 도서 조회수 증가                                                    # 도서 조회수 증가
 
         posts = []
         post_types = [GeneralPost, ReadingGroupPost, BookReviewEventPost, 
-                     BookTalkEventPost, PersonalBookEventPost]
+                     BookTalkEventPost, PersonalBookEventPost]                                      # 게시글 모델 리스트
         
-        for post_type in post_types:
-            posts.extend(
-                list(post_type.objects.filter(                                    # list() 변환 추가
-                    book=book,
-                    is_deleted=False,
-                    is_active=True
-                ).values(
-                    'id',                                                         # id 필드 추가
-                    'title', 
-                    'content', 
-                    'writer__username',
-                    'created_at'
-                ))
-            )
+        for post_type in post_types:                                                                   # 각 게시글 모델 반복
+            qs = post_type.objects.filter(                                                            # 특정 모델에서 도서 관련 게시글 조회
+                book=book,                                                                            # 요청한 도서
+                is_deleted=False,                                                                     # 삭제되지 않은 게시글
+                is_active=True                                                                        # 활성화된 게시글
+            ).order_by('-created_at')                                                                  # 최신순 정렬
+            for post in qs:                                                                              # 각 게시글에 대해 반복
+                # 게시글에 따른 상세 URL 생성                                                    # 상세 페이지 URL 생성
+                if post_type == GeneralPost:                                                             # 일반 게시글
+                    detail_url = reverse('community:general_post_detail', args=[post.id])                
+                elif post_type == ReadingGroupPost:                                                        # 독서 모임 게시글
+                    detail_url = reverse('community:reading_meeting_detail', args=[post.id])
+                elif post_type == BookReviewEventPost:                                                   # 리뷰 이벤트 게시글
+                    detail_url = reverse('community:review_event_detail', args=[post.id])
+                elif post_type == BookTalkEventPost:                                                     # 북토크 게시글
+                    detail_url = reverse('community:booktalk_detail', args=[post.id])
+                elif post_type == PersonalBookEventPost:                                                 # 개인 이벤트 게시글
+                    detail_url = reverse('community:personal_event_detail', args=[post.id])
+                else:
+                    detail_url = ''                                                                      # 기본 URL 빈 문자열
+                
+                post_dict = {                                                                            # 게시글 데이터를 딕셔너리로 저장
+                    'id': post.id,                                                                      # 게시글 ID
+                    'title': post.title,                                                                # 게시글 제목
+                    'content': post.content,                                                            # 게시글 내용
+                    'writer__username': post.writer.username,                                           # 작성자 이름
+                    'created_at': post.created_at,                                                      # 생성일시
+                    'detail_url': detail_url                                                            # 상세 페이지 URL 추가
+                }
+                ct = ContentType.objects.get_for_model(post)                                             # 게시글 모델의 ContentType
+                image_obj = PostImage.objects.filter(                                                     # 관련 이미지 조회
+                    content_type=ct,                                                                       # 게시글 ContentType 기준
+                    object_id=post.id                                                                      # 게시글 ID 기준
+                ).order_by('order').first()                                                                 # 주문 기준 첫 번째 이미지 선택
+                if image_obj:                                                                              # 이미지가 있을 경우
+                    post_dict['thumbnail_url'] = image_obj.image.url                                      # 썸네일 URL 추가
+                else:
+                    post_dict['thumbnail_url'] = ''                                                       # 이미지 없으면 빈 문자열
+                posts.append(post_dict)                                                                    # 리스트에 게시글 추가
         
-        # 날짜 직렬화 처리
+        # 날짜 직렬화 처리                                                                              // 날짜 포맷 변경
         for post in posts:
             post['created_at'] = post['created_at'].strftime('%Y-%m-%d %H:%M') if post['created_at'] else '날짜 정보 없음'
 
@@ -514,3 +586,4 @@ def search_view(request):
         'result_count': len(results['books']) + len(results['posts'])
     }
     return render(request, 'community/search_results.html', context)
+

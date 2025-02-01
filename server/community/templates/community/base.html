@@ -305,69 +305,72 @@
       });
     });
 
-    // 6. 책 게시물 팝업 기능
-    function showBookPosts(isbn, title) {
-        // isbn이 None이거나 비어있는 경우 처리
+    // 6. 책 게시물 팝업 기능                                                                  // 책 게시물 팝업 처리
+    function showBookPosts(isbn, title) {                                                       // showBookPosts 함수 시작
+        // isbn이 None이거나 비어있는 경우 처리                                               // ISBN 유효성 검사
         if (!isbn || isbn === 'None') {
-            console.error('유효하지 않은 ISBN');
-            return;
+            console.error('유효하지 않은 ISBN');                                               // 오류 메시지 출력
+            return;                                                                             // 종료
         }
 
-        const modal = document.getElementById('bookPostsModal');
-        const overlay = document.getElementById('bookPostsOverlay');
-        const titleElement = document.getElementById('modalBookTitle');
-        const container = document.getElementById('bookPostsContainer');
+        const modal = document.getElementById('bookPostsModal');                                // 모달 요소 선택
+        const overlay = document.getElementById('bookPostsOverlay');                            // 오버레이 요소 선택
+        const titleElement = document.getElementById('modalBookTitle');                         // 모달 제목 요소 선택
+        const container = document.getElementById('bookPostsContainer');                        // 게시물 컨테이너 선택
 
-        if (!modal || !overlay || !titleElement || !container) {
-            console.error('필요한 모달 요소를 찾을 수 없습니다.');
-            return;
+        if (!modal || !overlay || !titleElement || !container) {                                  // 요소 확인
+            console.error('필요한 모달 요소를 찾을 수 없습니다.');                                // 오류 메시지 출력
+            return;                                                                             // 종료
         }
 
-        titleElement.textContent = `${title} 관련 게시물`;
-        container.innerHTML = '<div class="loading-spinner">로딩중...</div>';
+        titleElement.textContent = `${title} 관련 게시물`;                                       // 모달 제목 설정
+        container.innerHTML = '<div class="loading-spinner">로딩중...</div>';                    // 로딩 스피너 표시
 
-        // CSRF 토큰 가져오기
+        // CSRF 토큰 가져오기                                                                    // CSRF 토큰 처리
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
         if (!csrftoken) {
-            console.error('CSRF 토큰을 찾을 수 없습니다.');
-            return;
+            console.error('CSRF 토큰을 찾을 수 없습니다.');                                      // 토큰 오류 처리
+            return;                                                                             // 종료
         }
 
-        // 서버에서 게시물 데이터 요청
-        fetch(`/community/get-posts-by-book/?isbn=${encodeURIComponent(isbn)}`, {
-            method: 'GET',  // GET 요청임을 명시
+        // 서버에서 게시물 데이터 요청                                                            // 서버 요청
+        fetch(`/community/get-posts-by-book/?isbn=${encodeURIComponent(isbn)}`, {                  // ISBN을 포함한 요청 URL
+            method: 'GET',                                                                      // GET 요청
             headers: {
-                'X-CSRFToken': csrftoken,
-                'Accept': 'application/json'
+                'X-CSRFToken': csrftoken,                                                       // CSRF 토큰 헤더
+                'Accept': 'application/json'                                                    // JSON 응답 요청
             },
-            credentials: 'same-origin'  // CSRF 토큰을 포함하기 위한 설정
+            credentials: 'same-origin'                                                          // 동일 출처 설정
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('서버 응답 오류');
+                throw new Error('서버 응답 오류');                                               // 서버 오류 처리
             }
-            return response.json();
+            return response.json();                                                               // JSON 변환
         })
         .then(data => {
             if (data.posts && data.posts.length > 0) {
                 container.innerHTML = data.posts.map(post => `
-                    <div class="book-post-item">
-                        <h4>${post.title}</h4>
-                        <p>${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}</p>
-                        <small>작성자: ${post.writer__username || '알 수 없음'} | ${post.created_at ? new Date(post.created_at).toLocaleDateString('ko-KR') : '날짜 없음'}</small>
-                    </div>
+                    <a href="${post.detail_url}" class="post-link" style="text-decoration: none; color: inherit;">  <!-- 링크로 감싸기  // 링크 시작 -->
+                      <div class="book-post-item">                                                   <!-- 게시글 아이템 시작  // 게시글 아이템 -->
+                        ${post.thumbnail_url ? `<img src="${post.thumbnail_url}" alt="게시물 썸네일" class="post-thumbnail">` : ''}  <!-- 썸네일 출력  // 썸네일 -->
+                        <h4>${post.title}</h4>                                                       <!-- 게시글 제목  // 제목 출력 -->
+                        <p>${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}</p>  <!-- 내용 부분 출력  // 내용 -->
+                        <small>작성자: ${post.writer__username || '알 수 없음'} | ${post.created_at ? new Date(post.created_at).toLocaleDateString('ko-KR') : '날짜 없음'}</small>  <!-- 작성자 및 날짜 출력  // 작성자 -->
+                      </div>                                                                          <!-- 게시글 아이템 끝  // 아이템 끝 -->
+                    </a>                                                                               <!-- 링크 끝  // 링크 종료 -->
                 `).join('');
             } else {
-                container.innerHTML = '<p class="no-posts">관련 게시물이 없습니다.</p>';
+                container.innerHTML = '<p class="no-posts">관련 게시물이 없습니다.</p>';             // 게시물 없을 경우 메시지 출력
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            container.innerHTML = '<p class="error-message">게시물을 불러오는 중 오류가 발생했습니다.</p>';
+            console.error('Error:', error);                                                       // 오류 출력
+            container.innerHTML = '<p class="error-message">게시물을 불러오는 중 오류가 발생했습니다.</p>';  // 오류 메시지 출력
         });
 
-        modal.classList.add('active');
-        overlay.style.display = 'block';
+        modal.classList.add('active');                                                            // 모달 활성화
+        overlay.style.display = 'block';                                                          // 오버레이 표시
     }
 
     function closeBookPosts() {
