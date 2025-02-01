@@ -709,23 +709,27 @@ body {
 
 /* The floating action button (FAB). */
 .btn.fab {
-    width: 50px;                  /* Square button */
-    height: 50px;
-    border-radius: 50%;           /* Fully circular shape */
-    font-size: 1.5rem;            /* Larger text for a plus sign (+) */
-    font-weight: bold;            /* Bolder text for the icon */
-    display: flex;                /* Center the icon text */
-    align-items: center;
-    justify-content: center;
-    padding: 0;                   /* No extra padding needed */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
-    /* Elevated shadow for a floating look */
+  /* 버튼의 너비와 높이를 clamp()로 지정하여 최소 25px, 
+     이상적인 크기는 2.5vw, 최대 35px로 설정 */
+  width: clamp(65px, 2.5vw, 75px);
+  height: clamp(65px, 2.5vw, 75px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-/* Slight scale-up on hover for the FAB. */
-.btn.fab:hover {
-    transform: scale(1.05) translateY(-2px);
-    /* Grows a bit and shifts up slightly */
+/* 버튼 내부 이미지도 적절한 비율로 축소 */
+.floating-btn-container img {
+  width: 100%; /* 버튼 크기에 맞게 이미지 크기를 조절 */
+  height: auto;
+}
+
+/* 글쓰기 버튼 호버 효과 추가 */                   /* 글쓰기 버튼 마우스 오버 효과 */
+.btn.fab:hover {                                       /* 호버 시 효과 */
+    transform: scale(1.05) translateY(-2px);         /* 살짝 확대 및 위로 이동 */
 }
 
 /****************************************************
@@ -1039,8 +1043,10 @@ input::placeholder {
     z-index: 1000;
 }
 
-/*********************************************************************8
+/*********************************************************************/
 /* 책 게시글 목록 스타일 */
+/*********************************************************************/
+
 .post-list-container {
     padding: 20px;
     max-width: 1200px;
@@ -1302,11 +1308,4 @@ input::placeholder {
         grid-template-columns: 1fr;             /* 1열로 변경 */
     }
 }
-  
-/* 반응형 디자인을 위한 미디어 쿼리 */
-@media (max-width: 768px) {
-
-}
-
-
 
