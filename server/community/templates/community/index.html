@@ -38,8 +38,9 @@
           data-publisher="{{ book.publisher|default:'출판사 정보 없음' }}"
           data-pubdate="{{ book.pubdate|default:'출판일 정보 없음' }}"
           data-isbn="{{ book.isbn|default:'ISBN 정보 없음' }}"
-          onclick="showBookPosts('{{ book.isbn }}', '{{ book.title|escapejs }}')">
-        <img src="{{ book.thumbnail_url|default_if_none:'path/to/default_image.png' }}" 
+          data-thumbnail="{{ book.thumbnail_url|default_if_none:"{% static 'community/images/book_placeholder.png' %}" }}"
+          onclick="showBookPosts('{{ book.isbn }}', '{{ book.title|escapejs }}', this.dataset.thumbnail)">
+        <img src="{{ book.thumbnail_url|default_if_none:'{% static "community/images/book_placeholder.png" %}' }}" 
             alt="{{ book.title }}" 
             class="grid-image">
         <div class="grid-info">
