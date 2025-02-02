@@ -40,7 +40,8 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
+                "sortOrder": "alphabetical",
+                "autoReveal": false
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -165,11 +166,19 @@
   },
   "active": "5dbfef43ca805934",
   "lastOpenFiles": [
-    "Untitled.canvas",
-    "구현순서 로드맵.md",
     "프로젝트 우선순위 배정 이유 및 체크리스트.md",
-    "프로젝트 우선순위 목록.md",
+    "회원가입 로직 흐름.md",
+    "책 카드 호버 혹은 클릭 시 데이터 흐름.md",
+    "로그인 로직.md",
+    "데이터베이스생성.md",
+    "데이터 아키텍쳐.md",
+    "검색 기능로직.md",
     "Untitled 1.canvas",
+    "2025-02-01.md",
+    "Untitled.canvas",
+    "2025-02-02.md",
+    "구현순서 로드맵.md",
+    "프로젝트 우선순위 목록.md",
     "Untitled 2.canvas",
     "Untitled",
     "03_개발/프로젝트 우선순위 목록.md",
@@ -193,8 +202,6 @@
     "06_References/References.md",
     "05_Deployment/Deployment_Guide.md",
     "04_Testing/Testing_Scenarios.md",
-    "03_Development/Feature_Implementation.md",
-    "02_Design/Wireframe_and_StyleGuide.md",
-    "07_Logs/Work_Log.md"
+    "03_Development/Feature_Implementation.md"
   ]
 }
