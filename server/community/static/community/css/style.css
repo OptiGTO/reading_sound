@@ -1036,9 +1036,9 @@ input::placeholder {
     padding: 20px;
     border-radius: 8px;
     z-index: 1001;
-    width: 80%;
-    max-width: 600px;
-    max-height: 80vh;
+    width: 90%;
+    max-width: none;
+    height: 80vh;
     overflow-y: auto;
 }
 

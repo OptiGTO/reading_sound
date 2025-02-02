@@ -1,0 +1,15 @@
+/* Mermaid 다이어그램 컨테이너의 오버플로우 문제 해결 */
+div.mermaid {
+    overflow-x: auto; /* 가로 스크롤 활성화 */
+    overflow-y: hidden; /* 세로 스크롤 숨김 */
+    white-space: nowrap; /* 다이어그램 내부 요소가 한 줄로 유지되도록 설정 */
+    max-width: 100%; /* 다이어그램이 컨테이너를 벗어나지 않도록 제한 */
+}
+
+/* Obsidian 내부의 다이어그램 박스 전체 정렬 */
+div.mermaid-container {
+    display: flex; /* 다이어그램 정렬 */
+    justify-content: center; /* 다이어그램을 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    overflow: hidden; /* 필요 없는 스크롤 숨김 */
+}
