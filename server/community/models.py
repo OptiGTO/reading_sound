@@ -97,6 +97,9 @@ class Book(models.Model):
     # 좋아요 수 추가
     likes = models.PositiveIntegerField(default=0, verbose_name="좋아요 수")
 
+    # 책에 댓글 연결
+    comments = GenericRelation('Comment')
+
     class Meta:
         ordering = ['priority', 'title']  # 우선순위 높은(숫자 낮은) 책부터 정렬 후, 제목 순
         verbose_name = "책"
@@ -218,7 +221,7 @@ class Post(models.Model):
     writer      = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="작성자")
     views       = models.PositiveIntegerField(default=0, verbose_name="조회수")
 
-    # 이미지 제너릭 리레션 필드 추가
+    # 이미지 제네릭 리레션 필드 추가
     postimage_set = GenericRelation(PostImage)
 
     # 날짜/시간
@@ -410,4 +413,20 @@ class BookTalkEventPost(BookEventPost):
 
 
 
-#--------------------------------------------------------------------
+#------------------------------댓글 모델----------------------------------------
+
+
+class Comment(models.Model):
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='replies'
+    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

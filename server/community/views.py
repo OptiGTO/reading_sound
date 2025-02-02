@@ -158,7 +158,7 @@ def home_view(request):
 #책 게시판 뷰
 def general_post(request):
     """일반 게시판 페이지 렌더링"""
-    posts = GeneralPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 GeneralPost 사용
+    posts = GeneralPost.objects.all().order_by('-is_pinned', '-created_at').prefetch_related('tags')  # 고정 게시글 우선, 이후 최근 게시글 정렬
     context = {
         **get_common_context(request),
         "posts": posts
