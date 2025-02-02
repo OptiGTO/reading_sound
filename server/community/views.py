@@ -140,12 +140,18 @@ def process_book_data(request):
 # 메인 페이지 뷰
 def home_view(request):
     """홈페이지 렌더링 - 도서 목록 및 게시물 표시"""
-    base_context = get_common_context(request)
-    
-    context = {
-        **base_context,
-        "books": Book.objects.all(),
-    }
+    books = Book.objects.all()
+    for book in books:
+        book.post_count = (
+            book.generalpost_set.count()
+            + book.readinggrouppost_set.count()
+            + book.readingtippost_set.count()
+            + BookReviewEventPost.objects.filter(book=book).count()
+            + PersonalBookEventPost.objects.filter(book=book).count()
+            + BookTalkEventPost.objects.filter(book=book).count()
+        )
+    context = get_common_context(request)
+    context.update({'books': books})
     return render(request, "community/index.html", context)
 
 

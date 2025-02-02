@@ -34,20 +34,29 @@
         
         {% for book in books %}
         <div class="home-grid-item" 
-             data-description="{{ book.description|default:'설명이 없습니다.' }}"
-             data-publisher="{{ book.publisher|default:'출판사 정보 없음' }}"
-             data-pubdate="{{ book.pubdate|default:'출판일 정보 없음' }}"
-             data-isbn="{{ book.isbn|default:'ISBN 정보 없음' }}"
-             onclick="showBookPosts('{{ book.isbn }}', '{{ book.title|escapejs }}')">
-          <img src="{{ book.thumbnail_url|default_if_none:'path/to/default_image.png' }}" 
-               alt="{{ book.title }}" 
-               class="grid-image">
-          <div class="grid-info">
-            <h4>{{ book.title }}</h4>
-            <p>{{ book.author }}</p>
+          data-description="{{ book.description|default:'설명이 없습니다.' }}"
+          data-publisher="{{ book.publisher|default:'출판사 정보 없음' }}"
+          data-pubdate="{{ book.pubdate|default:'출판일 정보 없음' }}"
+          data-isbn="{{ book.isbn|default:'ISBN 정보 없음' }}"
+          onclick="showBookPosts('{{ book.isbn }}', '{{ book.title|escapejs }}')">
+        <img src="{{ book.thumbnail_url|default_if_none:'path/to/default_image.png' }}" 
+            alt="{{ book.title }}" 
+            class="grid-image">
+        <div class="grid-info">
+          <h4>{{ book.title }}</h4>
+          <p>{{ book.author }}</p>
+        </div>
+        <!-- 호버 시 나타날 오버레이 -->
+        <div class="overlay-info">
+          <div class="info-item">
+            <i class="fas fa-music"></i> {{ book.likes }}
+          </div>
+          <div class="info-item">
+            <i class="fas fa-book"></i> {{ book.post_count }}
           </div>
         </div>
-        {% endfor %}
+      </div>
+      {% endfor %}
       </div>
     </section>
 
