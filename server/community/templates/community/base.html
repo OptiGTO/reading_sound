@@ -310,77 +310,83 @@
     });
 
     // 6. 책 게시물 팝업 기능                                                                  // 책 게시물 팝업 처리
-    function showBookPosts(isbn, title) {                                                       // showBookPosts 함수 시작
-        // isbn이 None이거나 비어있는 경우 처리                                               // ISBN 유효성 검사
-        if (!isbn || isbn === 'None') {
-            console.error('유효하지 않은 ISBN');                                               // 오류 메시지 출력
-            return;                                                                             // 종료
+    function showBookPosts(isbn, title) {                                                       // 책 게시물 팝업 기능 (새 카드 스타일 적용)   // 기능 시작
+        if (!isbn || isbn === 'None') {                                                      // ISBN 유효성 검사                           // 검사
+            console.error('유효하지 않은 ISBN');                                             // 오류 메시지 출력                           // 오류
+            return;                                                                          // 함수 종료                                   // 종료
         }
-
-        const modal = document.getElementById('bookPostsModal');                                // 모달 요소 선택
-        const overlay = document.getElementById('bookPostsOverlay');                            // 오버레이 요소 선택
-        const titleElement = document.getElementById('modalBookTitle');                         // 모달 제목 요소 선택
-        const container = document.getElementById('bookPostsContainer');                        // 게시물 컨테이너 선택
-
-        if (!modal || !overlay || !titleElement || !container) {                                  // 요소 확인
-            console.error('필요한 모달 요소를 찾을 수 없습니다.');                                // 오류 메시지 출력
-            return;                                                                             // 종료
+        
+        const modal = document.getElementById('bookPostsModal');                             // 모달 요소 선택                              // 요소 선택
+        const overlay = document.getElementById('bookPostsOverlay');                         // 오버레이 요소 선택                          // 선택
+        const titleElement = document.getElementById('modalBookTitle');                        // 모달 제목 요소 선택                        // 제목
+        const container = document.getElementById('bookPostsContainer');                       // 게시물 컨테이너 선택                         // 컨테이너
+        
+        if (!modal || !overlay || !titleElement || !container) {                               // 필수 요소 존재 여부 확인                     // 확인
+            console.error('필요한 모달 요소를 찾을 수 없습니다.');                              // 오류 메시지 출력                           // 오류
+            return;                                                                          // 함수 종료                                   // 종료
         }
-
-        titleElement.textContent = `${title} 관련 게시물`;                                       // 모달 제목 설정
-        container.innerHTML = '<div class="loading-spinner">로딩중...</div>';                    // 로딩 스피너 표시
-
-        // CSRF 토큰 가져오기                                                                    // CSRF 토큰 처리
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-        if (!csrftoken) {
-            console.error('CSRF 토큰을 찾을 수 없습니다.');                                      // 토큰 오류 처리
-            return;                                                                             // 종료
+        
+        titleElement.textContent = `${title} 관련 게시물`;                                     // 모달 제목 설정                              // 제목 설정
+        container.innerHTML = '<div class="loading-spinner">로딩중...</div>';                   // 로딩 스피너 표시                            // 로딩
+        
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;          // CSRF 토큰 가져오기                           // 토큰
+        if (!csrftoken) {                                                                    // CSRF 토큰 검사                              // 검사
+            console.error('CSRF 토큰을 찾을 수 없습니다.');                                   // 오류 메시지 출력                           // 오류
+            return;                                                                          // 함수 종료                                   // 종료
         }
-
-        // 서버에서 게시물 데이터 요청                                                            // 서버 요청
-        fetch(`/community/get-posts-by-book/?isbn=${encodeURIComponent(isbn)}`, {                   // ISBN을 포함한 요청 URL
-            method: 'GET',                                                                      // GET 요청
+        
+        fetch(`/community/get-posts-by-book/?isbn=${encodeURIComponent(isbn)}`, {              // 도서 관련 게시물 데이터 요청 URL 생성         // 요청 URL 생성
+            method: 'GET',                                                                   // GET 요청                                    // 메서드
             headers: {
-                'X-CSRFToken': csrftoken,                                                       // CSRF 토큰 헤더
-                'Accept': 'application/json'                                                    // JSON 응답 요청
+                'X-CSRFToken': csrftoken,                                                    // CSRF 토큰 헤더 설정                         // 헤더
+                'Accept': 'application/json'                                                 // JSON 응답 지정                              // 수신 설정
             },
-            credentials: 'same-origin'                                                          // 동일 출처 설정
+            credentials: 'same-origin'                                                       // 동일 출처 정책 적용                         // 정책
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error('서버 응답 오류');                                               // 서버 오류 처리
+            if (!response.ok) {                                                              // 응답 상태 확인                               // 확인
+                throw new Error('서버 응답 오류');                                           // 오류 발생                                    // 오류
             }
-            return response.json();                                                               // JSON 변환
+            return response.json();                                                          // JSON 데이터 변환                              // 변환
         })
         .then(data => {
-            if (data.posts && data.posts.length > 0) {
-                container.innerHTML = data.posts.map(post => `
-                    <a href="${post.detail_url}" class="post-link" style="text-decoration: none; color: inherit;">  <!-- 링크로 감싸기  // 링크 시작 -->
-                      <div class="book-post-item">                                                   <!-- 게시글 아이템 시작  // 게시글 아이템 -->
-                        ${post.thumbnail_url ? `<img src="${post.thumbnail_url}" alt="게시물 썸네일" class="post-thumbnail">` : ''}  <!-- 썸네일 출력  // 썸네일 -->
-                        <h4>${post.title}</h4>                                                       <!-- 게시글 제목  // 제목 출력 -->
-                        <p>${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}</p>  <!-- 내용 부분 출력  // 내용 -->
-                        <small>작성자: ${post.writer__username || '알 수 없음'} | ${post.created_at ? new Date(post.created_at).toLocaleDateString('ko-KR') : '날짜 없음'}</small>  <!-- 작성자 및 날짜 출력  // 작성자 -->
-                      </div>                                                                          <!-- 게시글 아이템 끝  // 아이템 끝 -->
-                    </a>                                                                               <!-- 링크 끝  // 링크 종료 -->
-                `).join('');
-            } else {
-                container.innerHTML = '<p class="no-posts">관련 게시물이 없습니다.</p>';             // 게시물 없을 경우 메시지 출력
-            }
-            // 모달 좋아요 버튼에 도서 ID 할당                                                      // 좋아요 버튼 데이터 할당
-            const modalLikeBtn = document.getElementById("modal-like-btn");                        // 모달 좋아요 버튼 선택                                        
-            if(modalLikeBtn) {
-                modalLikeBtn.dataset.bookId = data.book_id;                                      // 도서 ID 설정                                                 
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);                                                       // 오류 출력
-            container.innerHTML = '<p class="error-message">게시물을 불러오는 중 오류가 발생했습니다.</p>';  // 오류 메시지 출력
-        });
-
-        modal.classList.add('active');                                                            // 모달 활성화
-        overlay.style.display = 'block';                                                          // 오버레이 표시
-    }
+            if (data.posts && data.posts.length > 0) {                                       // 게시물 존재 여부 확인                         // 확인
+                container.innerHTML = data.posts.map(post => `                                 
+                    <a href="${post.detail_url}" class="post-card-link">                     
+                        <div class="book-post-card">                                        
+                            <div class="book-post-card-content">                            
+                                <div class="book-post-thumbnail">                          
+                                    ${post.thumbnail_url ? `<img src="${post.thumbnail_url}" alt="${post.title}">` : ` 
+                                    <div class="fallback">                               
+                                        <h4>${post.title}</h4>                         
+                                        <p>${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}</p> 
+                                    </div>`}
+                                </div>
+                                <div class="book-post-info">                                   
+                                    <h4>${post.title}</h4>                                     
+                                    <p>${post.content.substring(0, 50)}${post.content.length > 50 ? '...' : ''}</p>  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `).join('');                                                              // 배열을 하나의 문자열로 결합                  // 결합
+        } else {
+            container.innerHTML = '<p class="no-posts">관련 게시물이 없습니다.</p>';       // 게시물이 없을 경우 메시지 출력                   // 메시지
+        }
+        const modalLikeBtn = document.getElementById("modal-like-btn");                      // 모달 좋아요 버튼 선택                         // 버튼 선택
+        if (modalLikeBtn) {                                                                  // 버튼 존재 여부 확인                          // 확인
+            modalLikeBtn.dataset.bookId = data.book_id;                                      // 도서 ID 할당                                // 할당
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);                                                    // 오류 출력                                  // 출력
+        container.innerHTML = '<p class="error-message">게시물을 불러오는 중 오류가 발생했습니다.</p>';  // 오류 메시지 표시                           // 메시지
+    });
+    
+    modal.classList.add('active');                                                         // 모달 활성화                                  // 활성화
+    overlay.style.display = 'block';                                                       // 오버레이 표시                                // 표시
+}
 
     function closeBookPosts() {
       const modal = document.getElementById('bookPostsModal');
@@ -514,17 +520,17 @@
 
   </script>
 
-  <!-- 책 게시물 팝업 모달 추가 -->
-  <div class="modal-overlay" id="bookPostsOverlay"></div>
-  <div class="book-posts-modal" id="bookPostsModal">
-    <div class="modal-header">
-      <h3 id="modalBookTitle"></h3>
-      <button class="modal-close" onclick="closeBookPosts()">&times;</button>
+  <!-- 책 게시물 팝업 모달 추가 -->                                                     <!-- 모달 시작   -->
+  <div class="modal-overlay" id="bookPostsOverlay"></div>                           <!-- 모달 오버레이   -->
+  <div class="book-posts-modal" id="bookPostsModal">                                  <!-- 모달 컨테이너 시작   -->
+    <div class="modal-header">                                                       <!-- 모달 헤더 시작   -->
+      <h3 id="modalBookTitle"></h3>                                                   <!-- 모달 제목 영역   -->
+      <button class="modal-close" onclick="closeBookPosts()">&times;</button>          <!-- 닫기 버튼   -->
     </div>
-    <div id="bookPostsContainer"></div>
-    <div class="modal-footer">
-      <button class="btn like-btn" id="modal-like-btn" data-book-id="">
-        <i class="fas fa-music"></i> 하모니(좋아요) <span id="modal-like-count">0</span>
+    <div id="bookPostsContainer" class="posts-grid"></div>                           <!-- 게시물 그리드 클래스로 변경   -->
+    <div class="modal-footer">                                                        <!-- 모달 푸터 영역 시작   -->
+      <button class="btn like-btn" id="modal-like-btn" data-book-id="">                <!-- 좋아요 버튼 시작   -->
+        <i class="fas fa-music"></i> 하모니(좋아요) <span id="modal-like-count">0</span>  
       </button>
     </div>
   </div>
