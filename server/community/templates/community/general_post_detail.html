@@ -32,4 +32,30 @@
   
   <a href="{% url 'community:home' %}" class="btn hover-effect">목록으로 돌아가기</a>   <!-- 목록 복귀 버튼  // 복귀 버튼 -->
 </article>
+
+<hr>                                                                    <!-- 구분선 추가  // 구분선 -->
+
+<section class="comments-section">                                       <!-- 댓글 섹션 시작  // 댓글 섹션 시작 -->
+  <h2>댓글</h2>                                                          <!-- 댓글 섹션 제목  // 댓글 제목 -->
+
+  <!-- 댓글 입력 폼 시작  // 댓글 폼 시작 -->
+  <form method="post" action="">                                           <!-- 폼 태그 (현재 URL에 전송)  // 폼 시작 -->
+    {% csrf_token %}                                                     <!-- CSRF 토큰  // CSRF 토큰 -->
+    {{ comment_form.as_p }}                                                <!-- 댓글 폼 필드 렌더링  // 폼 필드 -->
+    <button type="submit" class="btn btn-primary">댓글 작성</button>         <!-- 제출 버튼  // 제출 버튼 -->
+  </form>                                                                 <!-- 댓글 폼 끝  // 폼 끝 -->
+
+  <!-- 댓글 목록 출력  // 댓글 목록 출력 -->
+  {% if comments %}                                                       <!-- 댓글 존재 여부 체크  // 댓글 확인 -->
+    {% for comment in comments %}                                         <!-- 각 댓글 반복  // 댓글 반복 -->
+      <div class="comment" style="border: 1px solid #ccc; margin-top:10px; padding:10px;"> <!-- 댓글 컨테이너 스타일  // 댓글 스타일 -->
+        <p>{{ comment.content }}</p>                                     <!-- 댓글 내용 출력  // 댓글 내용 -->
+        <small>작성일: {{ comment.created_at|date:"Y-m-d H:i" }}</small>  <!-- 댓글 작성일 출력  // 작성일 -->
+      </div>
+    {% endfor %}
+  {% else %}                                                              <!-- 댓글이 없을 경우  // 댓글 없음 -->
+    <p>작성된 댓글이 없습니다.</p>                                          <!-- 댓글 없음 메시지  // 메시지 -->
+  {% endif %}
+</section>
+
 {% endblock %}

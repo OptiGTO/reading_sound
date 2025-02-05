@@ -377,21 +377,23 @@ class ReadingTipPost(Post):
 
 #----------------------------------책 이벤트 모델----------------------------------
 class BookEventPost(Post):
+
     event_start_date = models.DateTimeField(
-        null=True,  # null 허용으로 변경
-        blank=True,  # blank 허용으로 변경
-        verbose_name="이벤트 시작일시"
+        null=True,  # null 허용 ▶ null 허용
+        blank=True, # 공백 허용 ▶ 공백 허용
+        verbose_name="이벤트 시작일시"  # 이벤트 시작일시 ▶ 읽기 편한 표시
     )
     event_end_date = models.DateTimeField(
-        null=True,  # null 허용으로 변경
-        blank=True,  # blank 허용으로 변경
-        verbose_name="이벤트 종료일시"
+        null=True,  # null 허용 ▶ null 허용
+        blank=True, # 공백 허용 ▶ 공백 허용
+        verbose_name="이벤트 종료일시"  # 이벤트 종료일시 ▶ 읽기 편한 표시
     )
 
     class Meta:
-        verbose_name = "책 이벤트 게시글"
-        verbose_name_plural = "책 이벤트 게시글 목록"
-        indexes = []  # 부모 클래스의 인덱스 상속 제거
+        verbose_name = "책 이벤트 게시글"  # 관리자 화면에서의 단수 이름 ▶ 읽기 편한 이름
+        verbose_name_plural = "책 이벤트 게시글 목록"  # 관리자 화면에서의 복수 이름 ▶ 읽기 편한 이름
+        indexes = []  # 부모 클래스의 인덱스 상속 제거 ▶ 필요 시 인덱스 재정의
+        abstract = True
 
 class BookReviewEventPost(BookEventPost):
     class Meta:
@@ -417,6 +419,14 @@ class BookTalkEventPost(BookEventPost):
 
 
 class Comment(models.Model):
+    writer = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="작성자"  # 오른쪽 주석: 댓글 작성자
+    )
+    # 댓글이 연결되는 게시글 필드 추가; 이미 GenericForeignKey를 사용 중이므로
+    # 이 경우 관련 게시글 모델(예: GeneralPost)로 한정하는 방법 사용 가능  
+
     parent = models.ForeignKey(
         'self',
         null=True,

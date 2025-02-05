@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 import requests
 from .models import (
     Book, PostImage, GeneralPost, ReadingGroupPost, 
@@ -17,7 +18,7 @@ from .models import (
     PersonalBookEventPost, BookEventPost,
     Post
 )
-from .forms import PostForm, CustomUserCreationForm, CustomAuthForm
+from .forms import PostForm, CustomUserCreationForm, CustomAuthForm, CommentForm
 from .services import search_naver_books
 from django.db import models
 from django.db.models import Q
@@ -25,17 +26,22 @@ from django.db.models import Q
 #----------------------------------------공통 관련---------------------------------------------------------
 # 공통 컨텍스트 생성 함수
 def get_common_context(request):
-    """동적 컨텍스트 생성 함수"""
-    return {
-        'site_name': 'reading_sound',
-        'current_user': request.user if request.user.is_authenticated else None,
-        'sidebar': {
-            'events': BookEventPost.objects.filter(is_active=True),
-            'reading_groups': ReadingGroupPost.objects.filter(is_active=True),
-            'tips': ReadingTipPost.objects.filter(is_active=True),
+    """동적 컨텍스트 생성 함수"""                                              # 동적 컨텍스트 함수 설명                        
+    events_qs = list(chain(                                                 # 이벤트 쿼리셋 체인 시작                         
+        BookReviewEventPost.objects.filter(is_active=True),                  # 책 리뷰 이벤트 필터                            
+        PersonalBookEventPost.objects.filter(is_active=True),                # 개인 책 이벤트 필터                              
+        BookTalkEventPost.objects.filter(is_active=True)                     # 북토크 이벤트 필터                                
+    ))                                                                      # 이벤트 쿼리셋 체인 종료                           
+    events = sorted(events_qs, key=lambda x: x.event_start_date if x.event_start_date else timezone.now(), reverse=True)  # 이벤트 리스트 정렬                          
+    return {                                                                # 컨텍스트 딕셔너리 반환                         
+        'site_name': 'reading_sound',                                      # 사이트 이름 설정                                
+        'current_user': request.user if request.user.is_authenticated else None,  # 현재 사용자 설정                                
+        'sidebar': {                                                       # 사이드바 컨텍스트 설정                           
+            'events': events,                                              # 결합 및 정렬된 이벤트 리스트 할당                
+            'reading_groups': ReadingGroupPost.objects.filter(is_active=True),   # 독서 모임 필터                                
+            'tips': ReadingTipPost.objects.filter(is_active=True),         # 독서 팁 필터                                    
         }
     }
-    
 
 
 #----------------------------------------게시물 생성 관련---------------------------------------------------------
@@ -168,10 +174,30 @@ def general_post(request):
 
 # 일반 게시글 상세 페이지 뷰 (일반 게시글: 카테고리 'book_post')
 def general_post_detail(request, pk):
-    """일반 게시글 상세 페이지 뷰"""
+    """일반 게시글 상세 페이지 뷰 (댓글 처리 포함)"""
     post = get_object_or_404(GeneralPost, pk=pk)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.content_object = post
+            comment.save()
+            messages.success(request, "댓글이 추가되었습니다.")
+            return redirect(request.path_info)
+        else:
+            messages.error(request, "댓글 입력에 오류가 있습니다.")
+    else:
+        form = CommentForm()
+    content_type = ContentType.objects.get_for_model(GeneralPost)
+    comments = Comment.objects.filter(
+        content_type=content_type,
+        object_id=post.id,
+        parent__isnull=True
+    ).order_by('-created_at')
     context = {
         'post': post,
+        'comment_form': form,
+        'comments': comments,
         **get_common_context(request)
     }
     return render(request, 'community/general_post_detail.html', context)

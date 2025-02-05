@@ -137,10 +137,7 @@ body {
     margin-bottom: 0.5rem;        /* 아래쪽 여백 추가 */
 }
 
-/* 로그인 버튼 컨테이너 */
-.login-container {
-    /* 추가 스타일링이 필요한 경우 여기에 작성 */
-}
+
 
 /* 로그인 버튼 스타일링 */
 #login-btn {
@@ -343,81 +340,77 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);  /* 그림자 효과 */
 }
 
-/****************************************************
- * 5. 탑 바 & 버튼
- ****************************************************/
-/* The main content area that stretches between sidebars. */
-.content {
-    flex: 1;                      /* Fills remaining space in flex layout */
-    padding: 1rem 2rem;           /* Padding around content */
-    display: flex;                /* Another flex container */
-    flex-direction: column;       /* Content flows vertically */
-    max-width: 1200px;           /* Constrains the maximum width for readability */
+/****************************************************                         /* ────────────────────────────── 설명: 탑 바 & 버튼 영역 ────────────────────────────── */
+/* 5. 탑 바 & 버튼                                                                           /* ───────────────────────────────────────────────────────────────────────────── */
+/****************************************************/
+/* 메인 콘텐츠 영역: 사이드바 사이에서 확장되는 영역                                          */  /* 역할: 페이지 중앙의 주요 콘텐츠 영역 */
+.content {                                                                                  /* 역할: 콘텐츠 영역 스타일 지정 */
+   flex: 1;                      /* 남은 공간 모두 채움                                       */  /* 역할: 부모의 남은 공간 모두 사용 */
+   padding: 1rem 2rem;           /* 내부 여백 설정 (상하 1rem, 좌우 2rem)                        */  /* 역할: 콘텐츠 영역 주위 여백 제공 */
+   display: flex;                /* 플렉스 컨테이너 설정                                      */  /* 역할: 자식 요소를 플렉스 아이템으로 변환 */
+   flex-direction: column;       /* 요소를 수직으로 배치                                      */  /* 역할: 세로 방향 정렬 */
+   max-width: 1200px;            /* 최대 너비 제한 (가독성 향상)                                 */  /* 역할: 콘텐츠 폭 제한 */
 }
 
-/* Top bar typically holds user info, settings, etc. */
-.top-bar {
-    display: flex;                /* Horizontal arrangement */
-    justify-content: space-between; 
-    /* Spreads items to the edges (logo/user info) */
-    align-items: center;          /* Vertically centers items */
-    margin-bottom: 1rem;          /* Spacing below the top bar */
+/* 탑 바: 사용자 정보, 설정 등을 포함하는 영역                                           */  /* 역할: 페이지 상단바 */
+.top-bar {                                                                                  /* 역할: 탑 바 스타일 지정 */
+   display: flex;                /* 플렉스 컨테이너 (수평 정렬)                                */  /* 역할: 자식 요소를 가로로 정렬 */
+   justify-content: space-between; /* 좌우에 고르게 공간 분배 (로고, 사용자 정보 등)            */  /* 역할: 요소 간 최대 간격 생성 */
+   align-items: center;          /* 수직 중앙 정렬                                           */  /* 역할: 요소를 수직으로 중앙 정렬 */
+   margin-bottom: 1rem;          /* 아래쪽 여백 추가                                          */  /* 역할: 탑 바와 콘텐츠 간 간격 확보 */
 }
 
-/* Basic user info styling, e.g., "Welcome, User" */
-.user-info {
-    font-size: 1rem;              /* Standard font size */
-    color: #5f4b32;               /* Brown color for text */
+/* 사용자 정보 스타일 (예: "환영합니다, 사용자")                                           */  /* 역할: 사용자 정보 영역 텍스트 스타일 */
+.user-info {                                                                                /* 역할: 사용자 정보 스타일 지정 */
+   font-size: 1rem;              /* 기본 글자 크기 설정                                       */  /* 역할: 폰트 크기 정의 */
+   color: #5f4b32;               /* 텍스트 색상: 갈색                                         */  /* 역할: 텍스트 색상 지정 */
 }
 
-/* Shared button styles throughout the site. */
-.btn {
-    background-color: #5f4b32;    /* Dark brown background */
-    color: #fff;                  /* White text for contrast */
-    border: none;                 /* No border */
-    border-radius: 4px;           /* Slightly rounded corners */
-    padding: 0.6rem 1rem;         /* Spacing for comfortable click area */
-    cursor: pointer;              /* Pointer cursor on hover */
-    font-size: 1rem;              /* Medium font size */
-    transition: background-color 0.3s ease; 
-    /* Smooth hover effect */
+/* 사이트 전반에 걸친 공통 버튼 스타일                                                   */  /* 역할: 버튼 디자인 통일 */
+.btn {                                                                                      /* 역할: 버튼 기본 스타일 설정 */
+   background-color: #5f4b32;    /* 버튼 배경색: 진한 갈색                                     */  /* 역할: 배경색 지정 */
+   color: #fff;                  /* 버튼 글자 색상: 흰색                                       */  /* 역할: 대비되는 텍스트 색상 */
+   border: none;                 /* 테두리 제거                                               */  /* 역할: 불필요한 테두리 제거 */
+   border-radius: 4px;           /* 모서리 둥글게 처리                                         */  /* 역할: 둥근 모서리 효과 */
+   padding: 0.6rem 1rem;         /* 내부 여백 설정 (상하 0.6rem, 좌우 1rem)                       */  /* 역할: 클릭 영역 확대 */
+   cursor: pointer;              /* 마우스 커서를 포인터로 변경                               */  /* 역할: 클릭 가능 시 시각 효과 제공 */
+   font-size: 1rem;              /* 버튼 텍스트의 글자 크기 설정                                */  /* 역할: 읽기 쉬운 폰트 크기 */
+   transition: background-color 0.3s ease; /* 배경색 전환 시 부드러운 애니메이션 적용 (0.3초)         */  /* 역할: 인터랙션 개선 */
 }
 
-/* Hover state for buttons. */
-.btn:hover {
-    background-color: #9a8469;    /* Lighter shade of brown */
+/* 버튼 호버 상태 스타일                                                                 */  /* 역할: 마우스 오버 시 버튼 효과 */
+.btn:hover {                                                                                /* 역할: 호버 효과 스타일 설정 */
+   background-color: #9a8469;    /* 호버시 버튼 배경색을 밝은 갈색으로 변경                     */  /* 역할: 시각적 피드백 제공 */
 }
 
-/* Class to enable subtle "lift" effect on hover. */
-.hover-effect {
-    transition: transform 0.2s ease; 
-    /* Smooth transformation */
+/* 호버 시 부드러운 이동 효과를 위한 클래스                                                  */  /* 역할: 리프트(Lift) 효과 적용 */
+.hover-effect {                                                                             /* 역할: 요소 기본 애니메이션 설정 */
+   transition: transform 0.2s ease; /* 변형 전환 부드러운 애니메이션 (0.2초)                     */  /* 역할: 간단한 이동 효과 */
 }
 
-.hover-effect:hover {
-    transform: translateY(-2px);  /* Moves element slightly upwards */
+/* 마우스 오버 시 요소를 살짝 위로 이동 (리프트 효과)                                         */  /* 역할: 마우스 오버 시 리프트 효과 */
+.hover-effect:hover {                                                                       /* 역할: 호버 상태에서 변형 적용 */
+   transform: translateY(-2px);  /* 요소를 2px 위로 이동시킴                                */  /* 역할: 시각적 강조 */
 }
 
-/* Loading spinner that can appear on button while submitting. */
-.spinner {
-    width: 1em;                   /* Spinner diameter relative to text size */
-    height: 1em;                  /* Same as width for a circle */
-    border: 2px solid #ccc;       /* Light grey ring */
-    border-top: 2px solid #5f4b32; 
-    /* Darker brown on top for the spinning effect */
-    border-radius: 50%;           /* Circular shape */
-    animation: spin 1s linear infinite; 
-    /* Continuous rotation */
-    display: none;                /* Hidden by default */
-    position: absolute;           /* Positioned within parent button */
-    left: 10px;                   /* Slightly from the left edge */
-    top: 50%;                     /* Vertically centered */
-    transform: translateY(-50%);  /* Perfect vertical centering */
+/* 버튼 제출 시 나타나는 로딩 스피너 스타일                                                */  /* 역할: 로딩 상태 표시 */
+.spinner {                                                                                  /* 역할: 스피너 스타일 지정 */
+   width: 1em;                   /* 스피너 너비를 텍스트 크기에 비례해서 설정                   */  /* 역할: 상대적 크기 지정 */
+   height: 1em;                  /* 스피너 높이도 텍스트 크기에 맞춤                             */  /* 역할: 원형 비율 유지 */
+   border: 2px solid #ccc;       /* 전체 테두리를 연한 회색으로 설정                            */  /* 역할: 테두리 기본 설정 */
+   border-top: 2px solid #5f4b32; /* 상단 테두리를 진한 갈색으로 강조                           */  /* 역할: 회전 애니메이션 시 시각 효과 */
+   border-radius: 50%;           /* 원형 모양을 위한 둥근 테두리 설정                             */  /* 역할: 원형 디자인 */
+   animation: spin 1s linear infinite; /* 1초 간격으로 지속적으로 회전하는 애니메이션 적용         */  /* 역할: 스피너 회전 효과 */
+   display: none;                /* 기본 상태에서 스피너 숨김                                    */  /* 역할: 필요할 때만 표시 */
+   position: absolute;           /* 부모 요소 내 절대 위치 지정                                  */  /* 역할: 위치 제어 */
+   left: 10px;                   /* 왼쪽에서 10px 떨어진 위치 설정                               */  /* 역할: 위치 보정 */
+   top: 50%;                     /* 상단에서 50% 위치 (세로 중심)                                */  /* 역할: 수직 중앙 정렬 */
+   transform: translateY(-50%);  /* translateY를 사용하여 정확한 수직 중앙 정렬 수행             */  /* 역할: 보정 효과 */
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-    /* Keyframe for continuous 360 rotation */
+/* 스피너 회전 애니메이션 키프레임 정의                                                     */  /* 역할: 회전 애니메이션 동작 정의 */
+@keyframes spin {                                                                            /* 역할: 애니메이션 키프레임 선언 */
+   to { transform: rotate(360deg); }    /* 360도 회전하여 한 사이클 완성                           */  /* 역할: 회전 완료 정의 */
 }
 
 /****************************************************

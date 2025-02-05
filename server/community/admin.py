@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.db import models
 from .models import (
-    GeneralPost, Book, BookEventPost, BookReviewEventPost, 
-    ReadingGroupPost, ReadingTipPost, PostImage, PostTag
+    GeneralPost, Book, BookReviewEventPost, PersonalBookEventPost,
+    BookTalkEventPost, ReadingGroupPost, ReadingTipPost, PostImage, PostTag, Comment
 )
 # Register your models here.
 
@@ -23,6 +23,18 @@ class BookReviewEventPostAdmin(admin.ModelAdmin):
     list_display = ("title", "writer", "category", "created_at", "book")
     list_display_links = ("title", "writer", "category", "created_at", "book")
     ordering = ("-created_at","is_pinned")
+
+@admin.register(PersonalBookEventPost)
+class PersonalBookEventPostAdmin(admin.ModelAdmin):
+    list_display = ("title", "writer", "category", "created_at", "book")
+    list_display_links = ("title", "writer", "category", "created_at", "book")
+    ordering = ("-created_at", "is_pinned")
+
+@admin.register(BookTalkEventPost)
+class BookTalkEventPostAdmin(admin.ModelAdmin):
+    list_display = ("title", "writer", "category", "created_at", "book")
+    list_display_links = ("title", "writer", "category", "created_at", "book")
+    ordering = ("-created_at", "is_pinned")
 
 #----------------------------------이미지 관련----------------------------------
 @admin.register(PostImage)
@@ -55,13 +67,6 @@ class BookAdmin(admin.ModelAdmin):
         return super().changelist_view(request, extra_context=extra_context)
 
 #----------------------------------사이드바 관련----------------------------------
-@admin.register(BookEventPost)
-class BookEventPostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'writer', 'event_start_date', 'is_active', 'is_pinned')
-    list_filter = ('is_active', 'event_start_date', 'is_pinned', 'is_deleted')
-    search_fields = ('title', 'content')
-    list_editable = ('is_active', 'is_pinned')
-
 @admin.register(ReadingGroupPost)
 class ReadingGroupPostAdmin(admin.ModelAdmin):
     list_display = ('title', 'writer', 'event_date', 'is_active', 'is_pinned')
@@ -76,3 +81,21 @@ class ReadingTipPostAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')
     list_editable = ('is_active', 'is_pinned')
 
+#----------------------------------댓글 관리자 권한 관련----------------------------------
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('get_post', 'get_writer', 'content', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('content',)
+    ordering = ('-created_at',)
+
+    def get_post(self, obj):
+        content_object = obj.content_object
+        return getattr(content_object, 'title', 'N/A')
+    get_post.short_description = '게시글'
+
+    def get_writer(self, obj):
+        content_object = obj.content_object
+        writer = getattr(content_object, 'writer', None)
+        return str(writer) if writer else 'N/A'
+    get_writer.short_description = '작성자'

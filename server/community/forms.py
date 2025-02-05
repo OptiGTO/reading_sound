@@ -1,7 +1,7 @@
 # community/forms.py
 
 from django import forms
-from .models import GeneralPost, BookEventPost, BookReviewEventPost, ReadingGroupPost, ReadingTipPost, PostTag
+from .models import GeneralPost, BookEventPost, BookReviewEventPost, ReadingGroupPost, ReadingTipPost, PostTag ,Comment
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -106,4 +106,14 @@ class CustomUserCreationForm(UserCreationForm):
             "username": "아이디",
             "password1": "비밀번호",
             "password2": "비밀번호 확인"
+        }
+
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
         }
