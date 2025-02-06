@@ -220,8 +220,34 @@ def reading_meeting(request):
 def reading_meeting_detail(request, pk):
     """독서 모임 상세 페이지 뷰"""
     post = get_object_or_404(ReadingGroupPost, pk=pk)
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.error(request, "댓글을 작성하려면 로그인해야 합니다.")
+            return redirect('community:login')
+        form = CommentForm(request.POST)
+        if form.is_valid():                                                               # 폼 유효성 검사 성공 시                                   
+            comment = form.save(commit=False)                                             # 댓글 임시 저장                                            
+            comment.writer = request.user                                                 # 댓글 작성자 설정                                           
+            comment.content_object = post                                                 # 댓글 대상 객체 지정                                        
+            comment.save()                                                                # 댓글 데이터베이스 저장                                     
+            messages.success(request, "댓글이 추가되었습니다.")                            # 성공 메시지 출력                                          
+            return redirect(request.path_info)                                            # 현재 페이지 새로고침                                        
+        else:                                                                             # 폼 유효성 검사 실패 시                                   
+            messages.error(request, "댓글 입력에 오류가 있습니다.")                       # 오류 메시지 출력                                          
+    else:                                                                                 # GET 요청인 경우                                          
+        form = CommentForm()                                                              # 빈 댓글 폼 생성                                           
+    content_type = ContentType.objects.get_for_model(post)                                # 게시글의 컨텐츠 타입 가져오기                             
+    comments = Comment.objects.filter(                                                   # 댓글 목록 조회                                             
+        content_type=content_type,                                                       # 콘텐츠 타입 조건                                           
+        object_id=post.id,                                                               # 글의 ID 조건                                              
+        parent__isnull=True                                                              # 최상위 댓글만 선택                                          
+    ).order_by('-created_at')     
+
+    
     context = {
         'post': post,
+        'comment_form': form,
+        'comments': comments,
         **get_common_context(request)
     }
     return render(request, 'community/reading_meeting_detail.html', context)
@@ -239,8 +265,34 @@ def review_event(request):
 def review_event_detail(request, pk):
     """리뷰 이벤트 상세 페이지 뷰"""
     post = get_object_or_404(BookReviewEventPost, pk=pk)
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.error(request, "댓글을 작성하려면 로그인해야 합니다.")
+            return redirect('community:login')
+        form = CommentForm(request.POST)
+        if form.is_valid():                                                               # 폼 유효성 검사 성공 시                                   
+            comment = form.save(commit=False)                                             # 댓글 임시 저장                                            
+            comment.writer = request.user                                                 # 댓글 작성자 설정                                           
+            comment.content_object = post                                                 # 댓글 대상 객체 지정                                        
+            comment.save()                                                                # 댓글 데이터베이스 저장                                     
+            messages.success(request, "댓글이 추가되었습니다.")                            # 성공 메시지 출력                                          
+            return redirect(request.path_info)                                            # 현재 페이지 새로고침                                        
+        else:                                                                             # 폼 유효성 검사 실패 시                                   
+            messages.error(request, "댓글 입력에 오류가 있습니다.")                       # 오류 메시지 출력                                          
+    else:                                                                                 # GET 요청인 경우                                          
+        form = CommentForm()                                                              # 빈 댓글 폼 생성                                           
+    content_type = ContentType.objects.get_for_model(post)                                # 게시글의 컨텐츠 타입 가져오기                             
+    comments = Comment.objects.filter(                                                   # 댓글 목록 조회                                             
+        content_type=content_type,                                                       # 콘텐츠 타입 조건                                           
+        object_id=post.id,                                                               # 글의 ID 조건                                              
+        parent__isnull=True                                                              # 최상위 댓글만 선택                                          
+    ).order_by('-created_at')     
+
+    
     context = {
         'post': post,
+        'comment_form': form,
+        'comments': comments,
         **get_common_context(request)
     }
     return render(request, 'community/review_event_detail.html', context)
@@ -259,9 +311,33 @@ def booktalk(request):
 def booktalk_detail(request, pk):
     """북토크 상세 페이지 뷰"""
     post = get_object_or_404(BookTalkEventPost, pk=pk)
+    if request.method == "POST":                                                          # POST 요청인 경우                                        
+        if not request.user.is_authenticated:                                             # 사용자 인증 확인                                          
+            messages.error(request, "댓글을 작성하려면 로그인해야 합니다.")                    # 로그인 필요 메시지 전달                                    
+            return redirect('community:login')                                            # 로그인 페이지로 리다이렉트                                   
+        form = CommentForm(request.POST)                                                  # 댓글 폼 생성                                             
+        if form.is_valid():                                                               # 폼 유효성 검사 성공 시                                   
+            comment = form.save(commit=False)                                             # 댓글 임시 저장                                            
+            comment.writer = request.user                                                 # 댓글 작성자 설정                                           
+            comment.content_object = post                                                 # 댓글 대상 객체 지정                                        
+            comment.save()                                                                # 댓글 데이터베이스 저장                                     
+            messages.success(request, "댓글이 추가되었습니다.")                            # 성공 메시지 출력                                          
+            return redirect(request.path_info)                                            # 현재 페이지 새로고침                                        
+        else:                                                                             # 폼 유효성 검사 실패 시                                   
+            messages.error(request, "댓글 입력에 오류가 있습니다.")                       # 오류 메시지 출력                                          
+    else:                                                                                 # GET 요청인 경우                                          
+        form = CommentForm()                                                              # 빈 댓글 폼 생성                                           
+    content_type = ContentType.objects.get_for_model(post)                                # 게시글의 컨텐츠 타입 가져오기                             
+    comments = Comment.objects.filter(                                                   # 댓글 목록 조회                                             
+        content_type=content_type,                                                       # 콘텐츠 타입 조건                                           
+        object_id=post.id,                                                               # 글의 ID 조건                                              
+        parent__isnull=True                                                              # 최상위 댓글만 선택                                          
+    ).order_by('-created_at')                                                             # 최신순 정렬                                               
     context = {
-        'post': post,
-        **get_common_context(request)
+        'post': post,                                                                  # 글 객체 전달                                              
+        'comment_form': form,                                                          # 댓글 폼 전달                                              
+        'comments': comments,                                                          # 댓글 리스트 전달                                            
+        **get_common_context(request)                                                   # 공통 컨텍스트 포함                                          
     }
     return render(request, 'community/booktalk_detail.html', context)
 
@@ -278,13 +354,37 @@ def personal_event(request):
     return render(request, 'community/personal_event.html', context)
 
 def personal_event_detail(request, pk):
-    """개인 이벤트 상세 페이지 뷰"""
-    post = get_object_or_404(PersonalBookEventPost, pk=pk)
+    """개인 이벤트 상세 페이지 뷰 (댓글 처리 포함)"""                                   # 상세 페이지와 댓글 기능 포함                         
+    post = get_object_or_404(PersonalBookEventPost, pk=pk)                                # 개인 이벤트 포스트 객체 조회                             
+    if request.method == "POST":                                                          # POST 요청인 경우                                        
+        if not request.user.is_authenticated:                                             # 사용자 인증 확인                                          
+            messages.error(request, "댓글을 작성하려면 로그인해야 합니다.")                    # 로그인 필요 메시지 전달                                    
+            return redirect('community:login')                                            # 로그인 페이지로 리다이렉트                                   
+        form = CommentForm(request.POST)                                                  # 댓글 폼 생성                                             
+        if form.is_valid():                                                               # 폼 유효성 검사 성공 시                                   
+            comment = form.save(commit=False)                                             # 댓글 임시 저장                                            
+            comment.writer = request.user                                                 # 댓글 작성자 설정                                           
+            comment.content_object = post                                                 # 댓글 대상 객체 지정                                        
+            comment.save()                                                                # 댓글 데이터베이스 저장                                     
+            messages.success(request, "댓글이 추가되었습니다.")                            # 성공 메시지 출력                                          
+            return redirect(request.path_info)                                            # 현재 페이지 새로고침                                        
+        else:                                                                             # 폼 유효성 검사 실패 시                                   
+            messages.error(request, "댓글 입력에 오류가 있습니다.")                       # 오류 메시지 출력                                          
+    else:                                                                                 # GET 요청인 경우                                          
+        form = CommentForm()                                                              # 빈 댓글 폼 생성                                           
+    content_type = ContentType.objects.get_for_model(post)                                # 게시글의 컨텐츠 타입 가져오기                             
+    comments = Comment.objects.filter(                                                   # 댓글 목록 조회                                             
+        content_type=content_type,                                                       # 콘텐츠 타입 조건                                           
+        object_id=post.id,                                                               # 글의 ID 조건                                              
+        parent__isnull=True                                                              # 최상위 댓글만 선택                                          
+    ).order_by('-created_at')                                                             # 최신순 정렬                                               
     context = {
-        'post': post,
-        **get_common_context(request)
+        'post': post,                                                                  # 글 객체 전달                                              
+        'comment_form': form,                                                          # 댓글 폼 전달                                              
+        'comments': comments,                                                          # 댓글 리스트 전달                                            
+        **get_common_context(request)                                                   # 공통 컨텍스트 포함                                          
     }
-    return render(request, 'community/personal_event_detail.html', context)
+    return render(request, 'community/personal_event_detail.html', context)             # 템플릿 렌더링                                              
 
 # 도서 추천 뷰 (수정 버전)
 def recommend_book(request):
