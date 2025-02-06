@@ -4,6 +4,43 @@
 {% block title %}추천도서{% endblock %}
 
 {% block content %}
-  <h1>추천도서 </h1>
-  <p>이곳은 ‘추천도서’ 페이지입니다.</p>
+<div class="recommended-books-container">                                    <!-- 추천도서 컨테이너 -->
+  <h1 class="mb-4">📚 독서 커뮤니티 추천도서</h1>                           <!-- 페이지 제목 -->
+  
+  <div class="recommended-grid">                                            <!-- 추천도서 그리드 -->
+    {% for book in books %}
+    <div class="recommended-card">                                          <!-- 추천도서 카드 -->
+      {% if book.priority %}                                                <!-- 우선순위 뱃지 -->
+      <div class="priority-badge">{{ book.priority }}</div>
+      {% endif %}
+      
+      <div class="book-thumbnail-wrapper">                                  <!-- 썸네일 래퍼 -->
+        <img src="{{ book.thumbnail_url|default:'/static/default_book.jpg' }}" 
+             alt="{{ book.title }}"
+             class="book-thumbnail">
+      </div>
+      
+      <div class="book-info-wrapper">                                       <!-- 도서 정보 래퍼 -->
+        <div class="book-meta">                                            <!-- 도서 메타 정보 -->
+          <h3 class="book-title">{{ book.title }}</h3>
+          <p class="book-author">{{ book.author }}</p>
+          <p class="book-publisher">{{ book.publisher }}</p>
+        </div>
+        
+        {% if book.recommendation_comment %}                                <!-- 추천 코멘트 -->
+        <div class="recommend-comment">
+          "{{ book.recommendation_comment }}"
+        </div>
+        {% endif %}
+        
+        <div class="genre-tags">                                           <!-- 장르 태그 -->
+          {% for genre in book.genre.all %}
+          <span class="genre-tag">{{ genre.name }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}

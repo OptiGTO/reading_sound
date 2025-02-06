@@ -100,6 +100,23 @@ class Book(models.Model):
     # 책에 댓글 연결
     comments = GenericRelation('Comment')
 
+    # 추천도서 여부
+    is_recommended = models.BooleanField(
+        default=False,
+        verbose_name="추천도서 여부",
+        help_text="추천도서 페이지 노출 여부"
+    )
+
+
+    recommendation_comment = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="추천 코멘트",
+        help_text="추천도서 페이지에 표시될 짧은 설명 (150자 이내)"
+    )
+
+    
     class Meta:
         ordering = ['priority', 'title']  # 우선순위 높은(숫자 낮은) 책부터 정렬 후, 제목 순
         verbose_name = "책"

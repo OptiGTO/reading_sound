@@ -389,10 +389,13 @@ def personal_event_detail(request, pk):
 # 도서 추천 뷰 (수정 버전)
 def recommend_book(request):
     """도서 추천 페이지 렌더링"""
-    #posts = RecommendBookPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 RecommendBookPost 사용
+    books = Book.objects.filter(
+        is_recommended=True,
+        is_active=True
+    ).order_by('priority', '-created_at').prefetch_related('genre')
     context = {
         **get_common_context(request),
-        #"posts": posts
+        "books": books
     }
     return render(request, 'community/recommend_book.html', context)
 

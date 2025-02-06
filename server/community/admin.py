@@ -52,8 +52,13 @@ class BookAdmin(admin.ModelAdmin):
     list_editable = ("priority",)
     ordering = ("priority", "-pubdate")
 
+    list_filter = ("is_recommended", "is_active", "genre")
+
+
+    # 우선순위 높은(숫자 낮은) 책부터 정렬
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
+
         return queryset.order_by(
             models.F('priority').asc(nulls_last=True),
             '-pubdate'
