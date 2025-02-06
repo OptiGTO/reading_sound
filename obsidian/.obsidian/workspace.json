@@ -44,7 +44,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Files"
+              "title": "파일 탐색기"
             }
           },
           {
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "right": {
     "id": "00d64722bbc5e42d",
@@ -155,26 +155,27 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "mermaid-tools:Open Mermaid Toolbar": false
+      "switcher:빠른 전환기 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "mermaid-tools:Open Mermaid Toolbar": false,
+      "daily-notes:오늘의 일일 노트 열기": false
     }
   },
   "active": "5dbfef43ca805934",
   "lastOpenFiles": [
-    "프로젝트 우선순위 배정 이유 및 체크리스트.md",
     "회원가입 로직 흐름.md",
+    "댓글 로직.md",
+    "2025-02-01.md",
+    "프로젝트 우선순위 배정 이유 및 체크리스트.md",
     "책 카드 호버 혹은 클릭 시 데이터 흐름.md",
     "로그인 로직.md",
     "데이터베이스생성.md",
     "데이터 아키텍쳐.md",
     "검색 기능로직.md",
     "Untitled 1.canvas",
-    "2025-02-01.md",
     "Untitled.canvas",
     "2025-02-02.md",
     "구현순서 로드맵.md",
@@ -201,7 +202,6 @@
     "01_Project_Plan/Project Scope.md",
     "06_References/References.md",
     "05_Deployment/Deployment_Guide.md",
-    "04_Testing/Testing_Scenarios.md",
-    "03_Development/Feature_Implementation.md"
+    "04_Testing/Testing_Scenarios.md"
   ]
 }
