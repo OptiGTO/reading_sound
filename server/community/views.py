@@ -1,5 +1,6 @@
 # community/views.py (수정된 전체 버전)
 import json
+from itertools import chain
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, views as auth_views
@@ -15,8 +16,7 @@ import requests
 from .models import (
     Book, PostImage, GeneralPost, ReadingGroupPost, 
     ReadingTipPost, BookReviewEventPost, BookTalkEventPost,
-    PersonalBookEventPost, BookEventPost,
-    Post
+    PersonalBookEventPost, Comment
 )
 from .forms import PostForm, CustomUserCreationForm, CustomAuthForm, CommentForm
 from .services import search_naver_books
@@ -177,9 +177,13 @@ def general_post_detail(request, pk):
     """일반 게시글 상세 페이지 뷰 (댓글 처리 포함)"""
     post = get_object_or_404(GeneralPost, pk=pk)
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.error(request, "댓글을 작성하려면 로그인해야 합니다.")
+            return redirect('community:login')
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
+            comment.writer = request.user
             comment.content_object = post
             comment.save()
             messages.success(request, "댓글이 추가되었습니다.")

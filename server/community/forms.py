@@ -1,10 +1,11 @@
 # community/forms.py
 
 from django import forms
-from .models import GeneralPost, BookEventPost, BookReviewEventPost, ReadingGroupPost, ReadingTipPost, PostTag ,Comment
+from .models import GeneralPost, BookReviewEventPost, PersonalBookEventPost, ReadingGroupPost, ReadingTipPost, PostTag ,Comment
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 User = get_user_model()
+
 
 class PostForm(forms.ModelForm):
     tags = forms.CharField(

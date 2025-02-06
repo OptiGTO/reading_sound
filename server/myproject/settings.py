@@ -94,17 +94,14 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
+
+# 데이터베이스 설정 배포환경에는 mysql혹은 postgresql 사용
+DATABASES = {                                           # SQLite3 데이터베이스 설정
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('POSTGRES_DB'),
-        'USER': env('POSTGRES_USER'),
-        'PASSWORD': env('POSTGRES_PASSWORD'),
-        'HOST': env('POSTGRES_HOST', default='localhost'),
-        'PORT': env('POSTGRES_PORT', default='5432'),
+        'ENGINE': 'django.db.backends.sqlite3',         # SQLite3 엔진 사용
+        'NAME': BASE_DIR / 'db.sqlite3',               # 데이터베이스 파일 경로
     }
 }
-
 
 
 

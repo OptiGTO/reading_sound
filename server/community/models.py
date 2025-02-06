@@ -375,9 +375,9 @@ class ReadingTipPost(Post):
 
 
 
-#----------------------------------책 이벤트 모델----------------------------------
-class BookEventPost(Post):
+#----------------------------------책 이벤트 모델 데이터베이스 이슈로 인한 수정 ----------------------------------
 
+class BookReviewEventPost(Post):
     event_start_date = models.DateTimeField(
         null=True,  # null 허용 ▶ null 허용
         blank=True, # 공백 허용 ▶ 공백 허용
@@ -388,26 +388,39 @@ class BookEventPost(Post):
         blank=True, # 공백 허용 ▶ 공백 허용
         verbose_name="이벤트 종료일시"  # 이벤트 종료일시 ▶ 읽기 편한 표시
     )
-
-    class Meta:
-        verbose_name = "책 이벤트 게시글"  # 관리자 화면에서의 단수 이름 ▶ 읽기 편한 이름
-        verbose_name_plural = "책 이벤트 게시글 목록"  # 관리자 화면에서의 복수 이름 ▶ 읽기 편한 이름
-        indexes = []  # 부모 클래스의 인덱스 상속 제거 ▶ 필요 시 인덱스 재정의
-        abstract = True
-
-class BookReviewEventPost(BookEventPost):
     class Meta:
         verbose_name = "책 리뷰 이벤트"
         verbose_name_plural = "책 리뷰 이벤트 목록"
         indexes = []
 
-class PersonalBookEventPost(BookEventPost):
+
+class PersonalBookEventPost(Post):
+    event_start_date = models.DateTimeField(
+        null=True,  # null 허용 ▶ null 허용
+        blank=True, # 공백 허용 ▶ 공백 허용
+        verbose_name="이벤트 시작일시"  # 이벤트 시작일시 ▶ 읽기 편한 표시
+    )
+    event_end_date = models.DateTimeField(
+        null=True,  # null 허용 ▶ null 허용
+        blank=True, # 공백 허용 ▶ 공백 허용
+        verbose_name="이벤트 종료일시"  # 이벤트 종료일시 ▶ 읽기 편한 표시
+    )
     class Meta:
         verbose_name = "개인 책 이벤트"
         verbose_name_plural = "개인 책 이벤트 목록"
         indexes = []
 
-class BookTalkEventPost(BookEventPost):
+class BookTalkEventPost(Post):
+    event_start_date = models.DateTimeField(
+        null=True,  # null 허용 ▶ null 허용
+        blank=True, # 공백 허용 ▶ 공백 허용
+        verbose_name="이벤트 시작일시"  # 이벤트 시작일시 ▶ 읽기 편한 표시
+    )
+    event_end_date = models.DateTimeField(
+        null=True,  # null 허용 ▶ null 허용
+        blank=True, # 공백 허용 ▶ 공백 허용
+        verbose_name="이벤트 종료일시"  # 이벤트 종료일시 ▶ 읽기 편한 표시
+    )
     class Meta:
         verbose_name = "북토크"
         verbose_name_plural = "북토크 목록"
