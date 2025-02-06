@@ -31,8 +31,9 @@
   <!-------------------------------------------------- 좌측 사이드바 로고 출력 , 로그인 / 회원가입 버튼 출력 -------------------------------------------------------->
   <aside class="sidebar left-sidebar">
     <div class="sidebar-header">
-      <!-- Updated logo path -->
-      <img src="{% static 'community/images/logo.png' %}" alt="읽는소리" class="brand-logo" />
+      <a href="{% url 'community:home' %}">
+        <img src="{% static 'community/images/logo.png' %}" alt="읽는소리" class="brand-logo" />
+      </a>
     </div>
     
     <!-- 로그인 / 회원가입 버튼 -->
