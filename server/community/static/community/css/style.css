@@ -310,8 +310,8 @@ body {
 /* 책 정보 활성화 상태의 우측 사이드바 */
 .right-sidebar.book-info-active {
     background: #fff9ee !important;     /* 배경색 변경 (최우선 적용) */
-    width: 350px;                      /* 너비 확장 */
-    transform: translateX(-100px);      /* 왼쪽으로 이동 */
+    width: 300px;                      /* 너비 확장 */
+    transform: none;                    /* 이동 효과 제거: 메인 콘텐츠 침범 방지 */
     box-shadow: -5px 0 15px rgba(0,0,0,0.1);  /* 그림자 효과 */
     z-index: 100;                      /* 다른 요소보다 위에 표시 */
 }
