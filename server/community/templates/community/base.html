@@ -29,7 +29,7 @@
 
 <body>
   <!-------------------------------------------------- 좌측 사이드바 로고 출력 , 로그인 / 회원가입 버튼 출력 -------------------------------------------------------->
-  <aside class="sidebar">
+  <aside class="sidebar left-sidebar">
     <div class="sidebar-header">
       <!-- Updated logo path -->
       <img src="{% static 'community/images/logo.png' %}" alt="읽는소리" class="brand-logo" />
@@ -114,12 +114,15 @@
     </li>
 
     <!-- 4) 추천 도서 -->
-    <li>
-      <a href="{% url 'community:recommend_book' %}" class="nav-link{% if request.resolver_match.url_name == 'recommend_book' %} active{% endif %}">
-        <i class="fas fa-star"></i>
-        <span>BOOK소리 - 추천 도서</span>
-      </a>
-    </li>
+      
+      <li>                                                           
+        <a href="{% url 'community:recommend_book' %}" class="nav-link active">   
+          <i class="fas fa-star"></i>                               
+          <span>BOOK소리 - 추천 도서</span>                         
+        </a>                                                         
+      </li>                                                           
+                                                   
+
 
     <!-- 공지사항 주석처리
     <li>
@@ -133,11 +136,13 @@
 </nav>
     
     <!---------------------------------- 무작위 책 추천 섹션 -------------------------------------------------------->
+    {% if request.resolver_match.url_name == 'recommend_book' %}  
     <div class="random-book-section">
       <h2>무작위 책</h2>
       <div id="random-book-container"></div>
       <button class="btn hover-effect" id="random-book-btn">놀라게 해줘!</button>
     </div>
+    {% endif %}      
   </aside>
   
 

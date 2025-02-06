@@ -31,7 +31,7 @@ body {
 /* Styles for the main left sidebar: width, background,
    and layout. */
 
-.sidebar {
+   .sidebar {
     width: 250px;                 /* 사이드바의 고정 너비 설정 */
     background-color: #F7F5F0;    /* 연한 베이지색 배경 설정 */
     padding: 1rem;                /* 내부 여백을 모든 방향으로 1rem 설정 */
@@ -41,6 +41,15 @@ body {
     justify-content: space-between;  /* 자식 요소들을 위, 중간, 아래로 균등 배치 */
     transition: width 0.3s ease;  /* 너비 변경 시 부드러운 애니메이션 효과 */
     overflow-x: hidden;           /* 가로 방향 스크롤바 숨김 */
+}
+
+.sidebar.left-sidebar {
+    background-color: #F7F5F0;               /* 배경색 연한 베이지색   // 배경 설정 */
+    border-right: 2px solid #d8c9b7;         /* 오른쪽 구분선        // 구분선 */
+    display: flex;                          /* 플렉스 컨테이너       // 레이아웃 */
+    flex-direction: column;                 /* 세로 정렬             // 자식 요소 세로 정렬 */
+    justify-content: flex-start;            /* 상단부터 정렬         // 상단 정렬 */
+    z-index: 1000;                          /* 다른 요소 위에 표시     // z-index */
 }
 
 /* 사이드바가 접혔을 때의 스타일 */
@@ -345,12 +354,12 @@ body {
 /****************************************************/
 /* 메인 콘텐츠 영역: 사이드바 사이에서 확장되는 영역                                          */  /* 역할: 페이지 중앙의 주요 콘텐츠 영역 */
 .content {                                                                                  /* 역할: 콘텐츠 영역 스타일 지정 */
-   flex: 1;                      /* 남은 공간 모두 채움                                       */  /* 역할: 부모의 남은 공간 모두 사용 */
-   padding: 1rem 2rem;           /* 내부 여백 설정 (상하 1rem, 좌우 2rem)                        */  /* 역할: 콘텐츠 영역 주위 여백 제공 */
-   display: flex;                /* 플렉스 컨테이너 설정                                      */  /* 역할: 자식 요소를 플렉스 아이템으로 변환 */
-   flex-direction: column;       /* 요소를 수직으로 배치                                      */  /* 역할: 세로 방향 정렬 */
-   max-width: 1200px;            /* 최대 너비 제한 (가독성 향상)                                 */  /* 역할: 콘텐츠 폭 제한 */
-}
+    flex: 1;                      /* 남은 공간 모두 채움                                       */  /* 역할: 부모의 남은 공간 모두 사용 */
+    padding: 1rem 2rem;           /* 내부 여백 설정 (상하 1rem, 좌우 2rem)                        */  /* 역할: 콘텐츠 영역 주위 여백 제공 */
+    display: flex;                /* 플렉스 컨테이너 설정                                      */  /* 역할: 자식 요소를 플렉스 아이템으로 변환 */
+    flex-direction: column;       /* 요소를 수직으로 배치                                      */  /* 역할: 세로 방향 정렬 */
+    max-width: 1200px;            /* 최대 너비 제한 (가독성 향상)                                 */  /* 역할: 콘텐츠 폭 제한 */
+ }
 
 /* 탑 바: 사용자 정보, 설정 등을 포함하는 영역                                           */  /* 역할: 페이지 상단바 */
 .top-bar {                                                                                  /* 역할: 탑 바 스타일 지정 */
