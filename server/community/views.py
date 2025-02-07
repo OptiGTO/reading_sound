@@ -82,7 +82,6 @@ def post_view(request):
 
                 # 게시글 저장
                 post.save()
-                form.save_m2m()  # 태그 관계 저장
 
                 # 이미지 처리
                 if images := request.FILES.getlist('post_images'):
@@ -127,26 +126,45 @@ def handle_post_submission(request, form):
         messages.error(request, f"게시물 저장 오류: {str(e)}")
     return redirect('community:post')
 
-# 도서 데이터 처리 함수
+# 도서 데이터 처리 함수(책 장르 정보 추가 실패 후에 수정)
 def process_book_data(request):
     """사용자가 선택한 도서 정보 처리 및 데이터베이스 저장"""
-    if selected_data := request.POST.get('selected_book_data'):
-        book_info = json.loads(selected_data)
+    if selected_data := request.POST.get('selected_book_data'):               # POST 데이터에서 도서 정보 추출
+
+        book_info = json.loads(selected_data)                                 # JSON 문자열 파싱
+        # 백엔드에서 genre 값을 BookGenre 내부값과 비교하거나 매핑 처리 가능
+        genre_value = book_info.get('genre', '')
+        # 예시: 값이 디스플레이(한글)로 넘어온 경우 내부값으로 변환 (필요시 사전 정의)
+        genre_mapping = {
+            '에세이': 'essay',
+            '소설': 'fiction',
+            '비문학': 'non_fiction',
+            '과학': 'science',
+            '시': 'poetry'
+        }
+        book_info['genre'] = genre_mapping.get(genre_value, genre_value)     # 매핑 처리
+        defaults = {
+            k: book_info.get(k, '') for k in ['publisher', 'pubdate', 'thumbnail_url', 'link', 'isbn', 'description', 'genre']
+        }
         return Book.objects.get_or_create(
             title=book_info.get('title', ''),
             author=book_info.get('author', ''),
-            defaults={k: book_info.get(k, '') for k in [
-                'publisher', 'pubdate', 'thumbnail_url', 'link', 'isbn' , 'description'
-            ]}
+            defaults=defaults
         )[0]
-    return None
+    return None                                                               # 도서 정보 없음 반환
 
 
 #----------------------------------------메인 페이지 관련---------------------------------------------------------
 # 메인 페이지 뷰
 def home_view(request):
     """홈페이지 렌더링 - 도서 목록 및 게시물 표시"""
-    books = Book.objects.all()
+    
+    essay_books = Book.objects.filter(genre='essay')
+    fiction_books = Book.objects.filter(genre='fiction')
+    non_fiction_books = Book.objects.filter(genre='non_fiction')
+    science_books = Book.objects.filter(genre='science')
+    poetry_books = Book.objects.filter(genre='poetry')
+    books = list(essay_books) + list(fiction_books) + list(non_fiction_books) + list(science_books) + list(poetry_books)
     for book in books:
         book.post_count = (
             book.generalpost_set.count()
@@ -158,7 +176,16 @@ def home_view(request):
         )
     context = get_common_context(request)
     context.update({'books': books})
+    context.update({'essay_books': essay_books})
+    context.update({'fiction_books': fiction_books})
+    context.update({'non_fiction_books': non_fiction_books})
+    context.update({'science_books': science_books})
+    context.update({'poetry_books': poetry_books})
     return render(request, "community/index.html", context)
+
+
+
+
 
 
 #책 게시판 뷰
@@ -392,7 +419,7 @@ def recommend_book(request):
     books = Book.objects.filter(
         is_recommended=True,
         is_active=True
-    ).order_by('priority', '-created_at').prefetch_related('genre')
+    ).order_by('priority', '-created_at')
     context = {
         **get_common_context(request),
         "books": books
@@ -765,7 +792,7 @@ def like_post(request):
             post = Model.objects.get(pk=post_id)                               # 게시물 객체 조회　　　　　　　
             post.likes += 1                                                    # 좋아요 수 증가　　　　　　　
             post.save()                                                        # 게시물 객체 저장　　　　　　　
-            return JsonResponse({'success': True, 'likes': post.likes})          # 결과 반환　　　　　　　　　
+            return JsonResponse({'success': True, 'likes': post.likes})          # 결과 반환　　　　　　　　
         except Model.DoesNotExist:
             return JsonResponse({'error': '게시글을 찾을 수 없습니다.'}, status=404)  # 게시글 없음 메시지　　　　　
     return JsonResponse({'error': '잘못된 요청입니다.'}, status=400)              # 잘못된 요청 메시지　　　　　

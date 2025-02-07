@@ -26,6 +26,30 @@
       <small class="form-error">{{ form.category.errors }}</small>
     </div>
 
+   
+    <!-- 독서 모임용 이벤트 날짜 필드 항상 렌더링, 단 초기 숨김 처리 -->
+    <div class="form-group" data-category="독서 모임" style="display:none;">
+      <label for="{{ form.event_date.id_for_label }}">이벤트 날짜 (YYYY-MM-DD):</label>
+      {{ form.event_date }}
+      <small class="form-error">{{ form.event_date.errors }}</small>
+    </div>
+
+    <!-- 동적 필드: 이벤트 시작/종료일시 -->
+
+    <div class="form-group" data-category="이벤트" style="display:none;">
+        <label for="{{ form.event_start_date.id_for_label }}">이벤트 시작일시 (YYYY-MM-DD HH:MM):</label>
+        {{ form.event_start_date }}
+        <small class="form-error">{{ form.event_start_date.errors }}</small>
+    </div>
+
+
+    <!-- 동적 필드: 이벤트 종료일시 -->
+    <div class="form-group" data-category="이벤트" style="display:none;">
+      <label for="{{ form.event_end_date.id_for_label }}">이벤트 종료일시 (YYYY-MM-DD HH:MM):</label>
+      {{ form.event_end_date }}
+      <small class="form-error">{{ form.event_end_date.errors }}</small>
+    </div>
+
     <!-- 태그 필드 -->
     <div class="form-group">
       <label for="{{ form.tags.id_for_label }}">태그:</label>
@@ -50,12 +74,19 @@
     <!-- 선택한 책 정보를 저장할 hidden input -->
     <input type="hidden" name="selected_book_data" id="selected_book_data">
     
+    <button type="submit" class="btn hover-effect"> 글쓰기</button>
+
 
     
-    <button type="submit" class="btn hover-effect"> 글쓰기</button>
+     <!-- 책 장르 선택 필드 -->
+     <div class="form-group" id="genre_group" style="display:none;">
+      <label for="{{ form.genre.id_for_label }}">책 장르:</label>
+      {{ form.genre }}
+      <small class="form-error">{{ form.genre.errors }}</small>
+  </div>
+
+
   </form>
-
-
 
   <!-- 검색 영역 -->
   <div>
@@ -67,20 +98,11 @@
   <div id="search-results" style="margin-top:1em;">
     <!-- fetch()로 받은 책 리스트를 JavaScript로 여기다가 렌더링 -->
   </div>
-
 </section>
-
-
-
-
-
-
 
 <!----------------------------------------------------------------------------------------->
 
 <!-- JavaScript 코드 -->
-
-
 
 <script>
   // 엔터키 처리 함수
@@ -91,7 +113,7 @@
     }
   }
 
-  // 책 검색 함수 (Ajax) → 이 부분은 그대로 사용 가능
+  // 책 검색 함수 (Ajax) → 책 검색 시 책 장르 필드 보이기
   function searchBooks() {
     const query = document.getElementById('book-search-input').value.trim();
     if(!query){
@@ -103,6 +125,12 @@
     const searchButton = document.getElementById('search-button');
     searchButton.disabled = true;
     
+    // 책 검색 시 책 장르 선택 필드 보이기
+    const genreGroup = document.getElementById('genre_group');
+    if(genreGroup){
+        genreGroup.style.display = "block";
+    }
+
     fetch(`/naver-book-json/?query=${encodeURIComponent(query)}`)
     .then(response => {
         if(!response.ok){
@@ -122,7 +150,7 @@
         document.getElementById('search-results').innerHTML = '<p>검색 중 오류가 발생했습니다.</p>';
     })
     .finally(() => {
-        searchButton.disabled = false;  // 검색 완료 후 버튼 활성화
+        searchButton.disabled = false;
     });
   }
 
@@ -145,18 +173,26 @@
     img.src = book.image;
     img.style.maxWidth = '100px';
     
+
+    const genreText = document.createElement('div');
+    genreText.textContent = '장르: ' + book.genre;
+
+
     const button = document.createElement('button');
     button.type = 'button';
     button.textContent = '이 책 선택';
     button.onclick = () => chooseBook(book);
     
+
     bookDiv.appendChild(title);
     bookDiv.appendChild(document.createElement('br'));
     bookDiv.appendChild(authorText);
-    bookDiv.appendChild(publisherText);
+    bookDiv.appendChild(publisherText); 
+    bookDiv.appendChild(genreText);
     bookDiv.appendChild(img);
     bookDiv.appendChild(document.createElement('br'));
     bookDiv.appendChild(button);
+
     
     return bookDiv;
   }
@@ -176,6 +212,12 @@
   }
 
   function chooseBook(book) {
+    // 현재 선택된 책 장르 값 가져오기
+    const bookGenreSelect = document.getElementById('id_genre');
+    const selectedGenre = bookGenreSelect.value; // 표시 레이블 가져오기
+
+
+    // 선택한 책 정보 업데이트
     const selectedBookData = JSON.stringify({
       title: book.title,
       author: book.author,
@@ -184,11 +226,13 @@
       link: book.link,
       thumbnail_url: book.image,
       isbn: book.isbn,
-      description: book.description
+      description: book.description,
+      genre: selectedGenre  // 실제 저장값(영문) 대신 표시값(한글) 사용
     });
+    
 
     document.getElementById('selected_book_data').value = selectedBookData;
-    alert(`'${book.title}' 책이 선택되었습니다. (선택사항입니다)`);
+    alert(`'${book.title}' 책이 선택되었습니다.`);
   }
 
   // 이미지 미리보기 (선택 사항)
@@ -214,7 +258,45 @@
     // preventDefault 제거
     // 폼이 정상적으로 서버로 제출되도록 함
     const form = this;
+    const selectedBookInput = document.getElementById('selected_book_data');
+    if(selectedBookInput.value) {
+      let bookData = JSON.parse(selectedBookInput.value);
+      // 현재 선택된 책 장르 값으로 업데이트
+      const currentGenre = document.getElementById('id_genre').value;
+      bookData.genre = currentGenre;
+      selectedBookInput.value = JSON.stringify(bookData);
+    }
     form.submit();  // 폼 제출
+  });
+
+
+
+  //--------------------------------------------------------------------------------------
+  // 카테고리 변경 이벤트 핸들러 추가
+  function handleCategoryChange() {
+    const category = document.getElementById('id_category').value;
+    
+    // 독서 모임 필드 가시성 제어
+    const eventDateGroup = document.querySelector('[data-category="독서 모임"]');
+    if (eventDateGroup) {
+        eventDateGroup.style.display = category === 'reading_group_post' ? 'block' : 'none';
+    }
+
+    // 이벤트 필드 가시성 제어
+    const eventGroups = document.querySelectorAll('[data-category="이벤트"]');
+    eventGroups.forEach(group => {
+        const display = ['book_review_event', 'personal_event_post', 'book_talk_post'].includes(category) ? 'block' : 'none';
+        group.style.display = display;
+    });
+  }
+
+  // 초기 로드 시 및 카테고리 변경 시 이벤트 바인딩
+  document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('id_category');
+    if (categorySelect) {
+      categorySelect.addEventListener('change', handleCategoryChange);
+      handleCategoryChange(); // 초기 상태 설정
+    }
   });
 </script>
 {% endblock %}

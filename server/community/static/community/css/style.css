@@ -44,8 +44,6 @@ body {
 }
 
 .sidebar.left-sidebar {
-    background-color: #F7F5F0;               /* 배경색 연한 베이지색   // 배경 설정 */
-    border-right: 2px solid #d8c9b7;         /* 오른쪽 구분선        // 구분선 */
     display: flex;                          /* 플렉스 컨테이너       // 레이아웃 */
     flex-direction: column;                 /* 세로 정렬             // 자식 요소 세로 정렬 */
     justify-content: flex-start;            /* 상단부터 정렬         // 상단 정렬 */
@@ -1204,11 +1202,32 @@ input::placeholder {
 }
 
 
+/************************************************************************************
+14. 글쓰기 페이지 스타일
+************************************************************************************/
+
+
+
+.form-group {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.form-group.hidden {
+  opacity: 0;
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.form-group:not(.hidden) {
+  opacity: 1;
+  max-height: 500px;
+}
 
 /************************************************************************************
 14. 검색 기능 스타일
 ************************************************************************************/
-
 
 /* 검색 결과 페이지 스타일 */
 .search-results-container {

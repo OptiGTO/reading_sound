@@ -12,35 +12,16 @@ from django.contrib.contenttypes.models import ContentType
 User = get_user_model()                                   # 파일 상단에서 한 번만 정의
 
 #---------------------------------책 모델--------------------------------------------------
-class BookGenre(models.Model):              #책에 추가하는 장르 모델
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True, blank=True)
+class BookGenre(models.TextChoices):
+    ESSAY = 'essay', '에세이'          # (DB 저장값, 표시레이블)
+    FICTION = 'fiction', '소설'
+    NON_FICTION = 'non_fiction', '비문학'
+    SCIENCE = 'science', '과학'
+    POETRY = 'poetry', '시'
 
-    def __str__(self):
-        return self.name
 
-    def save(self, *args, **kwargs):
-        if not self.slug or self.name_changed():
-            self.slug = slugify(self.name)
-            # 슬러그 중복 방지 로직 추가
-            counter = 1
-            while BookGenre.objects.filter(slug=self.slug).exists():
-                self.slug = f"{slugify(self.name)}-{counter}"
-                counter += 1
-        super().save(*args, **kwargs)
 
-    def name_changed(self):
-        if not self.pk:
-            return True
-        orig = BookGenre.objects.get(pk=self.pk)
-        return orig.name != self.name
 
-    class Meta:
-        verbose_name = '장르'
-        verbose_name_plural = '장르'
-        ordering = ['name']
-
-#----------------------------------책 모델----------------------------------
 
 class Book(models.Model):
     # ISBN 10자리/13자리 등 다양하게 존재하므로, 13자리 기준 + 여유
@@ -64,10 +45,13 @@ class Book(models.Model):
 
     # 만약 한 권의 책이 여러 장르에 속할 수 있다면 ManyToManyField 고려
     # 여기서는 단일 장르만 저장한다 가정
-    genre = models.ManyToManyField(
-        BookGenre, 
-        blank=True, 
-        verbose_name="장르"
+    genre = models.CharField(                                  # 오른쪽 주석: 변경된 BookGenre 모델을 참조
+        max_length=50,
+        choices=BookGenre.choices,  # 선택 항목 직접 연결
+        default=BookGenre.ESSAY,
+        verbose_name="책 장르",
+        help_text="책 장르 선택"
+
     )
 
     description = models.TextField(blank=True, null=True, verbose_name="책 설명")
@@ -116,7 +100,7 @@ class Book(models.Model):
         help_text="추천도서 페이지에 표시될 짧은 설명 (150자 이내)"
     )
 
-    
+
     class Meta:
         ordering = ['priority', 'title']  # 우선순위 높은(숫자 낮은) 책부터 정렬 후, 제목 순
         verbose_name = "책"

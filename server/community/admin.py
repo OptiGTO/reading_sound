@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from .models import (
     GeneralPost, Book, BookReviewEventPost, PersonalBookEventPost,
-    BookTalkEventPost, ReadingGroupPost, ReadingTipPost, PostImage, PostTag, Comment
+    BookTalkEventPost, ReadingGroupPost, ReadingTipPost, PostImage, PostTag, Comment, BookGenre
 )
 # Register your models here.
 
@@ -45,12 +45,16 @@ class PostImageAdmin(admin.ModelAdmin):
     ordering = ('post', 'created_at')
 
 #----------------------------------책 관리자 권한 관련----------------------------------
+
+
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("priority", "title", "author", "publisher", "pubdate", "isbn")
+    list_display = ("priority", "title", "author", "publisher", "pubdate", "isbn", 'genre')
     list_display_links = ("title",)
     list_editable = ("priority",)
     ordering = ("priority", "-pubdate")
+
+
 
     list_filter = ("is_recommended", "is_active", "genre")
 
