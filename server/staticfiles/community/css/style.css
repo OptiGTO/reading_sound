@@ -1,409 +1,440 @@
 /****************************************************
  * 1. 전역 리셋 & 박스 사이징
  ****************************************************/
-/* This section resets default margins/paddings and 
-   ensures all elements use border-box sizing. */
+/* 모든 요소의 기본 여백을 제거하고 
+   border-box 사이징을 적용하는 섹션입니다 */
 
-   * {
-    margin: 0;      /* Removes all default margins on every element */
-    padding: 0;     /* Removes all default padding on every element */
-    box-sizing: border-box;  /* Makes width/height include border & padding */
-  }
-  
-  
-  /****************************************************
-   * 2. 바디 & 기본 레이아웃
-   ****************************************************/
-  /* Sets up the body as a flex container with a light
-     background color and a default font. */
-  
-  body {
-    display: flex;                /* Turns <body> into a flex container */
-    min-height: 100vh;            /* Ensures the body is at least full viewport height */
-    justify-content: center;      /* Centers content horizontally */
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
-    /* Sets a clean, modern font stack */
-    background-color: #fff5d9;    /* Applies a light beige background color */
-  }
-  
-  
-  /****************************************************
-   * 3. 왼쪽 사이드바
-   ****************************************************/
-  /* Styles for the main left sidebar: width, background,
-     and layout. */
-  
-  .sidebar {
-    width: 250px;                 /* Fixed width for the sidebar */
-    background-color: #ffe6a6;    /* Light beige background */
-    padding: 1rem;                /* Internal spacing on all sides */
-    border-right: 2px solid #d8c9b7; 
-    /* Thin border on the right side for separation */
-    display: flex;                /* Makes the sidebar a flex container */
-    flex-direction: column;       /* Arranges children vertically */
-    justify-content: space-between; 
-    /* Distributes items: top, middle, bottom */
-    transition: width 0.3s ease;  /* Smooth transition when width changes */
-    overflow-x: hidden;           /* Hides horizontal scroll if content overflows */
-  }
-  
-  /* When the sidebar is in a "collapsed" state. */
-  .sidebar.collapsed {
-    width: 60px;                  /* Narrower width for collapsed mode */
-  }
-  
-  /* Elements to hide when the sidebar is collapsed. */
-  .sidebar.collapsed .brand-title,
-  .sidebar.collapsed .random-book-section,
-  .sidebar.collapsed .login-container {
-    display: none;                /* Hide these sections entirely */
-  }
-  
-  /* Adjust menu links in collapsed mode. */
-  .sidebar.collapsed .nav-menu .nav-link {
-    padding: 0.5rem;              /* Smaller padding */
-    text-align: center;           /* Center icons */
-  }
-  
-  /* Hide the text span; keep icons only. */
-  .sidebar.collapsed .nav-menu .nav-link span {
-    display: none;                /* No text label in collapsed mode */
-  }
-  
-  /* Increase icon size in collapsed mode. */
-  .sidebar.collapsed .nav-menu .nav-link i {
-    font-size: 1.5rem;            /* Bigger icons */
-    margin: 0;                    /* Remove default margin */
-  }
-  
-  /* Sidebar header area, for branding or logo. */
-  .sidebar-header {
-    text-align: center;           /* Centers content horizontally */
-    padding: 0.5rem 0;            /* Vertical padding top and bottom */
-    margin-bottom: 0.5rem;        /* Space below the header area */
-  }
-  
-  /* Logo image settings. */
-  .brand-logo {
-    max-width: 100px;             /* Limits the maximum width of the logo */
-    height: auto;                 /* Keeps aspect ratio */
-    display: block;               /* Makes it a block element for margin auto to work */
-    margin: 0 auto;               /* Centers the logo horizontally */
-  }
-  
-  /* Smaller logo when sidebar is collapsed. */
-  .sidebar.collapsed .brand-logo {
-    max-width: 40px;              /* Reduced width to fit collapsed sidebar */
-    padding: 5px;                 /* Optional small padding around the logo */
-  }
-  
-  /* Brand title text. */
-  .sidebar-header .brand-title {
-    font-family: Georgia, "Times New Roman", serif; 
-    /* Classic serif font for the brand title */
-    font-size: 1.5rem;            /* Larger font size */
-    color: #5f4b32;               /* Darker brown text */
-    margin-bottom: 1rem;          /* Space below the title */
-  }
-  
-  /* Navigation menu list reset. */
-  .nav-menu ul {
-    list-style-type: none;        /* Removes bullets from the list */
-  }
-  
-  /* Links within the sidebar menu. */
-  .nav-menu .nav-link {
-    display: block;               /* Full-width clickable area */
-    text-decoration: none;        /* Removes underline for links */
-    font-size: 1rem;              /* Medium font size */
-    color: #5f4b32;               /* Dark brown text color */
-    padding: 0.5rem 0;            /* Vertical padding */
-    transition: color 0.3s ease;  /* Smooth color change on hover/focus */
-  }
-  
-  /* Hover effect for nav links. */
-  .nav-menu .nav-link:hover {
-    color: #9a8469;               /* Lighter brown on hover */
-  }
-  
-  /* Section for displaying random book info. */
-  .random-book-section {
-    margin: 2rem 0;               /* Vertical spacing above and below */
-    padding: 1rem;                /* Internal padding */
-    background-color: #fcfaf7;    /* Slightly off-white background */
-    border: 1px solid #ece7df;    /* Light border around the box */
-    border-radius: 5px;           /* Subtle rounded corners */
-  }
-  
-  /* Random book section title style. */
-  .random-book-section h2 {
-    color: #5f4b32;               /* Dark brown text color */
-    margin-bottom: 0.5rem;        /* Space below the heading */
-  }
-  
-  /* Container for login button, placed at bottom of sidebar. */
-  .login-container {
-  }
-
-  #login-btn {
-    background-color: #5f4b32;    /* 어두운 갈색 배경 */
-    color: #fff;                  /* 흰색 텍스트 */
-    border: none;                 /* 테두리 없음 */
-    border-radius: 4px;           /* 모서리 둥글게 */
-    cursor: pointer;              /* 호버시 포인터 커서 */
-    transition: background-color 0.3s ease;  /* 부드러운 호버 효과 */
-    position: relative;
-    width: 100%;                  /* 부모 요소의 너비로 변경 */
-    max-width: 220px;            /* 최대 너비 설정 */
-    height: auto;                 /* 높이 자동 조정 */
-    font-size: 1.2rem;           /* 글자 크기 증가 */
-    padding: 15px 20px;          /* 패딩 증가 */
-    margin: 15px auto;           /* 상하 여백 증가 및 중앙 정렬 */
-  }
-
-
-
-  .nav-menu .nav-link i {
-    margin-right: 10px;           /* Gap between the icon and the text */
-    width: 20px;                  /* Consistent icon width to align text */
-    text-align: center;           /* Center the icon in its space */
-  }
-  
-
-
-    /*사람 섹션 밑 서브 섹션 추가를 위한 css스타일링 Assuming .nav-menu ul li has position relative or absolute styling */
-  .nav-menu ul li.has-submenu {
-    position: relative;
-  }
-
-  /* Hide submenu by default */
-  .nav-menu ul li.has-submenu .submenu {
-    display: none;
-    position: absolute;
-    top: 100%;  /* Places submenu below the parent item */
-    left: 0;    /* Aligns the submenu's left edge with the parent item's left edge */
-    background-color: #fafafa;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    min-width: 180px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-    z-index: 9999;
-  }
-
-  /* Show on hover */
-  .nav-menu ul li.has-submenu:hover > .submenu {
-    display: block;
-  }
-
-  /* Submenu links styling */
-  .nav-menu ul li.has-submenu .submenu li a {
-    display: block;
-    padding: 10px 15px;
-    color: #333;
-    text-decoration: none;
-  }
-
-  .nav-menu ul li.has-submenu .submenu li a:hover {
-    background-color: #ddd; 
-  }
-
-
-    .submenu {
-        top: 100%;
-        left: 0;
-    }
-
-  .nav-menu ul li.has-submenu .submenu.active {
-     display: block;
-  }
-    
-
-
+* {
+    margin: 0;                    /* 모든 요소의 기본 마진 제거 */
+    padding: 0;                   /* 모든 요소의 기본 패딩 제거 */
+    box-sizing: border-box;       /* 너비/높이에 테두리와 패딩 포함 */
+}
 
 /****************************************************
-* 4. 오른쪽 사이드바 (Updated)
+ * 2. 바디 & 기본 레이아웃
+ ****************************************************/
+/* 밝은 배경색과 기본 폰트로 
+   body를 플렉스 컨테이너로 설정하는 섹션입니다 */
+
+body {
+    display: flex;                /* body를 플렉스 컨테이너로 변환 */
+    min-height: 100vh;           /* 최소 높이를 뷰포트 높이로 설정 */
+    justify-content: center;     /* 수평 중앙 정렬 */
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;  
+    /* 깔끔한 현대적 폰트 스택 설정 */
+    background-color: #ffffff;   /* 연한 베이지색 배경 적용 */
+}
+
+/****************************************************
+ * 3. 왼쪽 사이드바
+ ****************************************************/
+/* Styles for the main left sidebar: width, background,
+   and layout. */
+
+   .sidebar {
+    width: 250px;                 /* 사이드바의 고정 너비 설정 */
+    background-color: #F7F5F0;    /* 연한 베이지색 배경 설정 */
+    padding: 1rem;                /* 내부 여백을 모든 방향으로 1rem 설정 */
+    border-right: 2px solid #d8c9b7;  /* 오른쪽에 구분선 추가 */
+    display: flex;                /* 플렉스 컨테이너로 설정 */
+    flex-direction: column;       /* 자식 요소들을 세로 방향으로 정렬 */
+    justify-content: space-between;  /* 자식 요소들을 위, 중간, 아래로 균등 배치 */
+    transition: width 0.3s ease;  /* 너비 변경 시 부드러운 애니메이션 효과 */
+    overflow-x: hidden;           /* 가로 방향 스크롤바 숨김 */
+}
+
+.sidebar.left-sidebar {
+    display: flex;                          /* 플렉스 컨테이너       // 레이아웃 */
+    flex-direction: column;                 /* 세로 정렬             // 자식 요소 세로 정렬 */
+    justify-content: flex-start;            /* 상단부터 정렬         // 상단 정렬 */
+    z-index: 1000;                          /* 다른 요소 위에 표시     // z-index */
+}
+
+/* 사이드바가 접혔을 때의 스타일 */
+.sidebar.collapsed {
+    width: 60px;                  /* 접힌 상태의 좁은 너비 설정 */
+}
+
+/* 사이드바 접힘 상태에서 숨길 요소들 */
+.sidebar.collapsed .brand-title,
+.sidebar.collapsed .random-book-section,
+.sidebar.collapsed .login-container {
+    display: none;                /* 해당 요소들을 완전히 숨김 */
+}
+
+/* 접힌 상태에서의 메뉴 링크 스타일 */
+.sidebar.collapsed .nav-menu .nav-link {
+    padding: 0.5rem;              /* 내부 여백 축소 */
+    text-align: center;           /* 아이콘을 중앙 정렬 */
+}
+
+/* 접힌 상태에서 텍스트 레이블 숨김 */
+.sidebar.collapsed .nav-menu .nav-link span {
+    display: none;                /* 텍스트 숨김 처리 */
+}
+
+/* 접힌 상태에서 아이콘 크기 증가 */
+.sidebar.collapsed .nav-menu .nav-link i {
+    font-size: 1.5rem;            /* 아이콘 크기 증가 */
+    margin: 0;                    /* 여백 제거 */
+}
+
+/* 사이드바 헤더 영역 스타일링 */
+.sidebar-header {
+    text-align: center;           /* 내용 가운데 정렬 */
+    padding: 0.5rem 0;            /* 위아래 여백만 설정 */
+    margin-bottom: 0.5rem;        /* 아래쪽 여백 추가 */
+}
+
+/* 로고 이미지 스타일링 */
+.brand-logo {
+    max-width: 100px;             /* 로고 최대 너비 제한 */
+    height: auto;                 /* 비율 유지하며 높이 자동 조정 */
+    display: block;               /* 블록 레벨 요소로 변경 */
+    margin: 0 auto;               /* 가운데 정렬 */
+    background-color: transparent; /* 배경색 투명하게 설정 */
+}
+
+/* 접힌 상태에서의 로고 크기 */
+.sidebar.collapsed .brand-logo {
+    max-width: 40px;              /* 로고 크기 축소 */
+    padding: 5px;                 /* 작은 여백 추가 */
+}
+
+/* 브랜드 제목 스타일링 */
+.sidebar-header .brand-title {
+    font-family: Georgia, "Times New Roman", serif;  /* 고전적인 서체 사용 */
+    font-size: 1.5rem;            /* 글자 크기 설정 */
+    color: #5f4b32;               /* 진한 갈색으로 설정 */
+    margin-bottom: 1rem;          /* 아래쪽 여백 추가 */
+}
+
+/* 네비게이션 메뉴 리스트 스타일 초기화 */
+.nav-menu ul {
+    list-style-type: none;        /* 기본 불릿 제거 */
+}
+
+/* 네비게이션 링크 스타일링 */
+.nav-menu .nav-link {
+    display: block;               /* 블록 레벨로 변경하여 전체 영역 클릭 가능 */
+    text-decoration: none;        /* 밑줄 제거 */
+    font-size: 1rem;              /* 글자 크기 설정 */
+    color: #5f4b32;               /* 진한 갈색으로 설정 */
+    padding: 0.5rem 0;            /* 위아래 여백 추가 */
+    transition: color 0.3s ease;  /* 색상 변경 시 부드러운 효과 */
+}
+
+/* 네비게이션 링크 호버 효과 */
+.nav-menu .nav-link:hover {
+    color: #9a8469;               /* 호버 시 밝은 갈색으로 변경 */
+}
+
+/* 무작위 책 추천 섹션 스타일링 */
+.random-book-section {
+    margin: 2rem 0;               /* 위아래 여백 설정 */
+    padding: 1rem;                /* 내부 여백 설정 */
+    background-color: #fcfaf7;    /* 매우 연한 베이지색 배경 */
+    border: 1px solid #ece7df;    /* 연한 테두리 추가 */
+    border-radius: 5px;           /* 모서리 둥글게 처리 */
+}
+
+/* 무작위 책 섹션 제목 스타일 */
+.random-book-section h2 {
+    color: #5f4b32;               /* 진한 갈색으로 설정 */
+    margin-bottom: 0.5rem;        /* 아래쪽 여백 추가 */
+}
+
+
+
+/* 로그인 버튼 스타일링 */
+#login-btn {
+    background-color: #5f4b32;    /* 진한 갈색 배경 */
+    color: #fff;                  /* 흰색 텍스트 */
+    border: none;                 /* 테두리 제거 */
+    border-radius: 4px;           /* 모서리 둥글게 */
+    cursor: pointer;              /* 마우스 오버 시 포인터 커서 */
+    transition: background-color 0.3s ease;  /* 배경색 변경 시 부드러운 효과 */
+    position: relative;           /* 상대 위치 설정 */
+    width: 100%;                  /* 부모 요소 너비로 확장 */
+    max-width: 220px;             /* 최대 너비 제한 */
+    height: auto;                 /* 높이 자동 조정 */
+    font-size: 1.2rem;            /* 글자 크기 설정 */
+    padding: 15px 20px;           /* 내부 여백 설정 */
+    margin: 15px auto;            /* 가운데 정렬 및 여백 설정 */
+}
+
+/* 네비게이션 메뉴 아이콘 스타일링 */
+.nav-menu .nav-link i {
+    margin-right: 10px;           /* 아이콘과 텍스트 사이 간격 */
+    width: 20px;                  /* 아이콘 너비 고정 */
+    text-align: center;           /* 아이콘 중앙 정렬 */
+}
+
+/* 서브메뉴 관련 스타일링 */
+.nav-menu ul li.has-submenu {
+    position: relative;           /* 서브메뉴 위치 기준점 설정 */
+}
+
+/* 기본 상태에서 서브메뉴 숨김 */
+.nav-menu ul li.has-submenu .submenu {
+    display: none;                /* 서브메뉴 숨김 */
+    position: absolute;           /* 절대 위치 설정 */
+    top: 100%;                    /* 부모 요소 바로 아래 위치 */
+    left: 0;                      /* 왼쪽 정렬 */
+    background-color: #fafafa;    /* 밝은 배경색 설정 */
+    list-style: none;             /* 리스트 스타일 제거 */
+    margin: 0;                    /* 여백 제거 */
+    padding: 0;                   /* 내부 여백 제거 */
+    min-width: 180px;             /* 최소 너비 설정 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);  /* 그림자 효과 */
+    z-index: 9999;                /* 다른 요소들 위에 표시 */
+}
+
+/* 호버 시 서브메뉴 표시 */
+.nav-menu ul li.has-submenu:hover > .submenu {
+    display: block;               /* 서브메뉴 보이기 */
+}
+
+/* 서브메뉴 링크 스타일링 */
+.nav-menu ul li.has-submenu .submenu li a {
+    display: block;               /* 블록 레벨로 변경 */
+    padding: 10px 15px;           /* 내부 여백 설정 */
+    color: #333;                  /* 텍스트 색상 설정 */
+    text-decoration: none;        /* 밑줄 제거 */
+}
+
+/* 서브메뉴 링크 호버 효과 */
+.nav-menu ul li.has-submenu .submenu li a:hover {
+    background-color: #ddd;       /* 호버 시 배경색 변경 */
+}
+
+/* 서브메뉴 위치 설정 */
+.submenu {
+    top: 100%;                    /* 부모 요소 바로 아래 위치 */
+    left: 0;                      /* 왼쪽 정렬 */
+}
+
+/* 활성화된 서브메뉴 표시 */
+.nav-menu ul li.has-submenu .submenu.active {
+    display: block;               /* 서브메뉴 보이기 */
+}
+
+/****************************************************
+* 4. 오른쪽 사이드바 스타일
 ****************************************************/
+
+/* 오른쪽 사이드바의 기본 스타일 설정 */
 .sidebar.right-sidebar {
-  border-right: none;
-  background-color: #fff5d9;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 250px;
-  padding: 1rem;  /* Added padding for consistency */
+    border-right: none;                /* 오른쪽 테두리 제거 */
+    background-color: #ffffff;         /* 배경색: 연한 노란색 */
+    display: flex;                     /* 플렉스 컨테이너로 설정 */
+    flex-direction: column;            /* 세로 방향 정렬 */
+    justify-content: flex-start;       /* 컨텐츠를 위쪽부터 정렬 */
+    width: 250px;                      /* 사이드바 너비 */
+    padding: 1rem;                     /* 내부 여백 */
+    transition: all 0.3s ease;         /* 모든 변화에 0.3초 애니메이션 적용 */
+    opacity: 1;                        /* 완전 불투명 */
+    transform: translateX(0);          /* 기본 위치 */
 }
 
+/* 사이드바 표시 상태 스타일 */
+.right-sidebar.show {
+    opacity: 1;                        /* 완전 불투명 상태로 표시 */
+    transform: translateX(0);          /* 원래 위치로 이동 */
+}
+
+/* 사이드바 내부 섹션 스타일 */
 .sidebar-section {
-  background-color: #fcfaf7;
-  border: 1px solid #ece7df;
-  border-radius: 5px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  transition: transform 0.2s;
+    background-color: #f7f5f0;         /* 섹션 배경색: 매우 연한 베이지 */
+    border: 1px solid #ece7df;         /* 테두리: 연한 회색 */
+    border-radius: 5px;                /* 모서리 둥글게 */
+    padding: 1rem;                     /* 내부 여백 */
+    margin-bottom: 1.5rem;             /* 아래쪽 여백 */
+    transition: transform 0.2s;         /* 변형 애니메이션 */
 }
 
+/* 섹션 호버 효과 */
 .sidebar-section:hover {
-  transform: translateY(-2px);
+    transform: translateY(-2px);        /* 마우스 오버시 위로 2px 이동 */
 }
 
+/* 섹션 제목 스타일 */
 .sidebar-section h2 {
-  margin-bottom: 0.8rem;
-  color: #5f4b32;
-  font-size: 1.1rem;
-  font-weight: 600;
+    margin-bottom: 0.8rem;             /* 아래쪽 여백 */
+    color: #5f4b32;                    /* 제목 색상: 갈색 */
+    font-size: 1.1rem;                 /* 글자 크기 */
+    font-weight: 600;                  /* 글자 굵기 */
 }
 
+/* 이벤트, 그룹, 팁 아이템 공통 스타일 */
 .event-item,
 .group-item,
 .tip-item {
-  padding: 0.8rem 0;
-  border-bottom: 1px solid #ece7df;
+    padding: 0.8rem 0;                 /* 위아래 여백 */
+    border-bottom: 1px solid #ece7df;  /* 하단 구분선 */
 }
 
+/* 마지막 아이템의 구분선 제거 */
 .event-item:last-child,
 .group-item:last-child,
 .tip-item:last-child {
-  border-bottom: none;
+    border-bottom: none;               /* 마지막 항목 구분선 제거 */
 }
 
+/* 날짜, 시간, 카테고리 텍스트 스타일 */
 .event-date,
 .meeting-time,
 .tip-category {
-  font-size: 0.85rem;
-  color: #7f6e58;
-  margin: 0.3rem 0;
+    font-size: 0.85rem;               /* 글자 크기 */
+    color: #7f6e58;                   /* 글자 색상: 연한 갈색 */
+    margin: 0.3rem 0;                 /* 위아래 여백 */
 }
 
+/* 수정 링크 스타일 */
 .edit-link {
-  display: inline-block;
-  font-size: 0.8rem;
-  color: #8a745c;  /* Matched with notice text color */
-  text-decoration: none;
-  margin-top: 0.5rem;
+    display: inline-block;             /* 인라인 블록 요소로 표시 */
+    font-size: 0.8rem;                /* 글자 크기 */
+    color: #8a745c;                   /* 글자 색상 */
+    text-decoration: none;            /* 밑줄 제거 */
+    margin-top: 0.5rem;               /* 위쪽 여백 */
 }
 
+/* 수정 링크 호버 효과 */
 .edit-link:hover {
-  text-decoration: underline;
-  color: #6b5a48;
+    text-decoration: underline;        /* 호버시 밑줄 표시 */
+    color: #6b5a48;                   /* 호버시 글자 색상 변경 */
 }
 
-/* Adjusted existing notice display to match */
+/* 공지사항 표시 영역 스타일 */
 .notice-display {
-  background-color: #fcfaf7;
-  border: 1px solid #ece7df;
-  border-radius: 5px;
-  padding: 1rem;
-  margin-top: 1rem;
+    background-color: #fcfaf7;         /* 배경색: 매우 연한 베이지 */
+    border: 1px solid #ece7df;         /* 테두리 */
+    border-radius: 5px;                /* 모서리 둥글게 */
+    padding: 1rem;                     /* 내부 여백 */
+    margin-top: 1rem;                  /* 위쪽 여백 */
 }
 
-.notice-display h2 {
-  margin-bottom: 0.8rem;
-  color: #5f4b32;
-  font-size: 1.1rem;
-  font-weight: 600;
+/* 책 정보 활성화 상태의 우측 사이드바 */
+.right-sidebar.book-info-active {
+    background: #fff9ee !important;     /* 배경색 변경 (최우선 적용) */
+    width: 300px;                      /* 너비 확장 */
+    transform: none;                    /* 이동 효과 제거: 메인 콘텐츠 침범 방지 */
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);  /* 그림자 효과 */
+    z-index: 100;                      /* 다른 요소보다 위에 표시 */
 }
 
-.notice-display ul {
-  list-style: disc inside;
-  color: #5f4b32;
-  padding-left: 0;
+/* 책 상세 정보 스타일 */
+.book-detail {
+    transition: all 0.3s ease;         /* 모든 변화에 애니메이션 적용 */
+    padding: 15px;                     /* 내부 여백 */
 }
-  
-  /****************************************************
-   * 5. 탑 바 & 버튼
-   ****************************************************/
-  /* The main content area that stretches between sidebars. */
-  .content {
-    flex: 1;                      /* Fills remaining space in flex layout */
-    padding: 1rem 2rem;           /* Padding around content */
-    display: flex;                /* Another flex container */
-    flex-direction: column;       /* Content flows vertically */
-    max-width: 1200px;           /* Constrains the maximum width for readability */
-  }
-  
-  /* Top bar typically holds user info, settings, etc. */
-  .top-bar {
-    display: flex;                /* Horizontal arrangement */
-    justify-content: space-between; 
-    /* Spreads items to the edges (logo/user info) */
-    align-items: center;          /* Vertically centers items */
-    margin-bottom: 1rem;          /* Spacing below the top bar */
-  }
-  
-  /* Basic user info styling, e.g., "Welcome, User" */
-  .user-info {
-    font-size: 1rem;              /* Standard font size */
-    color: #5f4b32;               /* Brown color for text */
-  }
-  
-  /* Shared button styles throughout the site. */
-  .btn {
-    background-color: #5f4b32;    /* Dark brown background */
-    color: #fff;                  /* White text for contrast */
-    border: none;                 /* No border */
-    border-radius: 4px;           /* Slightly rounded corners */
-    padding: 0.6rem 1rem;         /* Spacing for comfortable click area */
-    cursor: pointer;              /* Pointer cursor on hover */
-    font-size: 1rem;              /* Medium font size */
-    transition: background-color 0.3s ease; 
-    /* Smooth hover effect */
-    position: relative;           /* Positioned relative for spinner overlay */
-  }
-  
-  /* Hover state for buttons. */
-  .btn:hover {
-    background-color: #9a8469;    /* Lighter shade of brown */
-  }
-  
-  /* Class to enable subtle "lift" effect on hover. */
-  .hover-effect {
-    transition: transform 0.2s ease; 
-    /* Smooth transformation */
-  }
-  
-  .hover-effect:hover {
-    transform: translateY(-2px);  /* Moves element slightly upwards */
-  }
-  
-  /* Loading spinner that can appear on button while submitting. */
-  .spinner {
-    width: 1em;                   /* Spinner diameter relative to text size */
-    height: 1em;                  /* Same as width for a circle */
-    border: 2px solid #ccc;       /* Light grey ring */
-    border-top: 2px solid #5f4b32; 
-    /* Darker brown on top for the spinning effect */
-    border-radius: 50%;           /* Circular shape */
-    animation: spin 1s linear infinite; 
-    /* Continuous rotation */
-    display: none;                /* Hidden by default */
-    position: absolute;           /* Positioned within parent button */
-    left: 10px;                   /* Slightly from the left edge */
-    top: 50%;                     /* Vertically centered */
-    transform: translateY(-50%);  /* Perfect vertical centering */
-  }
-  
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-    /* Keyframe for continuous 360 rotation */
-  }
-  
-  
-  /****************************************************
-   * 6. 포스트 리스트 & 카드 (REVISED)
-   ****************************************************/
-  /* Grid container for post listings. */
-  .post-list {
+
+/* 책 상세 정보 문단 스타일 */
+.book-detail p {
+    margin: 12px 0;                    /* 위아래 여백 */
+    font-size: 0.95em;                 /* 글자 크기 */
+    line-height: 1.6;                  /* 줄 간격 */
+    color: #5f4b32;                    /* 글자 색상 */
+}
+
+/* 책 썸네일 이미지 스타일 */
+.book-thumbnail {
+    max-width: 200px;                  /* 최대 너비 */
+    height: auto;                      /* 높이 자동 조정 */
+    margin: 0 auto 15px;              /* 가운데 정렬 및 아래 여백 */
+    display: block;                    /* 블록 요소로 표시 */
+    border-radius: 8px;                /* 모서리 둥글게 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);  /* 그림자 효과 */
+}
+
+/****************************************************                         /* ────────────────────────────── 설명: 탑 바 & 버튼 영역 ────────────────────────────── */
+/* 5. 탑 바 & 버튼                                                                           /* ───────────────────────────────────────────────────────────────────────────── */
+/****************************************************/
+/* 메인 콘텐츠 영역: 사이드바 사이에서 확장되는 영역                                          */  /* 역할: 페이지 중앙의 주요 콘텐츠 영역 */
+.content {                                                                                  /* 역할: 콘텐츠 영역 스타일 지정 */
+    flex: 1;                      /* 남은 공간 모두 채움                                       */  /* 역할: 부모의 남은 공간 모두 사용 */
+    padding: 1rem 2rem;           /* 내부 여백 설정 (상하 1rem, 좌우 2rem)                        */  /* 역할: 콘텐츠 영역 주위 여백 제공 */
+    display: flex;                /* 플렉스 컨테이너 설정                                      */  /* 역할: 자식 요소를 플렉스 아이템으로 변환 */
+    flex-direction: column;       /* 요소를 수직으로 배치                                      */  /* 역할: 세로 방향 정렬 */
+    max-width: 1200px;            /* 최대 너비 제한 (가독성 향상)                                 */  /* 역할: 콘텐츠 폭 제한 */
+ }
+
+/* 탑 바: 사용자 정보, 설정 등을 포함하는 영역                                           */  /* 역할: 페이지 상단바 */
+.top-bar {                                                                                  /* 역할: 탑 바 스타일 지정 */
+   display: flex;                /* 플렉스 컨테이너 (수평 정렬)                                */  /* 역할: 자식 요소를 가로로 정렬 */
+   justify-content: space-between; /* 좌우에 고르게 공간 분배 (로고, 사용자 정보 등)            */  /* 역할: 요소 간 최대 간격 생성 */
+   align-items: center;          /* 수직 중앙 정렬                                           */  /* 역할: 요소를 수직으로 중앙 정렬 */
+   margin-bottom: 1rem;          /* 아래쪽 여백 추가                                          */  /* 역할: 탑 바와 콘텐츠 간 간격 확보 */
+}
+
+/* 사용자 정보 스타일 (예: "환영합니다, 사용자")                                           */  /* 역할: 사용자 정보 영역 텍스트 스타일 */
+.user-info {                                                                                /* 역할: 사용자 정보 스타일 지정 */
+   font-size: 1rem;              /* 기본 글자 크기 설정                                       */  /* 역할: 폰트 크기 정의 */
+   color: #5f4b32;               /* 텍스트 색상: 갈색                                         */  /* 역할: 텍스트 색상 지정 */
+}
+
+/* 사이트 전반에 걸친 공통 버튼 스타일                                                   */  /* 역할: 버튼 디자인 통일 */
+.btn {                                                                                      /* 역할: 버튼 기본 스타일 설정 */
+   background-color: #5f4b32;    /* 버튼 배경색: 진한 갈색                                     */  /* 역할: 배경색 지정 */
+   color: #fff;                  /* 버튼 글자 색상: 흰색                                       */  /* 역할: 대비되는 텍스트 색상 */
+   border: none;                 /* 테두리 제거                                               */  /* 역할: 불필요한 테두리 제거 */
+   border-radius: 4px;           /* 모서리 둥글게 처리                                         */  /* 역할: 둥근 모서리 효과 */
+   padding: 0.6rem 1rem;         /* 내부 여백 설정 (상하 0.6rem, 좌우 1rem)                       */  /* 역할: 클릭 영역 확대 */
+   cursor: pointer;              /* 마우스 커서를 포인터로 변경                               */  /* 역할: 클릭 가능 시 시각 효과 제공 */
+   font-size: 1rem;              /* 버튼 텍스트의 글자 크기 설정                                */  /* 역할: 읽기 쉬운 폰트 크기 */
+   transition: background-color 0.3s ease; /* 배경색 전환 시 부드러운 애니메이션 적용 (0.3초)         */  /* 역할: 인터랙션 개선 */
+}
+
+/* 버튼 호버 상태 스타일                                                                 */  /* 역할: 마우스 오버 시 버튼 효과 */
+.btn:hover {                                                                                /* 역할: 호버 효과 스타일 설정 */
+   background-color: #9a8469;    /* 호버시 버튼 배경색을 밝은 갈색으로 변경                     */  /* 역할: 시각적 피드백 제공 */
+}
+
+/* 호버 시 부드러운 이동 효과를 위한 클래스                                                  */  /* 역할: 리프트(Lift) 효과 적용 */
+.hover-effect {                                                                             /* 역할: 요소 기본 애니메이션 설정 */
+   transition: transform 0.2s ease; /* 변형 전환 부드러운 애니메이션 (0.2초)                     */  /* 역할: 간단한 이동 효과 */
+}
+
+/* 마우스 오버 시 요소를 살짝 위로 이동 (리프트 효과)                                         */  /* 역할: 마우스 오버 시 리프트 효과 */
+.hover-effect:hover {                                                                       /* 역할: 호버 상태에서 변형 적용 */
+   transform: translateY(-2px);  /* 요소를 2px 위로 이동시킴                                */  /* 역할: 시각적 강조 */
+}
+
+/* 버튼 제출 시 나타나는 로딩 스피너 스타일                                                */  /* 역할: 로딩 상태 표시 */
+.spinner {                                                                                  /* 역할: 스피너 스타일 지정 */
+   width: 1em;                   /* 스피너 너비를 텍스트 크기에 비례해서 설정                   */  /* 역할: 상대적 크기 지정 */
+   height: 1em;                  /* 스피너 높이도 텍스트 크기에 맞춤                             */  /* 역할: 원형 비율 유지 */
+   border: 2px solid #ccc;       /* 전체 테두리를 연한 회색으로 설정                            */  /* 역할: 테두리 기본 설정 */
+   border-top: 2px solid #5f4b32; /* 상단 테두리를 진한 갈색으로 강조                           */  /* 역할: 회전 애니메이션 시 시각 효과 */
+   border-radius: 50%;           /* 원형 모양을 위한 둥근 테두리 설정                             */  /* 역할: 원형 디자인 */
+   animation: spin 1s linear infinite; /* 1초 간격으로 지속적으로 회전하는 애니메이션 적용         */  /* 역할: 스피너 회전 효과 */
+   display: none;                /* 기본 상태에서 스피너 숨김                                    */  /* 역할: 필요할 때만 표시 */
+   position: absolute;           /* 부모 요소 내 절대 위치 지정                                  */  /* 역할: 위치 제어 */
+   left: 10px;                   /* 왼쪽에서 10px 떨어진 위치 설정                               */  /* 역할: 위치 보정 */
+   top: 50%;                     /* 상단에서 50% 위치 (세로 중심)                                */  /* 역할: 수직 중앙 정렬 */
+   transform: translateY(-50%);  /* translateY를 사용하여 정확한 수직 중앙 정렬 수행             */  /* 역할: 보정 효과 */
+}
+
+/* 스피너 회전 애니메이션 키프레임 정의                                                     */  /* 역할: 회전 애니메이션 동작 정의 */
+@keyframes spin {                                                                            /* 역할: 애니메이션 키프레임 선언 */
+   to { transform: rotate(360deg); }    /* 360도 회전하여 한 사이클 완성                           */  /* 역할: 회전 완료 정의 */
+}
+
+/****************************************************
+ * 6. 포스트 리스트 & 카드 (REVISED)
+ ****************************************************/
+/* Grid container for post listings. */
+.post-list {
     display: grid;                /* CSS grid layout */
     grid-template-columns: 1fr 1fr; 
     /* Two columns of equal width */
     gap: 1.5rem;                  /* Horizontal & vertical gap between cards */
     justify-content: space-between; 
     /* Distributes columns across the available space */
-  }
-  
-  /* Basic styling for each post card. */
-  .post-card {
+}
+
+/* Basic styling for each post card. */
+.post-card {
     width: 100%;                  /* Fills the parent grid column width */
     height: auto;
     min-height: 200px;            /* Ensures some minimum height for card content */
@@ -415,10 +446,10 @@
     /* Subtle drop shadow for depth */
     overflow: hidden;             /* Hide any child overflow */
     position: relative;           /* For positioning child elements if needed */
-  }
-  
-  /* Vertical title area on the left side of the card. */
-  .post-title-vertical {
+}
+
+/* Vertical title area on the left side of the card. */
+.post-title-vertical {
     writing-mode: vertical-rl;    /* Vertical writing mode (right-to-left) */
     text-orientation: mixed;      /* Proper orientation for vertical text */
     font-size: 1.5rem;            /* Larger text size for emphasis */
@@ -433,10 +464,10 @@
     /* Divider between text panel and main content */
     position: relative;           /* Stacking context if needed */
     z-index: 1;                   /* Ensures text panel is above the image layer */
-  }
-  
-  /* Container for the book/post image, shifted to the left. */
-  .post-image {
+}
+
+/* Container for the book/post image, shifted to the left. */
+.post-image {
     flex: 0 0 auto;               /* Prevents the image area from shrinking */
     position: relative;           /* For offset positioning */
     left: -30px;                  /* Moves the image left to overlap the vertical bar */
@@ -446,18 +477,18 @@
     align-items: center;
     justify-content: center;
     z-index: 0;                   /* Sits behind the vertical text panel */
-  }
-  
-  /* Ensures the thumbnail scales correctly. */
-  .post-image .post-thumbnail {
+}
+
+/* Ensures the thumbnail scales correctly. */
+.post-image .post-thumbnail {
     max-width: 100%;             /* Constrains the image width to container */
     height: auto;                /* Maintains aspect ratio */
     object-fit: contain;         /* Ensures full image is visible */
     display: block;              /* Removes any inline spacing issues */
-  }
-  
-  /* The main info area for the post (title, excerpt, etc.). */
-  .post-info {
+}
+
+/* The main info area for the post (title, excerpt, etc.). */
+.post-info {
     flex: 1;                     /* Takes up remaining horizontal space */
     padding: 1rem 1rem 1rem 2rem; 
     /* More space on the left to accommodate the offset image */
@@ -467,70 +498,128 @@
     flex-direction: column;
     justify-content: center;     /* Vertically center the text */
     color: #5f4b32;              /* Brown text color for consistency */
-  }
-  
-  /* Post title style inside .post-info */
-  .post-info h3 {
+}
+
+/* Post title style inside .post-info */
+.post-info h3 {
     margin-bottom: 0.75rem;       /* Space below the title */
     font-size: 1.2rem;            /* Slightly larger font */
-  }
-  
-  /* Default spacing for paragraphs */
-  .post-info p {
+}
+
+/* Default spacing for paragraphs */
+.post-info p {
     margin-bottom: 0.5rem;        /* Space below each paragraph */
-  }
-  
-  /* Last paragraph can have a bit more space at the end. */
-  .post-info p:last-child {
+}
+
+/* Last paragraph can have a bit more space at the end. */
+.post-info p:last-child {
     margin-bottom: 1rem;
-  }
-  
-  /* Hover effect: subtle lift and bigger shadow. */
-  .post-card.hover-effect:hover {
+}
+
+/* Hover effect: subtle lift and bigger shadow. */
+.post-card.hover-effect:hover {
     transform: translateY(-2px);  /* Slight upward shift */
     box-shadow: 0 4px 6px rgba(0,0,0,0.15); 
     /* More pronounced shadow */
-  }
-  
-  
-  /****************************************************
-   * 7. 검색 컨테이너 & 공지
-   ****************************************************/
-  /* Container for the search bar and button. */
-  .search-container {
+}
+
+/* 카드 관련 스타일 수정 ↓                                                  */
+.post-card-link {                           /* 카드 링크 스타일 (전체 클릭 영역) 적용 ↓  */
+    text-decoration: none;                /* 밑줄 제거 ↓                                   */
+    color: inherit;                        /* 링크 색상 기본값 유지 ↓                      */
+    display: block;                        /* 블록 요소로 전체 영역 클릭 가능 ↓            */
+}
+
+.post-card {                              /* 카드 컨테이너 스타일 수정 ↓                  */
+    width: 100%;                         /* 그리드 셀의 전체 너비에 맞춰 확장 ↓            */
+}                                       /* 카드 크기가 고정되지 않고 메인 컨텐츠 영역에 맞게 ↓ */
+
+/* 카드 기본 스타일 및 호버 효과 */
+.home-grid-item {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.home-grid-item:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transform: scale(1.02);
+}
+
+/* 오버레이 영역 (처음엔 숨김) */
+.home-grid-item .overlay-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+/* 카드에 마우스 올리면 오버레이 보이기 */
+.home-grid-item:hover .overlay-info {
+  opacity: 1;
+}
+
+/* 정보 아이템 스타일 */
+.home-grid-item .info-item {
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+}
+
+.home-grid-item .info-item i {
+  margin-right: 5px;
+}
+
+
+/****************************************************
+ * 7. 검색 컨테이너 & 공지
+ ****************************************************/
+/* Container for the search bar and button. */
+.search-container {
     display: flex;                /* Horizontal layout */
     gap: 10px;                    /* Spacing between elements */
     align-items: center;          /* Vertically center the input/button */
     justify-content: center;      /* Center content horizontally */
     margin-bottom: 20px;          /* Space below the search area */
-  }
-  
-  /* Search input styling. */
-  #search-input {
-    width: 150px;                 /* Reasonable width for a small search box */
+    position: relative;
+}
+
+/* Search input styling. */
+#search-input {
+    width: 100%;                 /* Reasonable width for a small search box */
     height: 40px;                 /* Consistent height with the button */
     font-size: 16px;              /* Readable text size */
     padding: 5px 10px;            /* Spacing inside the input */
     border-radius: 4px;           /* Rounded corners */
     border: 1px solid #ccc;       /* Light gray border */
-  }
-  
-  /* Focus state for the input. */
-  #search-input:focus {
+}
+
+/* Focus state for the input. */
+#search-input:focus {
     border-color: #9a8469;        /* Slightly different brown border on focus */
     outline: none;                /* Removes the default browser outline */
     box-shadow: 0 0 5px rgba(154,132,105,0.5); 
     /* Glow around the input for focus feedback */
-  }
-  
-  /* Placeholder text style. */
-  #search-input::placeholder {
+}
+
+/* Placeholder text style. */
+#search-input::placeholder {
     color: #999999;               /* Gray text for placeholder */
     font-style: italic;           /* Gives placeholder a different style */
-  }
-  
-  /* Search button next to the input. */
-  #search-btn {
+}
+
+/* Search button next to the input. */
+#search-btn {
     width: 100px;                 /* Similar height to input but narrower width */
     height: 40px;                 /* Matches input height for a clean lineup */
     font-size: 16px;              /* Readable text size */
@@ -542,55 +631,62 @@
     cursor: pointer;              /* Pointer cursor on hover */
     transition: background-color 0.3s ease;  
     /* Smooth color change on hover */
-  }
-  
-  /* Hover state for search button. */
-  #search-btn:hover {
+}
+
+/* Hover state for search button. */
+#search-btn:hover {
     background-color: #7d6658;    /* Slightly darker shade of brown */
-  }
-  
-  
-  /****************************************************
-   * 8. 게시글 섹션 버킷 (섹션, 서브섹션)
-   ****************************************************/
-  /* Overall sections are hidden by default. */
-  .section {
-    display: none;                /* Hide all sections initially */
-  }
-  
-  /* .active class makes the chosen section visible. */
-  .section.active {
-    display: block;               /* Only the active section is shown */
-  }
-  
-  /* Sub-sections also hidden by default. */
-  .sub-section {
+}
+.search-container #search-icon {                    /* 돋보기 아이콘 스타일 지정                   */
+    position: absolute;                               /* 절대 위치 지정하여 input 안에서 위치 조정       */
+    right: 10px;                                      /* 오른쪽 10px 위치 지정                       */
+    top: 50%;                                         /* 수직 중앙 정렬                              */
+    transform: translateY(-50%);                      /* 정확한 수직 중앙 정렬 보정                  */
+    color: gray;                                      /* 아이콘 색상 회색 지정                        */
+    cursor: pointer;                                  /* 클릭 시 커서 포인터로 변경                   */
+  }            
+
+/****************************************************
+ * 8. 게시글 섹션 버킷 (섹션, 서브섹션)
+ ****************************************************/
+/* Overall sections are hidden by default. */
+.section {
     display: none;
-  }
-  
-  /* Active sub-section becomes visible. */
-  .sub-section.active {
+}
+
+/* .active class makes the chosen section visible. */
+.section.active {
     display: block;
-  }
-  
-  /* Navigation container for the home bulletin boards (tabs). */
-  .post-bulletin-nav {
+}
+
+/* Sub-sections also hidden by default. */
+.sub-section {
+    display: none;
+}
+
+/* Active sub-section becomes visible. */
+.sub-section.active {
+    display: block;
+}
+
+/* Navigation container for the home bulletin boards (tabs). */
+.post-bulletin-nav {
     display: flex;
     justify-content: flex-start;  /* Aligns buttons to the left */
     align-items: center;
     gap: 10px;                    /* Spacing between tab buttons */
     margin-bottom: 20px;          /* Space below the nav bar */
-  }
-  
-  /* Active sub-link styling (e.g., highlight the selected tab). */
-  .post-bulletin-nav .sub-link.active {
+}
+
+/* Active sub-link styling (e.g., highlight the selected tab). */
+.post-bulletin-nav .sub-link.active {
     background-color: #9a8469;    /* Brown background for the active tab */
     color: #ffffff;               /* White text for contrast */
     border: none;                 /* Removes any default border */
-  }
-  
-  /* Default style for sub-link tabs. */
-  .post-bulletin-nav .sub-link {
+}
+
+/* Default style for sub-link tabs. */
+.post-bulletin-nav .sub-link {
     background-color: #f2ebe0;    /* Light beige background */
     color: #5f4b32;               /* Brown text */
     border: none;                 /* No border */
@@ -599,49 +695,49 @@
     border-radius: 4px;           /* Slightly rounded corners */
     transition: background-color 0.3s ease; 
     /* Smooth change on hover/focus */
-  }
+}
 
-  /****************************************************
-   * 9. 홈 섹션 버킷 (섹션, 서브섹션)
-   ****************************************************/
-  /* Overall sections are hidden by default. */
-  .section {
-    display: none;                /* Hide all sections initially */
-  }
-  
-  /* .active class makes the chosen section visible. */
-  .section.active {
-    display: block;               /* Only the active section is shown */
-  }
-  
-  /* Sub-sections also hidden by default. */
-  .sub-section {
+/****************************************************
+ * 9. 홈 섹션 버킷 (섹션, 서브섹션)
+ ****************************************************/
+/* Overall sections are hidden by default. */
+.section {
     display: none;
-  }
-  
-  /* Active sub-section becomes visible. */
-  .sub-section.active {
+}
+
+/* .active class makes the chosen section visible. */
+.section.active {
     display: block;
-  }
-  
-  /* Navigation container for the home bulletin boards (tabs). */
-  .home-bulletin-nav {
+}
+
+/* Sub-sections also hidden by default. */
+.sub-section {
+    display: none;
+}
+
+/* Active sub-section becomes visible. */
+.sub-section.active {
+    display: block;
+}
+
+/* Navigation container for the home bulletin boards (tabs). */
+.home-bulletin-nav {
     display: flex;
     justify-content: flex-start;    /* 버튼들을 왼쪽으로 정렬 */
     align-items: center;            /* 세로 중앙 정렬 */
     gap: 10px;                      /* 탭 버튼 사이 간격 */
     margin-bottom: 20px;            /* 네비게이션 바 아래 여백 */
-  }
-  
-  /* Active sub-link styling (e.g., highlight the selected tab). */
-  .home-bulletin-nav .sub-link.active {
+}
+
+/* Active sub-link styling (e.g., highlight the selected tab). */
+.home-bulletin-nav .sub-link.active {
     background-color: #9a8469;      /* 활성 탭의 갈색 배경 */
     color: #ffffff;                 /* 대비를 위한 흰색 텍스트 */
     border: none;                   /* 기본 테두리 제거 */
-  }
-  
-  /* Default style for sub-link tabs. */
-  .home-bulletin-nav .sub-link {
+}
+
+/* Default style for sub-link tabs. */
+.home-bulletin-nav .sub-link {
     background-color: #f2ebe0;      /* 연한 베이지색 배경 */
     color: #5f4b32;                 /* 갈색 텍스트 */
     border: none;                   /* 테두리 없음 */
@@ -649,113 +745,104 @@
     cursor: pointer;               /* 마우스 오버시 포인터 커서 */
     border-radius: 4px;            /* 모서리 둥글게 */
     transition: background-color 0.3s ease;  /* 부드러운 배경색 전환 효과 */
-  }
-  
-  /* 서브링크 탭 호버 효과 */
-  .home-bulletin-nav .sub-link:hover {
+}
+
+/* 서브링크 탭 호버 효과 */
+.home-bulletin-nav .sub-link:hover {
     background-color: #d8c9b7;      /* 호버시 약간 더 진한 베이지색 */
-  }
-  
-  
-  /****************************************************
-   * 9. 플로팅 액션 버튼 컨테이너
-   ****************************************************/
-  /* Positions a floating button at bottom-right. */
-  .floating-btn-container {
+}
+
+/****************************************************
+ * 9. 플로팅 액션 버튼 컨테이너
+ ****************************************************/
+/* Positions a floating button at bottom-right. */
+.floating-btn-container {
     position: fixed;              /* Stays in place when scrolling */
     bottom: 2rem;                 /* Distance from the bottom edge */
     right: 2rem;                  /* Distance from the right edge */
-    z-index: 10;                  /* Above most other elements */
-  }
-  
-  /* The floating action button (FAB). */
-  .btn.fab {
-    width: 50px;                  /* Square button */
-    height: 50px;
-    border-radius: 50%;           /* Fully circular shape */
-    font-size: 1.5rem;            /* Larger text for a plus sign (+) */
-    font-weight: bold;            /* Bolder text for the icon */
-    display: flex;                /* Center the icon text */
-    align-items: center;
-    justify-content: center;
-    padding: 0;                   /* No extra padding needed */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
-    /* Elevated shadow for a floating look */
-  }
-  
-  /* Slight scale-up on hover for the FAB. */
-  .btn.fab:hover {
-    transform: scale(1.05) translateY(-2px);
-    /* Grows a bit and shifts up slightly */
-  }
-  
-  /****************************************************
-   * 10. 홈 그리드 컨테이너
-   ****************************************************/
- /* 홈 섹션 그리드 레이아웃 */                                /* 홈 섹션의 그리드 레이아웃 정의 */
- .home-grid-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);                    /* 4열 그리드 유지 */
-  gap: 15px;                                               /* 그리드 간격 축소 */
-  padding: 15px;                                           /* 컨테이너 패딩 축소 */
+    z-index: 999;  /* 모달보다 낮은 레벨로 조정 */
+}
+
+/* The floating action button (FAB). */
+.btn.fab {
+  width: clamp(65px, 2.5vw, 75px);
+  height: clamp(65px, 2.5vw, 75px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* 버튼 내부 이미지도 적절한 비율로 축소 */
+.floating-btn-container img {
+  width: 100%; /* 버튼 크기에 맞게 이미지 크기를 조절 */
+  height: auto;
+}
+
+/* 글쓰기 버튼 호버 효과 추가 */                   /* 글쓰기 버튼 마우스 오버 효과 */
+.btn.fab:hover {                                       /* 호버 시 효과 */
+    transform: scale(1.05) translateY(-2px);         /* 살짝 확대 및 위로 이동 */
+}
+
+/****************************************************
+ * 10. 홈 그리드 컨테이너
+ ****************************************************/
+/* 홈 섹션 그리드 레이아웃 */                                /* 홈 섹션의 그리드 레이아웃 정의 */
+.home-grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);                    /* 4열 그리드 유지 */
+    gap: 15px;                                               /* 그리드 간격 축소 */
+    padding: 15px;                                           /* 컨테이너 패딩 축소 */
 }
 
 /* 그리드 아이템 스타일 */                                    /* 각 그리드 아이템의 스타일 정의 */
 .home-grid-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 8px;                                            /* 내부 패딩 축소 */
-  background: #ffffff;
-  border-radius: 6px;                                      /* 모서리 라운딩 축소 */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);                  /* 그림자 효과 축소 */
-  transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 8px;                                            /* 내부 패딩 축소 */
+    background: #ffffff;
+    border-radius: 6px;                                      /* 모서리 라운딩 축소 */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);                  /* 그림자 효과 축소 */
+    transition: transform 0.3s ease;
 }
 
 /* 그리드 아이템 호버 효과 */                                 /* 마우스 오버시 효과 */
 .home-grid-item:hover {
-  transform: translateY(-3px);                             /* 호버시 이동 거리 축소 */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);                  /* 호버시 그림자 축소 */
+    transform: translateY(-3px);                             /* 호버시 이동 거리 축소 */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);                  /* 호버시 그림자 축소 */
 }
 
 /* 이미지 스타일 */                                          /* 그리드 내 이미지 스타일 */
 .grid-image {
-  width: 90%;                                              /* 이미지 너비 축소 */
-  height: auto;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-bottom: 10px;
+    width: 90%;                                              /* 이미지 너비 축소 */
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
 }
 
 /* 그리드 정보 스타일 */
 .grid-info {
-  width: 100%;
+    width: 100%;
 }
 
 .grid-info h4 {
-  margin: 8px 0;
-  font-size: 1rem;
-  color: #5f4b32;
+    margin: 8px 0;
+    font-size: 1rem;
+    color: #5f4b32;
 }
 
 .grid-info p {
-  color: #666;
-  font-size: 0.9rem;
+    color: #666;
+    font-size: 0.9rem;
 }
-
-
-
-
 
 .icon-class {
-  pointer-events: none; /* 아이콘이 클릭 이벤트를 차단하지 않도록 설정 */
+    pointer-events: none; /* 아이콘이 클릭 이벤트를 차단하지 않도록 설정 */
 }
-
-
-
-
-
 
 /****************************************************
   * 11. 로그인/회원가입페이지
@@ -763,287 +850,839 @@
 
   /* Signup Page Styling */
 .signup-form {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
 }
 
 .form-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
 }
 
 .error-message {
-  color: #dc3545;
-  padding: 10px;
-  margin-bottom: 20px;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
+    color: #dc3545;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
 }
 
 .login-link {
-  margin-top: 20px;
-  text-align: center;
+    margin-top: 20px;
+    text-align: center;
 }
 
 /* Logout Page Styling */
 .logout-message {
-  text-align: center;
-  padding: 40px 0;
+    text-align: center;
+    padding: 40px 0;
 }
 
 .logout-message .btn {
-  margin: 10px;
-  width: 200px;
+    margin: 10px;
+    width: 200px;
 }
 
 input[type="text"], 
 input[type="password"] {
-  display: block;
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+    display: block;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
-
 input[type="password"] {
-  display: block !important; /* 강제 표시 */
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border: 2px solid #5f4b32; /* 어두운 갈색 테두리 */
-  border-radius: 5px;
-  background-color: #fff8f0; /* 밝은 베이지 배경 */
+    display: block !important; /* 강제 표시 */
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 2px solid #5f4b32; /* 어두운 갈색 테두리 */
+    border-radius: 5px;
+    background-color: #fff8f0; /* 밝은 베이지 배경 */
 }
 
 /* 플레이스홀더 스타일링 */
 input::placeholder {
-  color: #999;
-  font-style: italic;
+    color: #999;
+    font-style: italic;
 }
-
 
 /* 비밀번호 재설정 페이지 스타일 */
 .card {
-  border: none;                                          /* 카드 테두리 제거 */
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);             /* 그림자 효과 */
-  border-radius: 15px;                                  /* 모서리 둥글게 */
+    border: none;                                          /* 카드 테두리 제거 */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);             /* 그림자 효과 */
+    border-radius: 15px;                                  /* 모서리 둥글게 */
 }
 
 .card-header {
-  background-color: #f8f9fa;                            /* 헤더 배경색 */
-  border-bottom: 1px solid #eee;                        /* 헤더 구분선 */
-  border-radius: 15px 15px 0 0 !important;             /* 상단 모서리만 둥글게 */
-  padding: 20px;                                        /* 여백 */
+    background-color: #f8f9fa;                            /* 헤더 배경색 */
+    border-bottom: 1px solid #eee;                        /* 헤더 구분선 */
+    border-radius: 15px 15px 0 0 !important;             /* 상단 모서리만 둥글게 */
+    padding: 20px;                                        /* 여백 */
 }
 
 .card-header h3 {
-  color: #333;                                          /* 제목 색상 */
-  font-weight: 600;                                     /* 글씨 두께 */
-  margin: 0;                                            /* 마진 제거 */
+    color: #333;                                          /* 제목 색상 */
+    font-weight: 600;                                     /* 글씨 두께 */
+    margin: 0;                                            /* 마진 제거 */
 }
 
 .card-body {
-  padding: 30px;                                        /* 본문 여백 */
+    padding: 30px;                                        /* 본문 여백 */
 }
 
 .form-control {
-  height: 50px;                                         /* 입력창 높이 */
-  border-radius: 8px;                                   /* 입력창 모서리 */
-  border: 1px solid #ddd;                              /* 테두리 색상 */
-  padding: 10px 15px;                                  /* 입력창 내부 여백 */
-  font-size: 16px;                                     /* 글자 크기 */
-  transition: all 0.3s ease;                           /* 애니메이션 효과 */
+    height: 50px;                                         /* 입력창 높이 */
+    border-radius: 8px;                                   /* 입력창 모서리 */
+    border: 1px solid #ddd;                              /* 테두리 색상 */
+    padding: 10px 15px;                                  /* 입력창 내부 여백 */
+    font-size: 16px;                                     /* 글자 크기 */
+    transition: all 0.3s ease;                           /* 애니메이션 효과 */
 }
 
 .form-control:focus {
-  border-color: #4a90e2;                               /* 포커스시 테두리 색상 */
-  box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);  /* 포커스시 그림자 */
+    border-color: #4a90e2;                               /* 포커스시 테두리 색상 */
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);  /* 포커스시 그림자 */
 }
 
 .btn-primary {
-  height: 50px;                                        /* 버튼 높이 */
-  background-color: #4a90e2;                           /* 버튼 배경색 */
-  border: none;                                        /* 테두리 제거 */
-  font-size: 16px;                                     /* 글자 크기 */
-  font-weight: 600;                                    /* 글자 두께 */
-  border-radius: 8px;                                  /* 모서리 둥글게 */
-  transition: all 0.3s ease;                           /* 애니메이션 효과 */
+    height: 50px;                                        /* 버튼 높이 */
+    background-color: #4a90e2;                           /* 버튼 배경색 */
+    border: none;                                        /* 테두리 제거 */
+    font-size: 16px;                                     /* 글자 크기 */
+    font-weight: 600;                                    /* 글자 두께 */
+    border-radius: 8px;                                  /* 모서리 둥글게 */
+    transition: all 0.3s ease;                           /* 애니메이션 효과 */
 }
 
 .btn-primary:hover {
-  background-color: #357abd;                           /* 호버시 배경색 */
-  transform: translateY(-1px);                         /* 호버시 살짝 위로 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);           /* 호버시 그림자 */
+    background-color: #357abd;                           /* 호버시 배경색 */
+    transform: translateY(-1px);                         /* 호버시 살짝 위로 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);           /* 호버시 그림자 */
 }
 
 .card-footer {
-  background-color: #f8f9fa;                           /* 푸터 배경색 */
-  border-top: 1px solid #eee;                          /* 푸터 구분선 */
-  border-radius: 0 0 15px 15px !important;            /* 하단 모서리만 둥글게 */
-  padding: 20px;                                       /* 여백 */
+    background-color: #f8f9fa;                           /* 푸터 배경색 */
+    border-top: 1px solid #eee;                          /* 푸터 구분선 */
+    border-radius: 0 0 15px 15px !important;            /* 하단 모서리만 둥글게 */
+    padding: 20px;                                       /* 여백 */
 }
 
 .card-footer a {
-  color: #4a90e2;                                      /* 링크 색상 */
-  text-decoration: none;                               /* 밑줄 제거 */
-  font-weight: 600;                                    /* 글자 두께 */
+    color: #4a90e2;                                      /* 링크 색상 */
+    text-decoration: none;                               /* 밑줄 제거 */
+    font-weight: 600;                                    /* 글자 두께 */
 }
 
 .card-footer a:hover {
-  color: #357abd;                                      /* 호버시 링크 색상 */
-  text-decoration: underline;                          /* 호버시 밑줄 */
+    color: #357abd;                                      /* 호버시 링크 색상 */
+    text-decoration: underline;                          /* 호버시 밑줄 */
 }
 
 .alert {
-  border-radius: 8px;                                  /* 알림창 모서리 */
-  padding: 15px 20px;                                  /* 알림창 여백 */
-  margin-bottom: 10px;                                 /* 알림창 간격 */
-  border: none;                                        /* 테두리 제거 */
+    border-radius: 8px;                                  /* 알림창 모서리 */
+    padding: 15px 20px;                                  /* 알림창 여백 */
+    margin-bottom: 10px;                                 /* 알림창 간격 */
+    border: none;                                        /* 테두리 제거 */
+}
+
+/************************************************************************************
+12. 메시지 컨테이너
+************************************************************************************/
+
+/* 메시지 스타일링 */
+.alert {
+    padding: 15px;
+    margin: 20px 0;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.btn-close {
+    float: right;
+}
+
+/************************************************************************************
+13. 책 게시물 팝업 스타일
+************************************************************************************/
+.book-posts-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 1001;
+    width: 90%;
+    max-width: none;
+    height: 80vh;
+    overflow-y: auto;
+}
+
+.book-posts-modal.active {
+    display: block;
+}
+
+/* 모달 헤더 스타일 */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 닫기 버튼 스타일 */
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+/* 게시물 아이템 스타일 */
+.book-post-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.book-post-item:last-child {
+    border-bottom: none;
+}
+
+/* 모달 오버레이 스타일 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
 
 
-  /****************************************************
-   * 12. 반응성
-   ****************************************************/
-  /* Responsive adjustments for screens up to 768px wide. */
 
-  @media (max-width: 1200px) {
+/*********************************************************************/
+/* 책 게시글 목록 스타일 */
+/*********************************************************************/
+
+.post-list-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.post-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+}
+
+.book-info {
+    padding: 10px;
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.book-thumbnail {
+    max-width: 120px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.book-title {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.post-content {
+    padding: 15px;
+}
+
+.post-content h3 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.post-tags {
+    margin-top: 10px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 8px;
+    margin: 2px;
+    background: #e9ecef;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: #495057;
+}
+
+.no-posts {
+    text-align: center;
+    color: #666;
+    margin-top: 40px;
+}
+
+/**************************************************************************************
+
+/* 독서 모임 페이지 추가 스타일 */
+.event-date {
+    background: #f0f4f8;
+    color: #2c5282;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin: 10px 0;
+    display: inline-block;
+}
+
+.post-card .event-date {
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+
+/************************************************************************************
+14. 글쓰기 페이지 스타일
+************************************************************************************/
+
+
+
+.form-group {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.form-group.hidden {
+  opacity: 0;
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.form-group:not(.hidden) {
+  opacity: 1;
+  max-height: 500px;
+}
+
+/************************************************************************************
+14. 검색 기능 스타일
+************************************************************************************/
+
+/* 검색 결과 페이지 스타일 */
+.search-results-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.book-results, .post-results {
+  margin-bottom: 3rem;
+}
+
+.book-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.book-item {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;    /* 호버 효과 추가 */
+}
+
+.book-item:hover {
+  transform: translateY(-5px);    /* 호버시 약간 위로 이동 */
+}
+
+.book-item a {
+  text-decoration: none;    /* 링크 밑줄 제거 */
+  color: inherit;    /* 링크 색상 유지 */
+}
+
+.post-item {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;    /* 호버 효과 추가 */
+}
+
+.post-item:hover {
+  transform: translateY(-3px);    /* 호버시 약간 위로 이동 */
+}
+
+/************************************************************************************
+ * 12. 반응성
+ ****************************************************/
+/* Responsive adjustments for screens up to 768px wide. */
+
+@media (max-width: 1200px) {
     .home-grid-container {
-      grid-template-columns: repeat(3, 1fr);  /* 3열로 변경 */
+        grid-template-columns: repeat(3, 1fr);  /* 3열로 변경 */
     }
-  }
+}
 
-
-
-
-  @media (max-width: 768px) {
+@media (max-width: 768px) {
     /* Mobile/Tablet layout changes. */
   
     body {
-      flex-direction: column;     /* Stack content vertically */
-      align-items: center;        /* Center horizontally */
+        flex-direction: column;     /* Stack content vertically */
+        align-items: center;        /* Center horizontally */
     }
   
     .sidebar {
-      width: 100%;                /* Full width for the sidebar */
-      border-right: none;         /* No vertical border on smaller screens */
-      border-bottom: 2px solid #d8c9b7; 
-      /* Horizontal border instead */
-      flex-direction: row;        /* Sidebar items in a row */
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;           /* Sticks to the top when scrolling */
-      top: 0;                     /* Positions at the top */
-      height: 100%;               /* Let the content define actual height */
-      overflow-y: auto;           /* Allows vertical scrolling if needed */
+        width: 100%;                /* Full width for the sidebar */
+        border-right: none;         /* No vertical border on smaller screens */
+        border-bottom: 2px solid #d8c9b7; 
+        /* Horizontal border instead */
+        flex-direction: row;        /* Sidebar items in a row */
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;           /* Sticks to the top when scrolling */
+        top: 0;                     /* Positions at the top */
+        height: 100%;               /* Let the content define actual height */
+        overflow-y: auto;           /* Allows vertical scrolling if needed */
     }
   
     .sidebar.right-sidebar {
-      border-left: none;          /* No left border in mobile view */
+        border-left: none;          /* No left border in mobile view */
     }
   
     /* Hide certain sections (like random-book, login) on narrow screens. */
     .random-book-section,
     .login-container {
-      display: none;
+        display: none;
     }
   
     /* Content area is now full width. */
     .content {
-      padding: 1rem;
-      max-width: 100%;            /* No max constraint on small screens */
+        padding: 1rem;
+        max-width: 100%;            /* No max constraint on small screens */
     }
   
     /* Post cards stack vertically. */
     .post-card {
-      width: 100%;
-      flex-direction: column;     /* Image & text stack vertically */
+        width: 100%;
+        flex-direction: column;     /* Image & text stack vertically */
     }
   
     /* Vertical title becomes horizontal. */
     .post-title-vertical {
-      writing-mode: horizontal-tb; 
-      /* Reverts to normal text flow */
-      border-right: none;         /* Remove vertical divider */
-      border-bottom: 1px solid #d8c9b7; 
-      /* Horizontal separator instead */
-      padding: 0.5rem;            /* Smaller padding in mobile mode */
-      text-align: center;         /* Center the text horizontally */
+        writing-mode: horizontal-tb; 
+        /* Reverts to normal text flow */
+        border-right: none;         /* Remove vertical divider */
+        border-bottom: 1px solid #d8c9b7; 
+        /* Horizontal separator instead */
+        padding: 0.5rem;            /* Smaller padding in mobile mode */
+        text-align: center;         /* Center the text horizontally */
     }
   
     /* Image is no longer offset. */
     .post-image {
-      left: 0;                    /* No offset to the left */
-      margin-right: 0;            /* No negative margin on the right */
-      flex-basis: auto;           /* Let it size naturally */
-      width: 100%;                /* Image takes full width of container */
+        left: 0;                    /* No offset to the left */
+        margin-right: 0;            /* No negative margin on the right */
+        flex-basis: auto;           /* Let it size naturally */
+        width: 100%;                /* Image takes full width of container */
     }
   
     /* Post list in a single column. */
     .post-list {
-      grid-template-columns: 1fr; /* One column grid */
+        grid-template-columns: 1fr; /* One column grid */
     }
   
     /* Info panel adjusted for a vertical layout. */
     .post-info {
-      border-left: none;          /* Remove left divider */
-      border-top: 1px solid #d8c9b7; 
-      /* Horizontal divider between image/title and info */
-      padding-left: 1rem;         /* Less left padding needed */
+        border-left: none;          /* Remove left divider */
+        border-top: 1px solid #d8c9b7; 
+        /* Horizontal divider between image/title and info */
+        padding-left: 1rem;         /* Less left padding needed */
     }
 
     .home-grid-container {
-      grid-template-columns: repeat(2, 1fr);  /* 2열로 변경 */
+        grid-template-columns: repeat(2, 1fr);  /* 2열로 변경 */
     }
 
     .nav-menu ul li.has-submenu:hover > .submenu {
-      /* On mobile, disable the hover approach */
-      display: none !important;
+        display: none !important;
     }
 
-  }
-  
-  /* Extra space for icons in the nav links. */
-
-  
-  
-
-  
-  @media (max-width: 480px) {
-    .home-grid-container {
-      grid-template-columns: 1fr;             /* 1열로 변경 */
-    }
-  }
-  
-
-
-
-/* 반응형 디자인을 위한 미디어 쿼리 */
-@media (max-width: 768px) {
     .container {
         padding: 0 15px;                                 /* 모바일에서의 여백 */
     }
-    
+  
     .card {
         margin: 10px;                                    /* 모바일에서의 카드 여백 */
     }
 }
   
+@media (max-width: 480px) {
+    .home-grid-container {
+        grid-template-columns: 1fr;             /* 1열로 변경 */
+    }
+}
+
+
+/*좋아요 버튼 스타일*/
+
+/* 좋아요 버튼 감싸는 영역 스타일 통합  // 통합 */                             
+.like-container {                            /* 좋아요 버튼 감싸는 영역  // 영역 */
+    margin-top: 20px;                         /* 상단 마진 20px 설정  // 마진 */
+}
+
+/* 하모니(좋아요) 버튼 스타일 통합  // 통합 */                           
+#like-btn {                                 /* 좋아요 버튼 선택자  // 버튼 */
+    padding: 10px 15px;                       /* 패딩 10px 15px 적용  // 여백 */
+    font-size: 16px;                          /* 글자 크기 16px 적용  // 크기 */
+    cursor: pointer;                          /* 마우스 커서 포인터 적용  // 커서 */
+}
+
+/* 모달 게시물 그리드 컨테이너 스타일 */                                       /* Container grid for modal posts */
+.posts-grid {                                                               /* 그리드 시작 */
+  display: grid;                                                           /* 그리드 디스플레이 사용 */
+  grid-template-columns: repeat(5, minmax(200px, 1fr));              /* 5열 그리드로 제한 (최소 200px 이상)   */
+  gap: 15px;                                                               /* 카드 간격 15px 유지                   */
+  padding: 15px;                                                           /* 내부 여백 15px 적용                   */
+}                                                     /* 종료 */
+
+/* 추천도서 스타일 */
+
+.recommended-books-container {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.recommended-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.recommended-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+}
+
+.recommended-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* 우선순위 뱃지 */
+.priority-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #5f4b32;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    z-index: 2;
+}
+
+.book-thumbnail-wrapper {
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    background: #f7f5f0;
+}
+
+.book-thumbnail-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.recommended-card:hover .book-thumbnail-wrapper img {
+    transform: scale(1.05);
+}
+
+.book-info-wrapper {
+    padding: 1.5rem;
+}
+
+.book-meta {
+    margin-bottom: 1rem;
+}
+
+.book-title {
+    font-size: 1.2rem;
+    color: #5f4b32;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.book-author {
+    color: #7f6e58;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.book-publisher {
+    color: #9a8469;
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+}
+
+.recommend-comment {
+    font-size: 0.95rem;
+    color: #5f4b32;
+    line-height: 1.5;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #fcfaf7;
+    border-radius: 6px;
+    border-left: 3px solid #d8c9b7;
+}
+
+.genre-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.genre-tag {
+    background: #e9e5df;
+    color: #5f4b32;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.genre-tag:hover {
+    background: #d8c9b7;
+    color: #fff;
+}
+
+/* 반응형 조정 */
+@media (max-width: 768px) {
+    .recommended-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+    
+    .book-thumbnail-wrapper {
+        height: 250px;
+    }
+    
+    .book-info-wrapper {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .recommended-card {
+        margin-bottom: 1rem;
+    }
+    
+    .priority-badge {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+}
+
+
+
+/* 각 게시물 카드 기본 스타일 */                                             /* Base styles for each post card */
+.book-post-card {                                                           /* 카드 컨테이너 시작 */
+  background-color: #fcfaf7;                                                /* 배경색 설정 */
+  border: 1px solid #ece7df;                                                /* 테두리 스타일 설정 */
+  border-radius: 8px;                                                       /* 모서리 둥글게 처리 */
+  overflow: hidden;                                                         /* 내용 넘침 숨김 */
+  position: relative;                                                       /* 위치 relative */
+  cursor: pointer;                                                          /* 클릭 시 포인터 표시 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;                     /* 부드러운 전환 효과 */
+}
+
+/* 카드 정사각형 비율 유지 */                                               /* Maintain square aspect ratio */
+.book-post-card::before {                                                   /* ::before 가상 요소 */
+  content: "";                                                              /* 빈 콘텐츠 */
+  display: block;                                                           /* 블록 요소 사용 */
+  padding-top: 100%;                                                        /* 높이 비율 유지 */
+}
+
+/* 카드 내용 위치 절대 지정 */                                               /* Position content absolutely over the square */
+.book-post-card-content {                                                   /* 카드 내부 컨텐츠 */
+  position: absolute;                                                       /* 절대 위치 지정 */
+  top: 0;                                                                   /* 위쪽 0 */
+  left: 0;                                                                  /* 왼쪽 0 */
+  right: 0;                                                                 /* 오른쪽 0 */
+  bottom: 0;                                                                /* 아래쪽 0 */
+  display: flex;                                                            /* 플렉스 박스 사용 */
+  flex-direction: column;                                                   /* 세로 스택 배열 */
+}
+
+/* 상단 영역: 썸네일 또는 대체 콘텐츠 */                                    /* Top area: Thumbnail or fallback */
+.book-post-thumbnail {                                                      /* 썸네일 컨테이너 */
+  flex: 1;                                                                  /* 남은 공간 채움 */
+  background-color: #f2ebe0;  /* fallback background */                     /* 대체 배경색 설정 */
+  display: flex;                                                            /* 플렉스 박스 사용 */
+  align-items: center;                                                      /* 세로 중앙 정렬 */
+  justify-content: center;                                                  /* 가로 중앙 정렬 */
+  overflow: hidden;                                                         /* 넘침 숨김 */
+}
+
+/* 썸네일 이미지 스타일 */                                                  /* Thumbnail image styling */
+.book-post-thumbnail img {                                                  /* 썸네일 이미지 선택 */
+  width: 100%;                                                              /* 너비 100% */
+  height: 100%;                                                             /* 높이 100% */
+  object-fit: cover;                                                        /* 이미지 꽉 채우기 */
+}
+
+/* 썸네일 없는 경우 대체 콘텐츠 */                                           /* Fallback if no thumbnail */
+.book-post-thumbnail .fallback {                                            /* 대체 콘텐츠 영역 */
+  padding: 10px;                                                            /* 내부 여백 10px */
+  text-align: center;                                                       /* 텍스트 중앙 정렬 */
+  font-size: 1rem;                                                          /* 폰트 크기 설정 */
+  color: #5f4b32;                                                           /* 텍스트 색상 설정 */
+}
+
+/* 하단 영역: 게시물 정보 */                                                 /* Bottom area: Post info */
+.book-post-info {                                                           /* 정보 영역 컨테이너 */
+  background-color: #fff;                                                   /* 배경색 흰색 */
+  padding: 10px;                                                            /* 내부 여백 10px */
+  text-align: left;                                                         /* 텍스트 왼쪽 정렬 */
+}
+
+/* 정보 제목 스타일 */                                                     /* Title styling */
+.book-post-info h4 {                                                       /* 정보 제목 선택 */
+  margin: 0;                                                                /* 마진 제거 */
+  font-size: 1rem;                                                          /* 폰트 크기 1rem */
+  color: #5f4b32;                                                           /* 텍스트 색상 설정 */
+}
+
+/* 정보 요약 스타일 */                                                     /* Excerpt styling */
+.book-post-info p {                                                        /* 정보 내용 선택 */
+  margin: 5px 0 0;                                                          /* 여백 설정 (상단만 5px) */
+  font-size: 0.9rem;                                                        /* 폰트 크기 0.9rem */
+  color: #7f6e58;                                                           /* 텍스트 색상 설정 */
+}
+
+/* 카드 호버 효과 */                                                        /* Hover effect for card */
+.book-post-card:hover {                                                     /* 카드 호버 시 */
+  transform: translateY(-3px);                                              /* 위로 3px 이동 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);                                /* 그림자 효과 추가 */
+}
+
+/* 전체 링크 영역 - 기본 스타일 제거 */                                     /* Make the link take up the full card area and remove default styling */
+.post-card-link {                                                           /* 링크 스타일 설정 */
+  text-decoration: none;                                                    /* 밑줄 제거 */
+  color: inherit;                                                           /* 부모 요소 색상 상속 */
+  display: block;                                                           /* 블록 요소로 표시 */
+}
+
+/* 모달 내 게시물 그리드 스타일 수정 시작        */  /* 시작 */
+.book-posts-modal .posts-grid {                         /* 모달 내 게시물 그리드 선택자           */
+    display: grid;                                     /* 그리드 디스플레이 적용                */
+    grid-template-columns: repeat(5, minmax(200px, 1fr));/* 5열 그리드로 제한 (최소 200px 이상)   */
+    gap: 15px;                                         /* 카드 간격 15px 유지                   */
+    padding: 15px;                                         /* 내부 여백 15px 적용                   */
+}                                                     /* 종료 */
+
+.book-posts-modal .book-post-card {                     /* 모달 내 카드 스타일 선택자            */
+    max-width: 400px;                                  /* 카드 최대 너비 400px 제한              */
+    margin: auto;                                      /* 중앙 정렬을 위해 margin auto 적용     */
+}                                                     /* 종료 */
+/* 모달 내 게시물 그리드 스타일 수정 끝          */  /* 끝 */
+
+.search-container {                                   /* 검색 컨테이너 스타일 지정                 */
+  position: relative;                                /* 내부 요소의 위치 제어를 위한 relative 지정   */
+}                                                   /*                                             */
+
+.search-container input {                           /* 검색 입력란 스타일 지정                    */
+  width: 100%;                                      /* 입력란 전체 폭 사용                         */
+  padding-right: 40px;                              /* 오른쪽 여백 추가(아이콘 공간 확보 목적)         */
+}                                                   /*                                             */
+
+.search-container #search-icon {                    /* 돋보기 아이콘 스타일 지정                   */
+  position: absolute;                               /* 절대 위치 지정하여 input 안에서 위치 조정       */
+  right: 10px;                                      /* 오른쪽 10px 위치 지정                       */
+  top: 50%;                                         /* 수직 중앙 정렬                              */
+  transform: translateY(-50%);                      /* 정확한 수직 중앙 정렬 보정                  */
+  color: gray;                                      /* 아이콘 색상 회색 지정                        */
+  cursor: pointer;                                  /* 클릭 시 커서 포인터로 변경                   */
+}                                                   /*                                             */
+

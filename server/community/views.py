@@ -56,41 +56,10 @@ def post_view(request):
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                # 게시글 기본 정보 저장
-                post = form.save(commit=False)
-                post.writer = request.user
-
-                # 책 정보 처리
-                if selected_book_data := request.POST.get('selected_book_data'):
-                    try:
-                        book_info = json.loads(selected_book_data)
-                        book, _ = Book.objects.get_or_create(
-                            title=book_info.get('title'),
-                            defaults={
-                                'author': book_info.get('author', ''),
-                                'publisher': book_info.get('publisher', ''),
-                                'pubdate': book_info.get('pubdate', ''),
-                                'thumbnail_url': book_info.get('thumbnail_url', ''),
-                                'link': book_info.get('link', ''),
-                                'isbn': book_info.get('isbn', ''),
-                                'description': book_info.get('description', ''),
-                                'genre': book_info.get('genre', 'essay')
-                            }
-                        )
-                        post.book = book
-
-                    except json.JSONDecodeError:
-                        pass
-
-                # 게시글 저장
-                post.save()
-
-                # 이미지 처리
-                if images := request.FILES.getlist('post_images'):
-                    for image in images:
-                        PostImage.objects.create(image=image, post=post)
-
+                process_and_save_post(request, form)                               # 게시글 저장 프로세스 호출process_and_save_post
                 messages.success(request, "게시물이 성공적으로 작성되었습니다.")
+                
+                # 캐시 관련 헤더 추가 후 리다이렉트
                 response = redirect('community:home')
                 response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
                 response['Pragma'] = 'no-cache'
@@ -113,47 +82,71 @@ def post_view(request):
     
     return render(request, 'community/post.html', context)
 
-# 게시물 제출 처리 핸들러
-def handle_post_submission(request, form):
-    """게시물 저장 로직 처리 및 예외 관리"""
-    try:
-        post = form.save(commit=False)
-        if book_data := process_book_data(request):
-            post.book = book_data
-        post.save()
-        return redirect('community:home')
-    except json.JSONDecodeError:
-        messages.error(request, "유효하지 않은 도서 데이터 형식입니다")
-    except Exception as e:
-        messages.error(request, f"게시물 저장 오류: {str(e)}")
-    return redirect('community:post')
 
-# 도서 데이터 처리 함수(책 장르 정보 추가 실패 후에 수정)
+
+
+# 게시글 저장 프로세스 함수
+def process_and_save_post(request, form):
+    """게시글과 관련 책, 이미지 데이터를 저장하는 함수"""
+    post = form.save(commit=False)
+    post.writer = request.user
+
+    # 책 데이터 처리 (일원화된 로직 사용)
+    book = process_book_data(request)              # 책 데이터 처리 함수 호출 process_book_data
+    if book:
+        post.book = book
+
+    post.save()
+
+    # 이미지 파일 저장 처리
+    images = request.FILES.getlist('post_images')
+    if images:
+        for image in images:
+            PostImage.objects.create(image=image, post=post)
+
+    return post
+
+# 도서 데이터 처리 함수
 def process_book_data(request):
-    """사용자가 선택한 도서 정보 처리 및 데이터베이스 저장"""
-    if selected_data := request.POST.get('selected_book_data'):               # POST 데이터에서 도서 정보 추출
+    """사용자가 선택한 도서 정보를 처리하여 Book 객체를 반환"""
+    selected_data = request.POST.get('selected_book_data')
+    if not selected_data:
+        return None
 
-        book_info = json.loads(selected_data)                                 # JSON 문자열 파싱
-        # 백엔드에서 genre 값을 BookGenre 내부값과 비교하거나 매핑 처리 가능
-        genre_value = book_info.get('genre', '')
-        # 예시: 값이 디스플레이(한글)로 넘어온 경우 내부값으로 변환 (필요시 사전 정의)
-        genre_mapping = {
-            '에세이': 'essay',
-            '소설': 'fiction',
-            '비문학': 'non_fiction',
-            '과학': 'science',
-            '시': 'poetry'
-        }
-        book_info['genre'] = genre_mapping.get(genre_value, genre_value)     # 매핑 처리
-        defaults = {
-            k: book_info.get(k, '') for k in ['publisher', 'pubdate', 'thumbnail_url', 'link', 'isbn', 'description', 'genre']
-        }
-        return Book.objects.get_or_create(
-            title=book_info.get('title', ''),
-            author=book_info.get('author', ''),
-            defaults=defaults
-        )[0]
-    return None                                                               # 도서 정보 없음 반환
+    try:
+        book_info = json.loads(selected_data)
+    except json.JSONDecodeError:
+        return None
+
+    # 한글 장르 값이 넘어올 경우 내부 값으로 변환
+    genre_mapping = {
+        '에세이': 'essay',
+        '소설': 'fiction',
+        '비문학': 'non_fiction',
+        '과학': 'science',
+        '시': 'poetry'
+    }
+    # book_info에 전달된 장르 값이 한글이면 매핑, 아니면 그대로 사용
+    book_info['genre'] = genre_mapping.get(book_info.get('genre', ''), book_info.get('genre', 'essay'))
+
+    defaults = {
+        'author': book_info.get('author', ''),
+        'publisher': book_info.get('publisher', ''),
+        'pubdate': book_info.get('pubdate', ''),
+        'thumbnail_url': book_info.get('thumbnail_url', ''),
+        'link': book_info.get('link', ''),
+        'isbn': book_info.get('isbn', ''),
+        'description': book_info.get('description', ''),
+        'genre': book_info.get('genre', 'essay')
+    }
+    
+    # 만약 ISBN이 존재한다면 ISBN으로 중복 체크를 강화할 수도 있습니다.
+    return Book.objects.get_or_create(
+        title=book_info.get('title', ''),
+        author=book_info.get('author', ''),
+        defaults=defaults
+    )[0]
+
 
 
 #----------------------------------------메인 페이지 관련---------------------------------------------------------

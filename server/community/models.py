@@ -16,7 +16,6 @@ class BookGenre(models.TextChoices):
     ESSAY = 'essay', '에세이'          # (DB 저장값, 표시레이블)
     FICTION = 'fiction', '소설'
     NON_FICTION = 'non_fiction', '비문학'
-    SCIENCE = 'science', '과학'
     POETRY = 'poetry', '시'
 
 
@@ -150,9 +149,6 @@ class PostCategory(models.TextChoices):
     BOOK_REVIEW_EVENT   = 'book_review_event', '서평 이벤트'
     BOOK_TALK_POST      = 'book_talk_post', '북토크'
     PERSONAL_EVENT_POST = 'personal_event_post', '개인 이벤트'
-
-
-
 
 
 class PostTag(models.Model):      
@@ -309,6 +305,8 @@ class GeneralPost(Post):
     일반 게시글에 해당. 추가 필드가 없으면 그대로 사용 가능.
     필요하면 extra 필드를 정의하세요.
     """
+    images = GenericRelation(PostImage)
+
     class Meta(Post.Meta):
         verbose_name = "일반 게시글"
         verbose_name_plural = "일반 게시글 목록"
@@ -328,6 +326,7 @@ class ReadingGroupPost(Post):
         null=True,  # null 허용으로 변경
         blank=True  # blank 허용으로 변경
     )
+    images = GenericRelation(PostImage)
 
     def save(self, *args, **kwargs):
         self.is_side_bar = True                             # save() 메서드에서 처리
@@ -364,7 +363,7 @@ class ReadingTipPost(Post):
         choices=TIP_CATEGORY_CHOICES,
         default='reading'
     )
-
+    images = GenericRelation(PostImage)
     class Meta(Post.Meta):
         verbose_name = "독서 팁 게시글"
         verbose_name_plural = "독서 팁 게시글 목록"
@@ -389,6 +388,7 @@ class BookReviewEventPost(Post):
         blank=True, # 공백 허용 ▶ 공백 허용
         verbose_name="이벤트 종료일시"  # 이벤트 종료일시 ▶ 읽기 편한 표시
     )
+    images = GenericRelation(PostImage)
     class Meta:
         verbose_name = "책 리뷰 이벤트"
         verbose_name_plural = "책 리뷰 이벤트 목록"
@@ -406,7 +406,9 @@ class PersonalBookEventPost(Post):
         blank=True, # 공백 허용 ▶ 공백 허용
         verbose_name="이벤트 종료일시"  # 이벤트 종료일시 ▶ 읽기 편한 표시
     )
+    images = GenericRelation(PostImage)
     class Meta:
+
         verbose_name = "개인 책 이벤트"
         verbose_name_plural = "개인 책 이벤트 목록"
         indexes = []
@@ -422,6 +424,7 @@ class BookTalkEventPost(Post):
         blank=True, # 공백 허용 ▶ 공백 허용
         verbose_name="이벤트 종료일시"  # 이벤트 종료일시 ▶ 읽기 편한 표시
     )
+    images = GenericRelation(PostImage)
     class Meta:
         verbose_name = "북토크"
         verbose_name_plural = "북토크 목록"

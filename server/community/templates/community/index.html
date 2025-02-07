@@ -171,7 +171,7 @@
     <section class="sub-section" id="home-nonlit-board">
       <h3>비문학 게시판</h3>
       <div class="home-grid-container">
-        {% for non_fiction_books in books %}
+        {% for book in non_fiction_books %}
         <div class="home-grid-item" 
           data-description="{{ book.description|default:'설명이 없습니다.' }}"
           data-publisher="{{ book.publisher|default:'출판사 정보 없음' }}"

@@ -39,11 +39,17 @@ class BookTalkEventPostAdmin(admin.ModelAdmin):
 #----------------------------------이미지 관련----------------------------------
 @admin.register(PostImage)
 class PostImageAdmin(admin.ModelAdmin):
-    list_display = ('post', 'image', 'created_at')
-    list_filter = ('post', 'created_at',)
-    search_fields = ('post__title',)
-    ordering = ('post', 'created_at')
+    list_display = ('get_post', 'image', 'created_at')
+    list_filter = ('created_at',)  # 'post'는 GenericForeignKey이므로 제외
+    # search_fields는 기본적으로 메서드를 직접 검색 대상으로 사용할 수 없으므로, 
+    # 필요하다면 다른 방법(예: 대상 모델의 필드를 통해 검색)을 고려해야 합니다.
+    ordering = ('created_at',)
 
+    def get_post(self, obj):
+        # obj.post는 GenericForeignKey로 연결된 객체
+        # 예를 들어, 게시글 객체의 title을 반환하도록 할 수 있습니다.
+        return getattr(obj.post, 'title', 'N/A') if obj.post else "N/A"
+    get_post.short_description = "게시글"
 #----------------------------------책 관리자 권한 관련----------------------------------
 
 

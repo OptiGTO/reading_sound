@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "검색 기능로직.md",
+                "file": "글쓰기로직.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "검색 기능로직"
+              "title": "글쓰기로직"
             }
           }
         ]
@@ -166,6 +166,7 @@
   },
   "active": "5dbfef43ca805934",
   "lastOpenFiles": [
+    "검색 기능로직.md",
     "책 카드 호버 혹은 클릭 시 데이터 흐름.md",
     "로그인 로직.md",
     "데이터베이스생성.md",
@@ -176,7 +177,6 @@
     "프로젝트 우선순위 배정 이유 및 체크리스트.md",
     "회원가입 로직 흐름.md",
     "2025-02-01.md",
-    "검색 기능로직.md",
     "Untitled 1.canvas",
     "Untitled.canvas",
     "2025-02-02.md",
