@@ -73,10 +73,12 @@ def post_view(request):
                                 'thumbnail_url': book_info.get('thumbnail_url', ''),
                                 'link': book_info.get('link', ''),
                                 'isbn': book_info.get('isbn', ''),
-                                'description': book_info.get('description', '')
+                                'description': book_info.get('description', ''),
+                                'genre': book_info.get('genre', 'essay')
                             }
                         )
                         post.book = book
+
                     except json.JSONDecodeError:
                         pass
 
@@ -792,7 +794,7 @@ def like_post(request):
             post = Model.objects.get(pk=post_id)                               # 게시물 객체 조회　　　　　　　
             post.likes += 1                                                    # 좋아요 수 증가　　　　　　　
             post.save()                                                        # 게시물 객체 저장　　　　　　　
-            return JsonResponse({'success': True, 'likes': post.likes})          # 결과 반환　　　　　　　　
+            return JsonResponse({'success': True, 'likes': post.likes})          # 결과 반환　　　　　　　　　
         except Model.DoesNotExist:
             return JsonResponse({'error': '게시글을 찾을 수 없습니다.'}, status=404)  # 게시글 없음 메시지　　　　　
     return JsonResponse({'error': '잘못된 요청입니다.'}, status=400)              # 잘못된 요청 메시지　　　　　
