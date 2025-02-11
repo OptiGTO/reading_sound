@@ -410,7 +410,7 @@ function showBookPosts(isbn, title, bookCoverUrl) {
       // 좋아요 수 표시
       const modalLikeCount = document.getElementById('modal-like-count');
       if (modalLikeCount) {
-        modalLikeCount.innerText = data.likes;
+        modalLikeCount.innerText = data.book_likes;
       }
     }
   })
@@ -564,7 +564,7 @@ function showBookPosts(isbn, title, bookCoverUrl) {
       }
     });
     
-
+    
   </script>
 
   <!-- 책 게시물 팝업 모달 추가 -->                                                     <!-- 모달 시작   -->
@@ -577,7 +577,7 @@ function showBookPosts(isbn, title, bookCoverUrl) {
     <div id="bookPostsContainer" class="posts-grid"></div>                           <!-- 게시물 그리드 클래스로 변경   -->
     <div class="modal-footer">                                                        <!-- 모달 푸터 영역 시작   -->
       <button class="btn like-btn" id="modal-like-btn" data-book-id="">                <!-- 좋아요 버튼 시작   -->
-        <i class="fas fa-music"></i> 하모니(좋아요)  <!-- span id="modal-like-count">0  문제가 계속 발생해서 일단 주석처리-->>
+        <i class="fas fa-music"></i> 하모니(좋아요) <span id="modal-like-count">0</span>  <!-- span id="modal-like-count">0  문제가 계속 발생해서 일단 주석처리-->
     </div>
   </div>
 </body>
