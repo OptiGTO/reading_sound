@@ -1,6 +1,7 @@
 <!-- community/templates/community/general_post_detail.html -->     
 {% extends "community/base.html" %}                                <!-- 베이스 템플릿 확장  // 확장 -->
 {% load static %}                                                  <!-- 스태틱 파일 로드  // 스태틱 파일 로드 -->
+{% load comment_tags %}  <!-- 추가: comment_tags 로드 -->
 
 {% block title %}{{ post.title }}{% endblock %}                    <!-- 페이지 제목에 게시글 제목 사용  // 제목 사용 -->
 
@@ -35,27 +36,86 @@
 
 <hr>                                                                    <!-- 구분선 추가  // 구분선 -->
 
-<section class="comments-section">                                       <!-- 댓글 섹션 시작  // 댓글 섹션 시작 -->
-  <h2>댓글</h2>                                                          <!-- 댓글 섹션 제목  // 댓글 제목 -->
+<!-- 댓글 섹션 -->
+<section class="comments-section">
+  <h2>댓글</h2>
 
-  <!-- 댓글 입력 폼 시작  // 댓글 폼 시작 -->
-  <form method="post" action="">                                           <!-- 폼 태그 (현재 URL에 전송)  // 폼 시작 -->
-    {% csrf_token %}                                                     <!-- CSRF 토큰  // CSRF 토큰 -->
-    {{ comment_form.as_p }}                                                <!-- 댓글 폼 필드 렌더링  // 폼 필드 -->
-    <button type="submit" class="btn btn-primary">댓글 작성</button>         <!-- 제출 버튼  // 제출 버튼 -->
-  </form>                                                                 <!-- 댓글 폼 끝  // 폼 끝 -->
+  <!-- 댓글 입력 폼 -->
+  <form method="post" action="">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit" class="btn btn-primary">댓글 작성</button>
+  </form>
 
-  <!-- 댓글 목록 출력  // 댓글 목록 출력 -->
-  {% if comments %}                                                       <!-- 댓글 존재 여부 체크  // 댓글 확인 -->
-    {% for comment in comments %}                                         <!-- 각 댓글 반복  // 댓글 반복 -->
-      <div class="comment" style="border: 1px solid #ccc; margin-top:10px; padding:10px;"> <!-- 댓글 컨테이너 스타일  // 댓글 스타일 -->
-        <p>{{ comment.content }}</p>                                     <!-- 댓글 내용 출력  // 댓글 내용 -->
-        <small>작성일: {{ comment.created_at|date:"Y-m-d H:i" }}</small>  <!-- 댓글 작성일 출력  // 작성일 -->
-      </div>
+  <!-- 댓글 목록 (재귀적 출력) -->
+  {% if comments %}
+    {% for comment in comments %}
+      {% include "community/includes/comment.html" with comment=comment post=post comment_form=comment_form %}
     {% endfor %}
-  {% else %}                                                              <!-- 댓글이 없을 경우  // 댓글 없음 -->
-    <p>작성된 댓글이 없습니다.</p>                                          <!-- 댓글 없음 메시지  // 메시지 -->
+  {% else %}
+    <p>작성된 댓글이 없습니다.</p>
   {% endif %}
 </section>
 
+<!-- 스크립트를 content 블록 안으로 이동 -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 답글 토글 버튼 클릭 이벤트 핸들러
+    function handleReplyToggle(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const commentId = e.target.dataset.commentId;
+        const replyForm = document.getElementById(`reply-form-${commentId}`);
+        
+        if (replyForm) {
+            // 다른 모든 답글 폼을 닫음
+            document.querySelectorAll('.reply-form').forEach(form => {
+                if (form !== replyForm) {
+                    form.style.display = 'none';
+                }
+            });
+            
+            // 현재 폼 토글
+            replyForm.style.display = replyForm.style.display === 'none' || replyForm.style.display === '' ? 'block' : 'none';
+        }
+    }
+
+    // 댓글 영역 클릭 이벤트 핸들러
+    function handleCommentClick(e) {
+        // 답글 버튼이나 폼 내부 클릭은 무시
+        if (e.target.closest('.reply-toggle') || e.target.closest('.reply-form')) {
+            return;
+        }
+        
+        e.stopPropagation();
+        
+        // 다른 선택된 댓글 해제
+        document.querySelectorAll('.comment.selected').forEach(c => {
+            if (c !== this) {
+                c.classList.remove('selected');
+            }
+        });
+        
+        // 현재 댓글 선택
+        this.classList.add('selected');
+    }
+
+    // 이벤트 리스너 등록
+    function initializeEventListeners() {
+        // 답글 토글 버튼에 이벤트 리스너 추가
+        document.querySelectorAll('.reply-toggle').forEach(button => {
+            button.addEventListener('click', handleReplyToggle);
+        });
+
+        // 댓글 영역에 이벤트 리스너 추가
+        document.querySelectorAll('.comment').forEach(comment => {
+            comment.addEventListener('click', handleCommentClick);
+        });
+    }
+
+    // 초기화 실행
+    initializeEventListeners();
+});
+</script>
 {% endblock %}

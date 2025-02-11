@@ -8,6 +8,8 @@ from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
+from django.core.exceptions import ValidationError
 
 User = get_user_model()                                   # 파일 상단에서 한 번만 정의
 
@@ -436,24 +438,43 @@ class BookTalkEventPost(Post):
 
 
 class Comment(models.Model):
-    writer = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name="작성자"  # 오른쪽 주석: 댓글 작성자
-    )
-    # 댓글이 연결되는 게시글 필드 추가; 이미 GenericForeignKey를 사용 중이므로
-    # 이 경우 관련 게시글 모델(예: GeneralPost)로 한정하는 방법 사용 가능  
-
-    parent = models.ForeignKey(
-        'self',
-        null=True,
-        blank=True,
-        on_delete=models.CASCADE,
-        related_name='replies'
-    )
+    # content_type과 object_id 필드가 삭제되었지만, 
+    # 이는 댓글이 어떤 게시글에 속하는지 알 수 없게 됩니다.
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    # 아래 필드들을 다시 추가해야 합니다
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    depth = models.PositiveIntegerField(default=0)  # 댓글 깊이 제한을 위한 필드
+    is_deleted = models.BooleanField(default=False)  # 삭제 여부
+
+    class Meta:
+        ordering = ['created_at']
+
+    @property
+    def replies(self):
+        """해당 댓글의 대댓글들을 반환합니다."""
+        return Comment.objects.filter(parent=self).order_by('created_at')
+
+    def get_replies(self):
+        """대댓글들을 가져오는 메서드"""
+        return Comment.objects.filter(parent=self).order_by('created_at')
+
+    def has_replies(self):
+        """대댓글 존재 여부를 확인하는 메서드"""
+        return self.replies.exists()
+
+    def get_absolute_url(self):
+        return reverse('comment-detail', kwargs={'pk': self.pk})
+
+    def save(self, *args, **kwargs):
+        # 댓글 깊이 계산
+        if self.parent:
+            self.depth = self.parent.depth + 1
+            if self.depth > 3:  # 최대 3depth까지 허용
+                raise ValidationError("대댓글 깊이 제한을 초과했습니다.")
+        super().save(*args, **kwargs)

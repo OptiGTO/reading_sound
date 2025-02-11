@@ -1,0 +1,44 @@
+{% load comment_tags %}
+
+<div class="comment depth-{{ comment.depth }}" id="comment-{{ comment.pk }}">
+  <div class="comment-header">
+    <span class="author">{{ comment.writer.username }}</span>
+    <span class="date">{{ comment.created_at|date:"Y-m-d H:i" }}</span>
+    {% if comment.depth < 3 %}
+      <button type="button" 
+              class="reply-toggle" 
+              data-comment-id="{{ comment.pk }}"
+              aria-label="답글 달기">
+        답글 달기
+      </button>
+    {% endif %}
+  </div>
+
+  <div class="comment-content">
+    {% if comment.is_deleted %}
+      <em>삭제된 댓글입니다.</em>
+    {% else %}
+      {{ comment.content|linebreaks }}
+    {% endif %}
+  </div>
+
+  <!-- 대댓글 작성 폼 -->
+  <div class="reply-form" id="reply-form-{{ comment.pk }}" style="display:none;">
+    <form method="post" action="{% url 'community:comment_create' post.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="parent" value="{{ comment.pk }}">
+      <input type="hidden" name="content_type" value="{{ post|get_class_name }}">
+      {{ comment_form.content }}
+      <button type="submit" class="btn btn-primary">답글 등록</button>
+    </form>
+  </div>
+
+  <!-- 대댓글 목록 -->
+  {% if comment.has_replies %}
+    <div class="replies">
+        {% for reply in comment.get_replies %}
+            {% include "community/includes/comment.html" with comment=reply post=post comment_form=comment_form %}
+        {% endfor %}
+    </div>
+  {% endif %}
+</div>

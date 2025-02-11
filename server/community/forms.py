@@ -68,7 +68,7 @@ class PostForm(forms.ModelForm):
             widget=forms.DateInput(attrs={
                 'class': 'form-control',
                 'placeholder': '이벤트 날짜 (YYYY-MM-DD)',
-                'style': 'display:none;'                                                            # 초기 숨김 처리
+                'type': 'date',
             })
         )  # 독서 모임용 이벤트 날짜
 
@@ -77,7 +77,7 @@ class PostForm(forms.ModelForm):
             widget=forms.DateTimeInput(attrs={
                 'class': 'form-control',
                 'placeholder': '이벤트 시작일시 (YYYY-MM-DD HH:MM)',
-                'style': 'display:none;'                                                            # 초기 숨김 처리
+                'type': 'datetime-local',
             })
         )  # 이벤트 시작일시
 
@@ -86,7 +86,7 @@ class PostForm(forms.ModelForm):
             widget=forms.DateTimeInput(attrs={
                 'class': 'form-control',
                 'placeholder': '이벤트 종료일시 (YYYY-MM-DD HH:MM)',
-                'style': 'display:none;'                                                            # 초기 숨김 처리
+                'type': 'datetime-local',
             })
         )  # 이벤트 종료일시
 

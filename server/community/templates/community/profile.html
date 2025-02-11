@@ -1,0 +1,77 @@
+{% extends "community/base.html" %}
+{% load static %}
+
+{% block title %}프로필 관리{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- 프로필 헤더 섹션 -->
+    <div class="profile-header">
+        <div class="avatar-section">
+            <img src="{% static 'community/images/default_avatar.png' %}" 
+                 alt="사용자 아바타" 
+                 class="profile-avatar">
+            <button class="btn hover-effect avatar-upload">
+                <i class="fas fa-camera"></i>
+            </button>
+        </div>
+        <h1>{{ user.username }}의 서재</h1>
+        <p class="member-since">멤버십 가입일: {{ user.date_joined|date:"Y.m.d" }}</p>
+    </div>
+
+
+
+    <!-- 통계 카드 그룹 -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fas fa-book-open"></i>
+            <div class="stat-info">
+                <span class="count">{{ post_count }}</span>
+                <span class="label">작성 서평</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-comments"></i>
+            <div class="stat-info">
+                <span class="count">{{ comment_count }}</span>
+                <span class="label">작성 댓글</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- 최근 활동 섹션 -->
+    <section class="activity-section">
+        <h2><i class="fas fa-history"></i> 최근 활동</h2>
+        <div class="activity-list">
+            {% for activity in recent_activities %}
+            <div class="activity-item">
+                <div class="activity-icon">
+                    {% if activity.type == 'post' %}
+                    <i class="fas fa-pen-fancy"></i>
+                    {% else %}
+                    <i class="fas fa-comment-dots"></i>
+                    {% endif %}
+                </div>
+                <div class="activity-content">
+                    <a href="{{ activity.link }}">{{ activity.title }}</a>
+                    <span class="activity-date">{{ activity.date|date:"Y.m.d H:i" }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <p class="no-activity">최근 활동이 없습니다</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- 설정 메뉴 -->
+    <div class="settings-card">
+        <h2><i class="fas fa-cog"></i> 계정 설정</h2>
+        <ul class="settings-menu">
+            <li><a href="#"><i class="fas fa-user-edit"></i> 프로필 수정</a></li>
+            <li><a href="#"><i class="fas fa-lock"></i> 비밀번호 변경</a></li>
+            <li><a href="#"><i class="fas fa-bell"></i> 알림 설정</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

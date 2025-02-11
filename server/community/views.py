@@ -22,6 +22,11 @@ from .forms import PostForm, CustomUserCreationForm, CustomAuthForm, CommentForm
 from .services import search_naver_books
 from django.db import models
 from django.db.models import Q
+from django.views.decorators.http import require_POST
+from django.apps import apps
+from django import template
+
+
 
 #----------------------------------------공통 관련---------------------------------------------------------
 # 공통 컨텍스트 생성 함수
@@ -198,6 +203,7 @@ def general_post(request):
 def general_post_detail(request, pk):
     """일반 게시글 상세 페이지 뷰 (댓글 처리 포함)"""
     post = get_object_or_404(GeneralPost, pk=pk)
+    
     if request.method == "POST":
         if not request.user.is_authenticated:
             messages.error(request, "댓글을 작성하려면 로그인해야 합니다.")
@@ -207,19 +213,28 @@ def general_post_detail(request, pk):
             comment = form.save(commit=False)
             comment.writer = request.user
             comment.content_object = post
+            
+            # 부모 댓글이 있는 경우 처리
+            parent_id = request.POST.get('parent')
+            if parent_id:
+                parent = get_object_or_404(Comment, id=parent_id)
+                comment.parent = parent
+                comment.depth = parent.depth + 1
+            
             comment.save()
             messages.success(request, "댓글이 추가되었습니다.")
             return redirect(request.path_info)
-        else:
-            messages.error(request, "댓글 입력에 오류가 있습니다.")
     else:
         form = CommentForm()
+
+    # 최상위 댓글만 가져오기 (대댓글은 제외)
     content_type = ContentType.objects.get_for_model(GeneralPost)
     comments = Comment.objects.filter(
         content_type=content_type,
         object_id=post.id,
-        parent__isnull=True
-    ).order_by('-created_at')
+        parent__isnull=True  # 최상위 댓글만 선택
+    ).order_by('created_at')
+
     context = {
         'post': post,
         'comment_form': form,
@@ -365,7 +380,7 @@ def booktalk_detail(request, pk):
 
 
 
-# 사용자 콘텐츠 뷰 (수정 버전)
+# 개인 이벤트 뷰 (수정 버전)
 def personal_event(request):
     """개인 이벤트 페이지 렌더링"""
     posts = PersonalBookEventPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 PersonalBookEventPost 사용
@@ -421,8 +436,87 @@ def recommend_book(request):
     }
     return render(request, 'community/recommend_book.html', context)
 
+
+
+#프로필 뷰
+def profile(request):
+    """사용자 프로필 정보를 조회하는 뷰"""                                    # 프로필 뷰 설명
+    user = request.user
+    if not user.is_authenticated:                                          # 비로그인 사용자 체크
+        messages.error(request, "로그인이 필요합니다.")
+        return redirect('community:login')
+    
+    context = get_common_context(request)
+    
+    # 사용자의 게시물 통계
+    post_models = [GeneralPost, ReadingGroupPost, ReadingTipPost,          # 게시물 모델 리스트
+                  BookReviewEventPost, BookTalkEventPost, PersonalBookEventPost]
+    
+    total_posts = 0                                                        # 전체 게시물 수 초기화
+    for model in post_models:                                             # 각 모델별 게시물 수 합산
+        total_posts += model.objects.filter(writer=user).count()
+    
+    context.update({
+        'post_count': total_posts,                                        # 전체 게시물 수
+        'comment_count': Comment.objects.filter(writer=user).count(),     # 댓글 수
+        'recent_activities': get_recent_activities(user)                  # 최근 활동 내역
+    })
+    
+    return render(request, 'community/profile.html', context)
+
+def get_recent_activities(user):
+    """사용자의 최근 5개 활동을 조회"""                                     # 최근 활동 조회 함수 설명
+    activities = []
+    
+    # 최근 게시물 조회
+    post_models = [GeneralPost, ReadingGroupPost, ReadingTipPost,          # 게시물 모델 리스트
+                  BookReviewEventPost, BookTalkEventPost, PersonalBookEventPost]
+    
+    recent_posts = []                                                      # 최근 게시물 리스트 초기화
+    for model in post_models:                                             # 각 모델별 최근 게시물 조회
+        posts = model.objects.filter(writer=user).order_by('-created_at')[:5]
+        for post in posts:
+            recent_posts.append({
+                'type': 'post',
+                'title': post.title,
+                'date': post.created_at,
+                'link': get_post_detail_url(post)                         # 게시물 상세 페이지 URL
+            })
+    
+    # 최근 댓글 조회
+    recent_comments = Comment.objects.filter(writer=user).order_by('-created_at')[:5]
+    for comment in recent_comments:
+        activities.append({
+            'type': 'comment',
+            'title': f'댓글: {comment.content[:30]}...' if len(comment.content) > 30 else f'댓글: {comment.content}',
+            'date': comment.created_at,
+            'link': get_post_detail_url(comment.content_object)           # 댓글이 달린 게시물 URL
+        })
+    
+    # 모든 활동을 날짜순으로 정렬
+    activities = sorted(recent_posts + activities, key=lambda x: x['date'], reverse=True)
+    
+    return activities[:5]                                                 # 최근 5개 활동만 반환
+
+def get_post_detail_url(post):
+    """게시물 타입에 따른 상세 페이지 URL 반환"""                           # URL 생성 함수 설명
+    if isinstance(post, GeneralPost):
+        return reverse('community:general_post_detail', args=[post.id])
+    elif isinstance(post, ReadingGroupPost):
+        return reverse('community:reading_meeting_detail', args=[post.id])
+    elif isinstance(post, BookReviewEventPost):
+        return reverse('community:review_event_detail', args=[post.id])
+    elif isinstance(post, BookTalkEventPost):
+        return reverse('community:booktalk_detail', args=[post.id])
+    elif isinstance(post, PersonalBookEventPost):
+        return reverse('community:personal_event_detail', args=[post.id])
+    return '#'                                                           # 기본 URL
+
+
+
 # 공지사항 뷰 (수정 버전)
 def notice(request):
+
     """공지사항 페이지 렌더링"""
     #posts = NoticePost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 NoticePost 사용
     context = {
@@ -782,7 +876,6 @@ def like_post(request):
         if not post_id or not model_name:
             return JsonResponse({'error': '게시물 ID와 모델명이 제공되지 않았습니다.'}, status=400)  # 필수 파라미터 누락 메시지　
         try:
-            from django.apps import apps                                   # 앱 모델 가져오기　　　　　　　
             Model = apps.get_model('community', model_name)                      # 모델 객체 얻기　　　　　　　
             post = Model.objects.get(pk=post_id)                               # 게시물 객체 조회　　　　　　　
             post.likes += 1                                                    # 좋아요 수 증가　　　　　　　
@@ -791,4 +884,35 @@ def like_post(request):
         except Model.DoesNotExist:
             return JsonResponse({'error': '게시글을 찾을 수 없습니다.'}, status=404)  # 게시글 없음 메시지　　　　　
     return JsonResponse({'error': '잘못된 요청입니다.'}, status=400)              # 잘못된 요청 메시지　　　　　
+
+
+@require_POST
+def comment_create(request, post_pk):
+    """댓글 생성 뷰"""
+    if not request.user.is_authenticated:
+        messages.error(request, "로그인이 필요합니다.")
+        return redirect('community:login')
+    
+    content_type = request.POST.get('content_type')
+    model = apps.get_model('community', content_type)
+    post = get_object_or_404(model, pk=post_pk)
+    
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.writer = request.user
+        comment.content_type = ContentType.objects.get_for_model(post)
+        comment.object_id = post.pk
+        
+        parent_pk = request.POST.get('parent')
+        if parent_pk:
+            parent = get_object_or_404(Comment, pk=parent_pk)
+            comment.parent = parent
+            
+        comment.save()
+        messages.success(request, "댓글이 작성되었습니다.")
+        
+    return redirect(request.META.get('HTTP_REFERER', 'community:home'))
+
+
 

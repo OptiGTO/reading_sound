@@ -40,6 +40,7 @@
     <div class="login-container">
       {% if user.is_authenticated %}
     <span>당신의 글이 울리는 곳, {{ user.username }}</span>
+    <a href="{% url 'community:profile' %}" class="btn hover-effect">프로필</a>
     <form action="{% url 'logout' %}" method="post" style="display: inline;">
       {% csrf_token %}
       <button type="submit" class="btn hover-effect">로그아웃</button>
@@ -431,7 +432,7 @@ function showBookPosts(isbn, title, bookCoverUrl) {
 
     // 7. 검색 기능 구현                                                           // 검색 기능 구현
     document.addEventListener('DOMContentLoaded', function() {
-        const searchBtn = document.getElementById('search-btn');
+        const searchBtn = document.getElementById('search-icon');
         const searchInput = document.getElementById('search-input');
         const searchContainer = document.querySelector('.search-container');
         const searchUrl = searchContainer.dataset.searchUrl;  // 데이터 속성에서 URL 가져오기

@@ -29,6 +29,7 @@ urlpatterns = [
     path('personal_event/<int:pk>/', views.personal_event_detail, name='personal_event_detail'), # 개인 이벤트 상세 뷰
     #path('parrhesia/', views.parrhesia, name='parrhesia'),  # 파르헤시아 뷰
     path('recommend_book/', views.recommend_book, name='recommend_book'), # 도서 추천 뷰
+    path('profile/', views.profile, name='profile'), # 프로필 뷰
     
     path('search/', views.search_view, name='search'), # 검색 뷰
     
@@ -60,4 +61,6 @@ urlpatterns = [
     path('like-post/', views.like_post, name='like_post'),                  # 게시글 좋아요 기능 뷰
 
     path('', views.home_view, name='home'),
+
+    path('comment/<int:post_pk>/create/', views.comment_create, name='comment_create'),
 ]
