@@ -402,6 +402,16 @@ function showBookPosts(isbn, title, bookCoverUrl) {
     const modalLikeBtn = document.getElementById("modal-like-btn");
     if (modalLikeBtn) {
       modalLikeBtn.dataset.bookId = data.book_id;
+      if (data.is_liked) {
+        modalLikeBtn.classList.add('liked');
+      } else {
+        modalLikeBtn.classList.remove('liked');
+      }
+      // 좋아요 수 표시
+      const modalLikeCount = document.getElementById('modal-like-count');
+      if (modalLikeCount) {
+        modalLikeCount.innerText = data.likes;
+      }
     }
   })
   .catch(error => {
@@ -485,13 +495,19 @@ function showBookPosts(isbn, title, bookCoverUrl) {
           })
           .then(response => response.json())                                             // 응답 JSON 변환
           .then(data => {                                                                // 응답 데이터 처리
-            if(data.success){                                                            // 성공 시
-              const likeCountElem = document.getElementById('like-count');               // 좋아요 수 요소 선택
-              if(likeCountElem) {                                                        // 요소 존재 시
-                likeCountElem.innerText = data.likes;                                    // 좋아요 수 업데이트
-              }
-            } else {                                                                     // 실패 시
-              alert(data.error || '좋아요 처리 중 오류가 발생했습니다.');
+            if(data.success) {
+                const likeCountElem = document.getElementById('like-count');
+                if(likeCountElem) {
+                    likeCountElem.innerText = data.likes;  // data.get_likes_count가 아닌 data.likes 사용
+                }
+                // 좋아요 버튼 상태 업데이트
+                if(data.is_liked) {
+                    postLikeBtn.classList.add('liked');
+                } else {
+                    postLikeBtn.classList.remove('liked');
+                }
+            } else {
+                alert(data.error || '좋아요 처리 중 오류가 발생했습니다.');
             }
           })
           .catch(error => {                                                              // 예외 처리
@@ -523,14 +539,19 @@ function showBookPosts(isbn, title, bookCoverUrl) {
           })
           .then(response => response.json())                                             // 응답 JSON 변환
           .then(data => {                                                                // 응답 처리
-            if (data.success) {                                                          // 성공 시
-              console.log("좋아요가 완료되었습니다.");
-              const likeCountElem = document.getElementById('modal-like-count');           // 좋아요 카운트 요소 선택
-              if(likeCountElem){                                                         // 요소 존재하면
-                likeCountElem.innerText = data.likes;                                    // 좋아요 수 업데이트
-              }
-            } else {                                                                     // 실패 시
-              alert(data.error || "좋아요 처리 중 오류가 발생했습니다.");
+            if (data.success) {
+                const likeCountElem = document.getElementById('modal-like-count');
+                if(likeCountElem) {
+                    likeCountElem.innerText = data.likes;  // data.get_likes_count가 아닌 data.likes 사용
+                }
+                // 좋아요 버튼 상태 업데이트
+                if(data.is_liked) {
+                    modalLikeBtn.classList.add('liked');
+                } else {
+                    modalLikeBtn.classList.remove('liked');
+                }
+            } else {
+                alert(data.error || "좋아요 처리 중 오류가 발생했습니다.");
             }
           })
           .catch(error => {                                                              // 예외 처리
@@ -556,8 +577,7 @@ function showBookPosts(isbn, title, bookCoverUrl) {
     <div id="bookPostsContainer" class="posts-grid"></div>                           <!-- 게시물 그리드 클래스로 변경   -->
     <div class="modal-footer">                                                        <!-- 모달 푸터 영역 시작   -->
       <button class="btn like-btn" id="modal-like-btn" data-book-id="">                <!-- 좋아요 버튼 시작   -->
-        <i class="fas fa-music"></i> 하모니(좋아요) <span id="modal-like-count">0</span>  
-      </button>
+        <i class="fas fa-music"></i> 하모니(좋아요)  <!-- span id="modal-like-count">0  문제가 계속 발생해서 일단 주석처리-->>
     </div>
   </div>
 </body>

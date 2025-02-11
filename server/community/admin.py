@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from .models import (
     GeneralPost, Book, BookReviewEventPost, PersonalBookEventPost,
-    BookTalkEventPost, ReadingGroupPost, ReadingTipPost, PostImage, PostTag, Comment, BookGenre
+    BookTalkEventPost, ReadingGroupPost, ReadingTipPost, PostImage, PostTag, Comment, BookGenre, Like
 )
 # Register your models here.
 
@@ -114,3 +114,26 @@ class CommentAdmin(admin.ModelAdmin):
         writer = getattr(content_object, 'writer', None)
         return str(writer) if writer else 'N/A'
     get_writer.short_description = '작성자'
+
+#----------------------------------좋아요 관리자 권한 관련----------------------------------
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ('get_content_object', 'get_user_name', 'created_at')
+    list_filter = ('created_at', 'user')
+    search_fields = ('user__username', 'content_type__model')
+    ordering = ('-created_at',)
+
+    def get_content_object(self, obj):
+        """좋아요가 달린 객체(게시글/책)의 제목을 반환"""
+        content_object = obj.content_object
+        return getattr(content_object, 'title', 'N/A')
+    get_content_object.short_description = '대상'
+
+    def get_user_name(self, obj):
+        """좋아요를 누른 사용자의 이름을 반환"""
+        return obj.user.username if obj.user else 'N/A'
+    get_user_name.short_description = '사용자'
+
+
+
+

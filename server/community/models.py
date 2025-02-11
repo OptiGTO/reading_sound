@@ -80,7 +80,7 @@ class Book(models.Model):
     views = models.PositiveIntegerField(default=0, verbose_name="조회수")
 
     # 좋아요 수 추가
-    likes = models.PositiveIntegerField(default=0, verbose_name="좋아요 수")
+    likes = GenericRelation('Like')  # 좋아요 관계 추가
 
     # 책에 댓글 연결
     comments = GenericRelation('Comment')
@@ -121,6 +121,16 @@ class Book(models.Model):
         """조회수 증가 메소드"""
         self.views += 1
         self.save()
+
+    def get_likes_count(self):
+        """좋아요 수를 반환합니다."""
+        return self.likes.count()
+
+    def is_liked_by(self, user):
+        """특정 사용자의 좋아요 여부를 반환합니다."""
+        if not user.is_authenticated:
+            return False
+        return self.likes.filter(user=user).exists()
 
 #------------------------------ Post 공통 관리 모델--------------------------------------------------
 
@@ -164,7 +174,7 @@ class PostTag(models.Model):
         if not self.slug or self.name_changed():
             self.slug = slugify(self.name)
             counter = 1
-            while PostTag.objects.filter(slug=self.slug).exists():
+            while PostTag.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
                 self.slug = f"{slugify(self.name)}-{counter}"
                 counter += 1
         super().save(*args, **kwargs)
@@ -254,7 +264,7 @@ class Post(models.Model):
 
 
     # 좋아요 수 추가
-    likes = models.PositiveIntegerField(default=0, verbose_name="좋아요 수")
+    likes = GenericRelation('Like')  # 좋아요 관계 추가
 
     # 예) 책 관련 글이면 연결 (null/blank 허용)
     book        = models.ForeignKey(
@@ -294,9 +304,15 @@ class Post(models.Model):
     def __str__(self):
         return self.title
     
-    
+    def get_likes_count(self):
+        """좋아요 수를 반환합니다."""
+        return self.likes.count()
 
-
+    def is_liked_by(self, user):
+        """특정 사용자의 좋아요 여부를 반환합니다."""
+        if not user.is_authenticated:
+            return False
+        return self.likes.filter(user=user).exists()
 
 # -------------------- Post 하위 모델들 (개별적으로 확장) ----------------------
 
@@ -478,3 +494,20 @@ class Comment(models.Model):
             if self.depth > 3:  # 최대 3depth까지 허용
                 raise ValidationError("대댓글 깊이 제한을 초과했습니다.")
         super().save(*args, **kwargs)
+
+class Like(models.Model):
+    """좋아요 모델"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'content_type', 'object_id']  # 사용자당 한 번만 좋아요 가능
+        indexes = [
+            models.Index(fields=['content_type', 'object_id']),
+        ]
+
+    def __str__(self):
+        return f"{self.user.username} likes {self.content_object}"

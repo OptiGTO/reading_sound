@@ -16,7 +16,7 @@ import requests
 from .models import (
     Book, PostImage, GeneralPost, ReadingGroupPost, 
     ReadingTipPost, BookReviewEventPost, BookTalkEventPost,
-    PersonalBookEventPost, Comment
+    PersonalBookEventPost, Comment, Like
 )
 from .forms import PostForm, CustomUserCreationForm, CustomAuthForm, CommentForm
 from .services import search_naver_books
@@ -164,8 +164,17 @@ def home_view(request):
     non_fiction_books = Book.objects.filter(genre='non_fiction')
     science_books = Book.objects.filter(genre='science')
     poetry_books = Book.objects.filter(genre='poetry')
-    books = list(essay_books) + list(fiction_books) + list(non_fiction_books) + list(science_books) + list(poetry_books)
-    for book in books:
+    
+    # ContentType 미리 가져오기
+    book_content_type = ContentType.objects.get_for_model(Book)
+    
+    # 각 책의 좋아요 수와 게시글 수를 계산
+    for book in chain(essay_books, fiction_books, non_fiction_books, science_books, poetry_books):
+        book.likes_count = Like.objects.filter(
+            content_type=book_content_type,
+            object_id=book.id
+        ).count()
+        
         book.post_count = (
             book.generalpost_set.count()
             + book.readinggrouppost_set.count()
@@ -174,13 +183,17 @@ def home_view(request):
             + PersonalBookEventPost.objects.filter(book=book).count()
             + BookTalkEventPost.objects.filter(book=book).count()
         )
-    context = get_common_context(request)
-    context.update({'books': books})
-    context.update({'essay_books': essay_books})
-    context.update({'fiction_books': fiction_books})
-    context.update({'non_fiction_books': non_fiction_books})
-    context.update({'science_books': science_books})
-    context.update({'poetry_books': poetry_books})
+    
+    context = {
+        **get_common_context(request),
+        'books': list(chain(essay_books, fiction_books, non_fiction_books, science_books, poetry_books)),
+        'essay_books': essay_books,
+        'fiction_books': fiction_books,
+        'non_fiction_books': non_fiction_books,
+        'science_books': science_books,
+        'poetry_books': poetry_books,
+    }
+    
     return render(request, "community/index.html", context)
 
 
@@ -751,27 +764,32 @@ def get_posts_by_book(request):
             ).order_by('-created_at')                                                                  # 최신순 정렬　　　　　　　
             for post in qs:                                                                              # 각 게시글에 대해 반복　　　　
                 # 게시글에 따른 상세 URL 생성                                                      # 상세 페이지 URL 생성　　　　
-                if post_type == GeneralPost:                                                             # 일반 게시글　　　　　　　　
-                    detail_url = reverse('community:general_post_detail', args=[post.id])
-                elif post_type == ReadingGroupPost:                                                      # 독서 모임 게시글　　　　　
-                    detail_url = reverse('community:reading_meeting_detail', args=[post.id])
-                elif post_type == BookReviewEventPost:                                                     # 리뷰 이벤트 게시글　　　　　
-                    detail_url = reverse('community:review_event_detail', args=[post.id])
-                elif post_type == BookTalkEventPost:                                                       # 북토크 게시글　　　　　　　
-                    detail_url = reverse('community:booktalk_detail', args=[post.id])
-                elif post_type == PersonalBookEventPost:                                                   # 개인 이벤트 게시글　　　　
-                    detail_url = reverse('community:personal_event_detail', args=[post.id])
-                else:
-                    detail_url = ''                                                                          # 기본 URL 빈 문자열　　　　
+                # 상세 URL 생성: 클래스 비교 시 isinstance()를 사용
+                try:
+                    if isinstance(post, GeneralPost):
+                        detail_url = reverse('community:general_post_detail', args=[post.id])
+                    elif isinstance(post, ReadingGroupPost):
+                        detail_url = reverse('community:reading_meeting_detail', args=[post.id])
+                    elif isinstance(post, BookReviewEventPost):
+                        detail_url = reverse('community:review_event_detail', args=[post.id])
+                    elif isinstance(post, BookTalkEventPost):
+                        detail_url = reverse('community:booktalk_detail', args=[post.id])
+                    elif isinstance(post, PersonalBookEventPost):
+                        detail_url = reverse('community:personal_event_detail', args=[post.id])
+                    else:
+                        detail_url = ''                                                                     # 기본 URL 빈 문자열　　　　
+                except Exception as url_error:
+                    print(f"Reverse error for post id {post.id}: {url_error}")
+                    detail_url = ''
                 
                 post_dict = {                                                                              # 게시글 데이터를 딕셔너리로 저장　
                     'id': post.id,                                                                        # 게시글 ID　　　　　　　　　
-                    'title': post.title,                                                                  # 게시글 제목　　　　　　　　
-                    'content': post.content,                                                              # 게시글 내용　　　　　　　　
+                    'title': post.title,                                                                  # 게시글 제목　　　　　　　
+                    'content': post.content,                                                              # 게시글 내용　　　　　　　
                     'writer__username': post.writer.username,                                             # 작성자 이름　　　　　　　　
                     'created_at': post.created_at,                                                        # 생성일시　　　　　　　　　
                     'detail_url': detail_url,                                                             # 상세 페이지 URL 추가　　　　
-                    'likes': post.likes                                                                   # 좋아요 수 추가　　　　　　　
+                    'likes': post.get_likes_count()                                                                   # 좋아요 수 추가　　　　　　　
                 }
                 ct = ContentType.objects.get_for_model(post)                                              # 게시글 모델의 ContentType　　
                 image_obj = PostImage.objects.filter(                                                      # 관련 이미지 조회　　　　　　　
@@ -787,14 +805,14 @@ def get_posts_by_book(request):
         # 날짜 직렬화 처리                                                                             # 날짜 포맷 변경　　　　　　　
         for post in posts:
             post['created_at'] = post['created_at'].strftime('%Y-%m-%d %H:%M') if post['created_at'] else '날짜 정보 없음'
-    
+        
         posts.sort(key=lambda x: x['created_at'], reverse=True)
         posts = posts[:10]
             
         return JsonResponse({
             'posts': posts,
             'book_title': book.title,
-            'book_likes': book.likes,         # 도서 좋아요 수 추가　　　　
+            'book_likes': book.get_likes_count(),         # 도서 좋아요 수 추가　　　　
             'book_id': book.id,               # 도서 ID 추가　　　　　　 　　 
             'status': 'success'
         }, safe=False)
@@ -846,44 +864,101 @@ def search_view(request):
 
 #---------------------------------좋아요 기능-----------------------------------------
 # 좋아요 기능 처리 (도서)
-@csrf_exempt                                                                # 좋아요 기능 처리 (도서)　　　
+@csrf_exempt
 def like_book(request):
-    if request.method == "POST":                                              # POST 메서드 확인　　　　　　
-        if not request.user.is_authenticated:                                # 인증된 사용자 확인　　　　　
-            return JsonResponse({'error': '로그인이 필요합니다.'}, status=401)    # 로그인 필요 메시지　　　　　　
-        book_id = request.POST.get('book_id')                                  # 도서 ID 추출　　　　　　　　　
+    """도서 좋아요 토글 뷰"""
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return JsonResponse({'error': '로그인이 필요합니다.'}, status=401)
+        
+        book_id = request.POST.get('book_id')
         if not book_id:
-            return JsonResponse({'error': '도서 ID가 제공되지 않았습니다.'}, status=400)  # 도서 ID 누락 메시지　　　　　
+            return JsonResponse({'error': '도서 ID가 제공되지 않았습니다.'}, status=400)
+        
         try:
-            book = Book.objects.get(pk=book_id)                                # 도서 객체 조회　　　　　　　
-            book.likes += 1                                                    # 좋아요 수 증가　　　　　　　
-            book.save()                                                        # 도서 객체 저장　　　　　　　
-            return JsonResponse({'success': True, 'likes': book.likes})          # 결과 반환　　　　　　　　　
+            book = Book.objects.get(pk=book_id)
+            content_type = ContentType.objects.get_for_model(book)
+            
+            # 좋아요 토글
+            like, created = Like.objects.get_or_create(
+                user=request.user,
+                content_type=content_type,
+                object_id=book.id,
+                defaults={'content_object': book}
+            )
+            
+            if not created:  # 이미 좋아요가 있으면 삭제
+                like.delete()
+                is_liked = False
+            else:
+                is_liked = True
+            
+            # 좋아요 수 조회
+            likes_count = Like.objects.filter(
+                content_type=content_type,
+                object_id=book.id
+            ).count()
+            
+            return JsonResponse({
+                'success': True,
+                'likes': likes_count,  # 실제 좋아요 수 반환
+                'is_liked': is_liked
+            })
+            
         except Book.DoesNotExist:
-            return JsonResponse({'error': '도서를 찾을 수 없습니다.'}, status=404)  # 도서 없음 메시지　　　　　
-    return JsonResponse({'error': '잘못된 요청입니다.'}, status=400)              # 잘못된 요청 메시지　　　　　
+            return JsonResponse({'error': '도서를 찾을 수 없습니다.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': '잘못된 요청입니다.'}, status=400)
 
 
 
 # 좋아요 기능 처리 (게시물)
-@csrf_exempt                                                                # 좋아요 기능 처리 (게시물)　　
+@csrf_exempt
 def like_post(request):
-    if request.method == "POST":                                              # POST 메서드 확인　　　　　　
-        if not request.user.is_authenticated:                                # 인증된 사용자 확인　　　　　
-            return JsonResponse({'error': '로그인이 필요합니다.'}, status=401)    # 로그인 필요 메시지　　　　　　
-        post_id = request.POST.get('post_id')                                  # 게시물 ID 추출　　　　　　　　　
-        model_name = request.POST.get('model')                                 # 모델명(게시글 유형) 추출　　　　
+    """게시글 좋아요 토글 뷰"""
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return JsonResponse({'error': '로그인이 필요합니다.'}, status=401)
+        
+        post_id = request.POST.get('post_id')
+        model_name = request.POST.get('model')
+        
         if not post_id or not model_name:
-            return JsonResponse({'error': '게시물 ID와 모델명이 제공되지 않았습니다.'}, status=400)  # 필수 파라미터 누락 메시지　
+            return JsonResponse({'error': '필수 파라미터가 누락되었습니다.'}, status=400)
+        
         try:
-            Model = apps.get_model('community', model_name)                      # 모델 객체 얻기　　　　　　　
-            post = Model.objects.get(pk=post_id)                               # 게시물 객체 조회　　　　　　　
-            post.likes += 1                                                    # 좋아요 수 증가　　　　　　　
-            post.save()                                                        # 게시물 객체 저장　　　　　　　
-            return JsonResponse({'success': True, 'likes': post.likes})          # 결과 반환　　　　　　　　　
+            Model = apps.get_model('community', model_name)
+            post = Model.objects.get(pk=post_id)
+            content_type = ContentType.objects.get_for_model(post)
+            
+            # 좋아요 토글
+            like, created = Like.objects.get_or_create(
+                user=request.user,
+                content_type=content_type,
+                object_id=post.id,
+                defaults={'content_object': post}
+            )
+            
+            if not created:  # 이미 좋아요가 있으면 삭제
+                like.delete()
+                is_liked = False
+            else:
+                is_liked = True
+            
+            likes_count = post.get_likes_count()
+            
+            return JsonResponse({
+                'success': True,
+                'likes': likes_count,
+                'is_liked': is_liked
+            })
+            
         except Model.DoesNotExist:
-            return JsonResponse({'error': '게시글을 찾을 수 없습니다.'}, status=404)  # 게시글 없음 메시지　　　　　
-    return JsonResponse({'error': '잘못된 요청입니다.'}, status=400)              # 잘못된 요청 메시지　　　　　
+            return JsonResponse({'error': '게시글을 찾을 수 없습니다.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
 
 @require_POST

@@ -1410,6 +1410,19 @@ input::placeholder {
   padding: 15px;                                                           /* 내부 여백 15px 적용                   */
 }                                                     /* 종료 */
 
+
+/* 좋아요 버튼 스타일 */
+.btn.liked {
+    background-color: #9a8469;
+    color: white;
+}
+
+.btn.liked:hover {
+    background-color: #7d6658;
+}
+
+
+
 /* 추천도서 스타일 */
 
 .recommended-books-container {
@@ -2002,4 +2015,5 @@ input::placeholder {
 .comment.depth-1 { margin-left: 2rem; }
 .comment.depth-2 { margin-left: 4rem; }
 .comment.depth-3 { margin-left: 6rem; }
+
 
