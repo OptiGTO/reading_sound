@@ -5,6 +5,45 @@
 
 
 {% block content %}
-  <h1>서평 이벤트</h1>
-  <p>이곳은 서평 이벤트 페이지입니다. 서평 작성 이벤트에 대한 안내를 확인해보세요.</p>
+  <div class="post-list-container">
+    <h1>서평 이벤트</h1>
+    <p>이곳은 서평 이벤트 페이지입니다. 다양한 서평 이벤트에 참여해보세요.</p>
+    
+    {% if posts %}
+      <div class="post-grid">
+        {% for post in posts %}
+          <div class="post-card">
+            {% if post.book %}
+              <div class="book-info">
+                {% if post.book.thumbnail_url %}
+                  <img src="{{ post.book.thumbnail_url }}" alt="{{ post.book.title }}" class="book-thumbnail">
+                {% endif %}
+                <h4 class="book-title">{{ post.book.title }}</h4>
+              </div>
+            {% endif %}
+            <div class="post-content">
+              <h3>{{ post.title }}</h3>
+              <p>{{ post.content|truncatechars:150 }}</p>
+              {% if post.event_date %}
+                <p class="event-date">이벤트 일자: {{ post.event_date|date:"Y-m-d" }}</p>
+              {% endif %}
+              <div class="post-meta">
+                <span class="writer">작성자: {{ post.writer.username }}</span>
+                <span class="date">{{ post.created_at|date:"Y-m-d H:i" }}</span>
+              </div>
+              {% if post.tags.all %}
+                <div class="post-tags">
+                  {% for tag in post.tags.all %}
+                    <span class="tag">{{ tag.name }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="no-posts">아직 작성된 서평 이벤트 게시글이 없습니다.</p>
+    {% endif %}
+  </div>
 {% endblock %}

@@ -22,15 +22,97 @@
   {% endif %}
 
 
-  <!-- 좋아요(하모니) 버튼  // 좋아요 버튼 -->
-  <div class="like-container" style="margin-top:20px;">             <!-- 버튼 감싸는 영역  // 감싸는 영역 -->
+  <!-- 좋아요(하모니) 버튼 -->
+  <div class="like-container" style="margin-top:20px;">
     <button id="like-btn" 
+            class="btn {% if post|is_liked_by:user %}liked{% endif %}"
             data-post-id="{{ post.id }}" 
-            data-model="PersonalEventPost"> 
-      🎵 하모니(좋아요) <span id="like-count">{{ post.likes }}</span>  <!-- 아이콘 및 좋아요 수  // 좋아요 수 -->
+            data-model="GeneralPost">
+      🎵 하모니(좋아요) <span id="like-count">{{ post.get_likes_count }}</span>
     </button>
   </div>
   
   <a href="{% url 'community:home' %}" class="btn hover-effect">목록으로 돌아가기</a>   <!-- 목록 복귀 버튼  // 복귀 버튼 -->
 </article>
+
+<!-- 댓글 입력 폼 -->
+<section class="comments-section">
+  <h2>댓글</h2>
+  <form method="post" action="">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit" class="btn btn-primary">댓글 작성</button>
+</form>
+
+<!-- 댓글 목록 (재귀적 출력) -->
+{% if comments %}
+  {% for comment in comments %}
+    {% include "community/includes/comment.html" with comment=comment post=post comment_form=comment_form %}
+  {% endfor %}
+{% else %}
+  <p>작성된 댓글이 없습니다.</p>
+{% endif %}
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 답글 토글 버튼 클릭 이벤트 핸들러
+    function handleReplyToggle(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const commentId = e.target.dataset.commentId;
+        const replyForm = document.getElementById(`reply-form-${commentId}`);
+        
+        if (replyForm) {
+            // 다른 모든 답글 폼을 닫음
+            document.querySelectorAll('.reply-form').forEach(form => {
+                if (form !== replyForm) {
+                    form.style.display = 'none';
+                }
+            });
+            
+            // 현재 폼 토글
+            replyForm.style.display = replyForm.style.display === 'none' || replyForm.style.display === '' ? 'block' : 'none';
+        }
+    }
+
+    // 댓글 영역 클릭 이벤트 핸들러
+    function handleCommentClick(e) {
+        // 답글 버튼이나 폼 내부 클릭은 무시
+        if (e.target.closest('.reply-toggle') || e.target.closest('.reply-form')) {
+            return;
+        }
+        
+        e.stopPropagation();
+        
+        // 다른 선택된 댓글 해제
+        document.querySelectorAll('.comment.selected').forEach(c => {
+            if (c !== this) {
+                c.classList.remove('selected');
+            }
+        });
+        
+        // 현재 댓글 선택
+        this.classList.add('selected');
+    }
+
+    // 이벤트 리스너 등록
+    function initializeEventListeners() {
+        // 답글 토글 버튼에 이벤트 리스너 추가
+        document.querySelectorAll('.reply-toggle').forEach(button => {
+            button.addEventListener('click', handleReplyToggle);
+        });
+
+        // 댓글 영역에 이벤트 리스너 추가
+        document.querySelectorAll('.comment').forEach(comment => {
+            comment.addEventListener('click', handleCommentClick);
+        });
+    }
+
+    // 초기화 실행
+    initializeEventListeners();
+});
+</script>
 {% endblock %}
+

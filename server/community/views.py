@@ -259,7 +259,7 @@ def general_post_detail(request, pk):
 # 독서 모임 뷰 (수정 버전)
 def reading_meeting(request):
     """독서 모임 페이지 렌더링"""
-    posts = ReadingGroupPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 ReadingGroupPost 사용
+    posts = ReadingGroupPost.objects.all().order_by('-is_pinned', '-created_at').prefetch_related('tags')  # 고정 게시글 우선, 이후 최근 게시글 정렬
     context = {
         **get_common_context(request),
         "posts": posts
@@ -268,32 +268,40 @@ def reading_meeting(request):
 
 
 def reading_meeting_detail(request, pk):
-    """독서 모임 상세 페이지 뷰"""
+    """일반 게시글 상세 페이지 뷰 (댓글 처리 포함)"""
     post = get_object_or_404(ReadingGroupPost, pk=pk)
+    
     if request.method == "POST":
         if not request.user.is_authenticated:
             messages.error(request, "댓글을 작성하려면 로그인해야 합니다.")
             return redirect('community:login')
         form = CommentForm(request.POST)
-        if form.is_valid():                                                               # 폼 유효성 검사 성공 시                                   
-            comment = form.save(commit=False)                                             # 댓글 임시 저장                                            
-            comment.writer = request.user                                                 # 댓글 작성자 설정                                           
-            comment.content_object = post                                                 # 댓글 대상 객체 지정                                        
-            comment.save()                                                                # 댓글 데이터베이스 저장                                     
-            messages.success(request, "댓글이 추가되었습니다.")                            # 성공 메시지 출력                                          
-            return redirect(request.path_info)                                            # 현재 페이지 새로고침                                        
-        else:                                                                             # 폼 유효성 검사 실패 시                                   
-            messages.error(request, "댓글 입력에 오류가 있습니다.")                       # 오류 메시지 출력                                          
-    else:                                                                                 # GET 요청인 경우                                          
-        form = CommentForm()                                                              # 빈 댓글 폼 생성                                           
-    content_type = ContentType.objects.get_for_model(post)                                # 게시글의 컨텐츠 타입 가져오기                             
-    comments = Comment.objects.filter(                                                   # 댓글 목록 조회                                             
-        content_type=content_type,                                                       # 콘텐츠 타입 조건                                           
-        object_id=post.id,                                                               # 글의 ID 조건                                              
-        parent__isnull=True                                                              # 최상위 댓글만 선택                                          
-    ).order_by('-created_at')     
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.writer = request.user
+            comment.content_object = post
+            
+            # 부모 댓글이 있는 경우 처리
+            parent_id = request.POST.get('parent')
+            if parent_id:
+                parent = get_object_or_404(Comment, id=parent_id)
+                comment.parent = parent
+                comment.depth = parent.depth + 1
+            
+            comment.save()
+            messages.success(request, "댓글이 추가되었습니다.")
+            return redirect(request.path_info)
+    else:
+        form = CommentForm()
 
-    
+    # 최상위 댓글만 가져오기 (대댓글은 제외)
+    content_type = ContentType.objects.get_for_model(GeneralPost)
+    comments = Comment.objects.filter(
+        content_type=content_type,
+        object_id=post.id,
+        parent__isnull=True  # 최상위 댓글만 선택
+    ).order_by('created_at')
+
     context = {
         'post': post,
         'comment_form': form,
@@ -305,7 +313,7 @@ def reading_meeting_detail(request, pk):
 # 리뷰 이벤트 뷰 (수정 버전)
 def review_event(request):
     """리뷰 이벤트 페이지 렌더링"""
-    posts = BookReviewEventPost.objects.all().order_by('-created_at').prefetch_related('tags')  # Post 대신 BookReviewEventPost 사용
+    posts = BookReviewEventPost.objects.all().order_by('-is_pinned', '-created_at').prefetch_related('tags')  # 고정 게시글 우선, 이후 최근 게시글 정렬
     context = {
         **get_common_context(request),
         "posts": posts
